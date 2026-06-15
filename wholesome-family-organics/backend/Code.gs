@@ -20,14 +20,53 @@
 
 var INV_SHEET = "Inventory";   // tab the business edits (falls back to the first tab if not found)
 var LOG_SHEET = "Orders";      // created automatically; the order log
+var PRICE_SHEET = "Pricing";   // created automatically with the defaults below
+
+// Default prices/settings — used to create the Pricing tab the first time.
+// After that, the business edits the values in the Pricing tab, not here.
+var PRICE_DEFAULTS = [
+  ["key", "value", "what it controls"],
+  ["halfPricePerLb",    5.48, "Half — price per lb (hanging weight)"],
+  ["quarterPricePerLb", 5.68, "Quarter — price per lb (hanging weight)"],
+  ["halfDeposit",        500, "Half — deposit due with order"],
+  ["quarterDeposit",       0, "Quarter — deposit due with order (0 = none)"],
+  ["halfWeightLow",      320, "Half — typical hanging weight low (lbs)"],
+  ["halfWeightHigh",     430, "Half — typical hanging weight high (lbs)"],
+  ["quarterWeightLow",   150, "Quarter — typical hanging weight low (lbs)"],
+  ["quarterWeightHigh",  215, "Quarter — typical hanging weight high (lbs)"],
+  ["yieldLowPct",         60, "Yield % of hanging weight, low"],
+  ["yieldHighPct",        70, "Yield % of hanging weight, high"]
+];
 
 function invSheet_() {
   var ss = SpreadsheetApp.getActive();
   return ss.getSheetByName(INV_SHEET) || ss.getSheets()[0];
 }
 
+function ensurePricing_() {
+  var ss = SpreadsheetApp.getActive();
+  var sh = ss.getSheetByName(PRICE_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(PRICE_SHEET);
+    sh.getRange(1, 1, PRICE_DEFAULTS.length, 3).setValues(PRICE_DEFAULTS);
+    sh.setColumnWidth(1, 150); sh.setColumnWidth(3, 320);
+  }
+  return sh;
+}
+
+function readPricing_() {
+  var sh = ensurePricing_();
+  var rows = sh.getDataRange().getValues();
+  var out = {};
+  for (var i = 1; i < rows.length; i++) {            // skip header
+    var k = String(rows[i][0]).trim();
+    if (k) out[k] = Number(rows[i][1]) || 0;
+  }
+  return out;
+}
+
 function doGet(e) {
-  return json_({ ok: true, inventory: readInventory_() });
+  return json_({ ok: true, inventory: readInventory_(), pricing: readPricing_() });
 }
 
 function doPost(e) {

@@ -794,6 +794,7 @@ section{position:relative}
     if(!CFG.inventoryApiUrl){ done&&done(); return; }
     fetch(CFG.inventoryApiUrl,{method:"GET"}).then(function(r){return r.json();}).then(function(d){
       if(d && d.inventory && d.inventory.length){ INVENTORY=d.inventory; }
+      if(d && d.pricing){ for(var k in d.pricing){ if(d.pricing[k] || d.pricing[k]===0) P[k]=d.pricing[k]; } } // Sheet prices override config.js
     }).catch(function(){ /* keep config.js fallback */ }).then(function(){ done&&done(); });
   }
   function postOrderToApi(data){
@@ -1135,7 +1136,7 @@ section{position:relative}
   renderPricing(); renderAvailability(); renderFooter();
   setupAmount(); buildNumbers(); buildLegend(); buildExtraChips(); wireDiagram(); updateProgress();
   // If a Google Sheet API is configured, refresh with live quantities.
-  loadInventory(function(){ renderAvailability(); refreshAmountMeta(); });
+  loadInventory(function(){ renderPricing(); renderAvailability(); refreshAmountMeta(); });
 
   $("#reviewBtn").addEventListener("click",function(){ if(!$("#reviewBtn").disabled) openModal(); });
   $("#modalClose").addEventListener("click",closeModal);

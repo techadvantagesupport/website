@@ -57,6 +57,9 @@ You do this once. It takes about 10 minutes.
 - **A sale** decrements `quartersLeft` automatically (Half −2, Quarter −1).
 - **A cancellation:** open the Sheet and add the quarters back to `quartersLeft`.
 - **A new delivery:** add a new row.
+- **Prices & deposit:** the first time the site reads the Sheet, a **Pricing** tab
+  is created automatically. Change a price or deposit by editing the **value**
+  column there — no code editing needed.
 - Every order is also logged on an **Orders** tab (created automatically) with the
   customer, delivery date, and cuts — a running record you can review.
 

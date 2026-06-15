@@ -57,7 +57,11 @@ const WFO_CONFIG = {
 
   /* --------------------------------------------------------------------------
      2) PRICING  (per pound, hanging weight)
-     -------------------------------------------------------------------------- */
+     --------------------------------------------------------------------------
+     NOTE: if the Google Sheet is connected (inventoryApiUrl above), prices are
+     managed in the Sheet's "Pricing" tab and these values are only a fallback.
+     If you are NOT using the Sheet, edit the prices here.
+  -------------------------------------------------------------------------- */
   pricing: {
     halfPricePerLb:    5.48,   // dollars per lb hanging weight for a HALF
     quarterPricePerLb: 5.68,   // dollars per lb hanging weight for a QUARTER
