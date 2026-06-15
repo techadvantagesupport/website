@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wholesome Family Organics — Organically Raised Beef · Kimball, MN</title>
+<meta name="description" content="Organically raised, pasture-fed beef from a Minnesota family farm. Born and raised on our farm, dry-aged, and delivered to your freezer. Build your custom beef order online.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233A2A1A'/%3E%3Cpath d='M7 13c2-3 5-4 9-4s7 1 9 4c0 4-2 9-9 9s-9-5-9-9z' fill='%23C9A87C'/%3E%3Ccircle cx='12' cy='14' r='1.3' fill='%233A2A1A'/%3E%3Ccircle cx='20' cy='14' r='1.3' fill='%233A2A1A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================ TOKENS ============================ */
+:root{
+  --paper:#F2EAD9;          /* warm kraft / butcher paper */
+  --paper-2:#EBDFC6;        /* slightly deeper paper for panels */
+  --espresso:#3A2A1A;       /* near-black brown — text & dark sections */
+  --leather:#8B5E3C;        /* mid saddle brown — cow body, structure */
+  --leather-d:#6E4527;      /* darker leather for edges */
+  --tan:#C9A87C;            /* light tan */
+  --pasture:#5A6B3B;        /* moss/pasture green — the "done / go" accent */
+  --pasture-d:#46532D;
+  --barn:#9A3B2E;           /* barn red — used sparingly */
+  --cream-line:rgba(58,42,26,.16);
+  --shadow:0 1px 0 rgba(58,42,26,.05), 0 14px 34px -18px rgba(58,42,26,.45);
+  --radius:14px;
+  --maxw:1140px;
+  --display:'Bitter', Georgia, serif;
+  --body:'Karla', system-ui, sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--espresso);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.08;margin:0;font-weight:700;letter-spacing:-.01em}
+p{margin:0 0 1rem}
+a{color:inherit}
+img,svg{display:block;max-width:100%}
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--leather-d)}
+.mono{font-family:var(--mono)}
+.center{text-align:center}
+:focus-visible{outline:3px solid var(--pasture);outline-offset:3px;border-radius:4px}
+section{position:relative}
+
+/* ============================ BUTTONS ============================ */
+.btn{
+  font-family:var(--mono);font-weight:600;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:.55em;justify-content:center;
+  padding:.95em 1.5em;border-radius:999px;border:2px solid var(--espresso);
+  background:var(--espresso);color:var(--paper);cursor:pointer;text-decoration:none;
+  transition:transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px -12px rgba(58,42,26,.7)}
+.btn:active{transform:translateY(0)}
+.btn--ghost{background:transparent;color:var(--espresso)}
+.btn--ghost:hover{background:var(--espresso);color:var(--paper)}
+.btn--go{background:var(--pasture);border-color:var(--pasture)}
+.btn--go:hover{background:var(--pasture-d);border-color:var(--pasture-d)}
+.btn--lg{padding:1.05em 1.9em;font-size:.95rem}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ============================ NAV ============================ */
+.nav{position:sticky;top:0;z-index:50;background:rgba(242,234,217,.86);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--cream-line)}
+.nav__in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:.65rem;font-family:var(--display);font-weight:800;font-size:1.06rem;text-decoration:none;letter-spacing:-.02em}
+.brand svg{width:34px;height:34px;flex:none}
+.brand small{display:block;font-family:var(--mono);font-weight:500;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--leather-d);margin-top:1px}
+.nav__links{display:flex;align-items:center;gap:1.6rem}
+.nav__links a{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--espresso);opacity:.78}
+.nav__links a:hover{opacity:1}
+.nav__cta{font-size:.74rem;padding:.7em 1.2em}
+@media(max-width:760px){.nav__links a:not(.nav__cta){display:none}}
+
+/* ============================ HERO ============================ */
+.hero{padding:clamp(2.5rem,6vw,5rem) 0 clamp(2rem,5vw,4rem);overflow:hidden}
+.hero__grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center}
+.hero h1{font-size:clamp(2.5rem,6.2vw,4.6rem);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--pasture)}
+.hero__eyebrow{margin-bottom:1.2rem}
+.hero__lead{font-size:clamp(1.05rem,1.6vw,1.22rem);max-width:40ch;margin:1.4rem 0 2rem;color:#4a3826}
+.hero__cta{display:flex;gap:.8rem;flex-wrap:wrap}
+.hero__facts{display:flex;gap:1.6rem;margin-top:2.4rem;flex-wrap:wrap}
+.hero__fact{font-family:var(--mono);font-size:.78rem;line-height:1.4;color:var(--leather-d)}
+.hero__fact b{display:block;font-size:1.55rem;font-family:var(--display);color:var(--espresso);font-weight:700}
+.hero__art{position:relative}
+.hero__art svg{width:100%;height:auto;filter:drop-shadow(0 24px 30px rgba(58,42,26,.28))}
+@media(max-width:860px){
+  .hero__grid{grid-template-columns:1fr;text-align:center}
+  .hero__lead{margin-left:auto;margin-right:auto}
+  .hero__cta,.hero__facts{justify-content:center}
+  .hero__art{max-width:460px;margin:0 auto;order:-1}
+}
+
+/* ============================ TRUST STRIP ============================ */
+.strip{background:var(--espresso);color:var(--paper)}
+.strip__in{display:flex;flex-wrap:wrap;justify-content:center;gap:1.2rem 2.4rem;padding:1.05rem 0;
+  font-family:var(--mono);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase}
+.strip__in span{display:inline-flex;align-items:center;gap:.5rem;opacity:.92}
+.strip__in svg{width:16px;height:16px;color:var(--tan)}
+
+/* ============================ SECTION HEADINGS ============================ */
+.head{max-width:640px;margin-bottom:2.6rem}
+.head.center{margin-left:auto;margin-right:auto}
+.head h2{font-size:clamp(1.9rem,3.6vw,2.8rem);margin:.6rem 0 .8rem}
+.head p{color:#4a3826;font-size:1.05rem}
+.pad{padding:clamp(3rem,7vw,5.5rem) 0}
+
+/* ============================ STORY ============================ */
+.story{background:
+  linear-gradient(0deg,rgba(58,42,26,.03),rgba(58,42,26,.03))}
+.story__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3.4rem);align-items:center}
+.story__copy p{color:#4a3826}
+.quote{font-family:var(--display);font-weight:600;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.2;
+  border-left:4px solid var(--pasture);padding:.2rem 0 .2rem 1.3rem;margin:0 0 1.6rem;color:var(--espresso)}
+.tags{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.6rem}
+.tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--paper-2);border:1px solid var(--cream-line);padding:.5em .9em;border-radius:999px}
+.story__card{background:var(--paper-2);border:1px solid var(--cream-line);border-radius:var(--radius);
+  padding:clamp(1.4rem,3vw,2.2rem);box-shadow:var(--shadow)}
+.spec{display:flex;justify-content:space-between;gap:1rem;padding:.85rem 0;border-bottom:1px dashed var(--cream-line);font-family:var(--mono);font-size:.9rem}
+.spec:last-child{border-bottom:0}
+.spec b{font-weight:600}
+@media(max-width:760px){.story__grid{grid-template-columns:1fr}}
+
+/* ============================ PRICING ============================ */
+.price__grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.pcard{background:var(--paper-2);border:1px solid var(--cream-line);border-radius:var(--radius);
+  padding:clamp(1.5rem,3vw,2.2rem);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.pcard__type{font-family:var(--mono);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--leather-d)}
+.pcard__rate{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,5vw,3.2rem);line-height:1;margin:.5rem 0 .15rem}
+.pcard__rate small{font-family:var(--mono);font-size:.9rem;font-weight:500;color:var(--leather-d);letter-spacing:0}
+.pcard__unit{font-family:var(--mono);font-size:.78rem;color:var(--leather-d);text-transform:uppercase;letter-spacing:.08em}
+.pcard ul{list-style:none;padding:0;margin:1.3rem 0 0;font-size:.95rem}
+.pcard li{padding:.45rem 0 .45rem 1.7rem;position:relative;border-top:1px dashed var(--cream-line)}
+.pcard li:before{content:"";position:absolute;left:0;top:.95rem;width:11px;height:7px;border-left:2px solid var(--pasture);border-bottom:2px solid var(--pasture);transform:rotate(-45deg)}
+.pcard__note{margin-top:1.3rem;font-family:var(--mono);font-size:.78rem;color:var(--barn);background:rgba(154,59,46,.07);
+  border:1px solid rgba(154,59,46,.25);border-radius:10px;padding:.7em .9em}
+.price__example{margin-top:1.6rem;font-family:var(--mono);font-size:.86rem;color:#4a3826;text-align:center}
+.price__example b{color:var(--espresso)}
+@media(max-width:680px){.price__grid{grid-template-columns:1fr}}
+
+/* ============================ AVAILABILITY ============================ */
+.avail__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem}
+.acard{background:var(--paper);border:1px solid var(--cream-line);border-radius:var(--radius);padding:1.3rem;box-shadow:var(--shadow)}
+.acard__top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5rem}
+.acard__type{font-family:var(--display);font-weight:700;font-size:1.25rem}
+.acard__date{font-family:var(--mono);font-size:.74rem;color:var(--leather-d);text-transform:uppercase;letter-spacing:.06em}
+.acard__count{font-family:var(--mono);font-size:.84rem;color:#4a3826;margin-bottom:.6rem}
+.acard__count b{color:var(--espresso)}
+.bar{height:9px;border-radius:999px;background:var(--paper-2);overflow:hidden;border:1px solid var(--cream-line)}
+.bar i{display:block;height:100%;background:var(--pasture);border-radius:999px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.acard.is-out .bar i{background:var(--barn)}
+.acard__note{font-family:var(--mono);font-size:.74rem;margin-top:.7rem;color:var(--leather-d)}
+.acard.is-out .acard__note{color:var(--barn)}
+
+/* ============================ ORDER BUILDER ============================ */
+.builder{background:var(--espresso);color:var(--paper)}
+.builder .eyebrow{color:var(--tan)}
+.builder .head h2{color:var(--paper)}
+.builder .head p{color:rgba(242,234,217,.8)}
+.step{margin-bottom:2.4rem}
+.step__label{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tan);
+  display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
+.step__label i{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--tan);display:inline-grid;place-items:center;font-style:normal;font-size:.78rem}
+
+/* amount toggle */
+.amount{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:620px}
+.amount__opt{position:relative}
+.amount__opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.amount__opt label{display:block;cursor:pointer;border:2px solid rgba(242,234,217,.28);border-radius:var(--radius);
+  padding:1.2rem 1.3rem;transition:border-color .2s, background .2s}
+.amount__opt input:checked+label{border-color:var(--tan);background:rgba(201,168,124,.14)}
+.amount__opt input:focus-visible+label{outline:3px solid var(--pasture);outline-offset:3px}
+.amount__name{font-family:var(--display);font-weight:700;font-size:1.5rem}
+.amount__price{font-family:var(--mono);font-size:.92rem;color:var(--tan);margin-top:.2rem}
+.amount__meta{font-family:var(--mono);font-size:.76rem;color:rgba(242,234,217,.7);margin-top:.6rem;line-height:1.5}
+.amount__est{margin-top:1rem;font-family:var(--mono);font-size:.84rem;color:rgba(242,234,217,.85);min-height:1.4em}
+.amount__est b{color:var(--tan)}
+
+/* the cut tool */
+.tool{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(1.2rem,3vw,2.4rem);align-items:start}
+.tool[hidden]{display:none}
+.diagram{background:var(--paper);border-radius:var(--radius);padding:1.2rem 1.2rem .8rem;box-shadow:var(--shadow)}
+.diagram svg{width:100%;height:auto;touch-action:manipulation}
+.cut-region{fill:var(--leather);stroke:var(--paper);stroke-width:2.5;cursor:pointer;
+  transition:fill .25s ease, transform .2s ease;transform-box:fill-box;transform-origin:center}
+.cut-region:hover{fill:var(--leather-d)}
+.cut-region.is-active{fill:var(--tan)}
+.cut-region.is-done{fill:var(--pasture)}
+.cut-region:focus-visible{outline:none;fill:var(--tan)}
+.region-label{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.03em;fill:var(--paper);
+  text-anchor:middle;pointer-events:none;text-transform:uppercase;
+  paint-order:stroke;stroke:rgba(40,28,16,.55);stroke-width:3.4px;stroke-linejoin:round}
+.region-check{opacity:0;transition:opacity .3s ease;pointer-events:none}
+.region-check.show{opacity:1}
+.diagram__legend{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:.6rem;
+  font-family:var(--mono);font-size:.72rem;color:var(--leather-d);text-transform:uppercase;letter-spacing:.05em}
+.diagram__legend span{display:inline-flex;align-items:center;gap:.4rem}
+.dot{width:13px;height:13px;border-radius:4px;display:inline-block;border:2px solid var(--paper)}
+.extras{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-top:.4rem}
+.chip{font-family:var(--mono);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
+  background:var(--paper-2);border:1.5px solid var(--leather);color:var(--espresso);padding:.55em 1em;border-radius:999px;
+  transition:background .2s,color .2s,border-color .2s}
+.chip:hover{background:var(--leather);color:var(--paper)}
+.chip.is-done{background:var(--pasture);border-color:var(--pasture);color:var(--paper)}
+.chip.is-active{background:var(--tan);border-color:var(--tan);color:var(--espresso)}
+
+/* drawer (the box that opens) */
+.drawer{background:var(--paper);color:var(--espresso);border-radius:var(--radius);box-shadow:var(--shadow);
+  position:sticky;top:80px;min-height:300px;overflow:hidden}
+.drawer__empty{padding:2.4rem 1.6rem;text-align:center;color:var(--leather-d);font-family:var(--mono);font-size:.86rem;line-height:1.7}
+.drawer__empty svg{width:54px;height:54px;margin:0 auto 1rem;opacity:.55}
+.panel{padding:1.5rem;animation:drawIn .35s cubic-bezier(.2,.85,.25,1)}
+@keyframes drawIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.panel__type{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--pasture-d)}
+.panel h3{font-size:1.7rem;margin:.2rem 0 .5rem}
+.panel__blurb{font-size:.92rem;color:#4a3826;margin-bottom:1.2rem}
+.cut{display:flex;align-items:center;gap:.85rem;padding:.7rem;border:1.5px solid var(--cream-line);border-radius:10px;margin-bottom:.6rem;
+  cursor:pointer;transition:border-color .2s,background .2s}
+.cut:hover{border-color:var(--leather)}
+.cut.on{border-color:var(--pasture);background:rgba(90,107,59,.08)}
+.cut__box{width:24px;height:24px;border:2px solid var(--leather);border-radius:7px;flex:none;display:grid;place-items:center;transition:background .2s,border-color .2s}
+.cut.on .cut__box{background:var(--pasture);border-color:var(--pasture)}
+.cut__box svg{width:14px;height:14px;color:#fff;opacity:0;transition:opacity .2s}
+.cut.on .cut__box svg{opacity:1}
+.cut__name{font-weight:600;flex:1}
+.cut__opt{margin:.1rem 0 .7rem 3.3rem}
+.cut__opt label{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--leather-d);display:block;margin-bottom:.3rem}
+.cut__opt select,.cut__opt input{font-family:var(--mono);font-size:.9rem;padding:.5em .7em;border:1.5px solid var(--leather);border-radius:8px;background:var(--paper);color:var(--espresso);width:100%;max-width:200px}
+.panel__actions{display:flex;gap:.7rem;margin-top:1.2rem;flex-wrap:wrap}
+.panel__actions .btn{flex:1;min-width:130px}
+
+/* progress + builder actions */
+.progress{margin:1.8rem 0 1.4rem}
+.progress__top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tan);margin-bottom:.5rem}
+.progress .bar{background:rgba(242,234,217,.18);border-color:rgba(242,234,217,.25)}
+.builder__actions{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
+.builder__actions .btn--ghost{color:var(--paper);border-color:rgba(242,234,217,.5)}
+.builder__actions .btn--ghost:hover{background:var(--paper);color:var(--espresso)}
+@media(max-width:840px){
+  .tool{grid-template-columns:1fr}
+  .drawer{position:relative;top:0}
+}
+
+/* ============================ REVIEW (modal) ============================ */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:center;
+  padding:2rem 1rem;background:rgba(40,28,16,.6);backdrop-filter:blur(3px);overflow:auto}
+.modal.open{display:flex}
+.sheet{background:var(--paper);width:100%;max-width:720px;border-radius:var(--radius);box-shadow:0 30px 70px -20px rgba(0,0,0,.6);
+  animation:sheetIn .35s cubic-bezier(.2,.85,.25,1)}
+@keyframes sheetIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.sheet__head{display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.5rem;border-bottom:1px solid var(--cream-line)}
+.sheet__head h3{font-size:1.5rem}
+.sheet__close{background:none;border:0;font-size:1.6rem;cursor:pointer;color:var(--leather-d);line-height:1;padding:.2rem}
+.sheet__body{padding:1.5rem}
+.ticket{border:1.5px dashed var(--leather);border-radius:10px;padding:1.2rem;background:var(--paper-2);margin-bottom:1.6rem}
+.ticket__hd{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--cream-line);padding-bottom:.7rem;margin-bottom:.8rem}
+.ticket__hd b{font-family:var(--display);font-size:1.2rem}
+.ticket__hd span{font-family:var(--mono);font-size:.8rem;color:var(--leather-d)}
+.ticket__row{display:flex;justify-content:space-between;gap:1rem;font-family:var(--mono);font-size:.86rem;padding:.3rem 0}
+.ticket__row span:first-child{color:#4a3826;display:inline-flex;align-items:center;gap:.4rem}
+.tick{width:14px;height:14px;flex:none;color:var(--pasture)}
+.ticket__sec{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--pasture-d);margin:.9rem 0 .3rem;border-top:1px dashed var(--cream-line);padding-top:.6rem}
+.ticket__none{font-family:var(--mono);font-size:.82rem;color:var(--leather-d);font-style:italic}
+.field{margin-bottom:1rem}
+.field label{display:block;font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--leather-d);margin-bottom:.35rem}
+.field input,.field textarea{width:100%;font-family:var(--body);font-size:1rem;padding:.7em .85em;border:1.5px solid var(--leather);border-radius:9px;background:var(--paper);color:var(--espresso)}
+.field textarea{resize:vertical;min-height:74px}
+.field--row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:520px){.field--row{grid-template-columns:1fr}}
+.sheet__foot{padding:1.2rem 1.5rem;border-top:1px solid var(--cream-line);display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.form-msg{font-family:var(--mono);font-size:.82rem}
+.form-msg.err{color:var(--barn)}
+.form-msg.ok{color:var(--pasture-d)}
+
+/* success */
+.done-state{text-align:center;padding:2rem 1rem}
+.done-state svg{width:70px;height:70px;color:var(--pasture);margin:0 auto 1rem}
+.done-state h3{font-size:1.8rem;margin-bottom:.6rem}
+
+/* ============================ FOOTER ============================ */
+.foot{background:var(--espresso);color:var(--paper);padding:3rem 0 2rem}
+.foot__grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2rem}
+.foot h4{font-size:1.3rem;margin-bottom:.5rem}
+.foot p,.foot a{font-family:var(--mono);font-size:.86rem;color:rgba(242,234,217,.82);text-decoration:none;line-height:1.9}
+.foot a:hover{color:var(--tan)}
+.foot__lbl{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--tan);margin-bottom:.6rem}
+.foot__bottom{margin-top:2.4rem;padding-top:1.4rem;border-top:1px solid rgba(242,234,217,.18);
+  font-family:var(--mono);font-size:.74rem;color:rgba(242,234,217,.6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+@media(max-width:680px){.foot__grid{grid-template-columns:1fr;gap:1.6rem}}
+
+/* ============================ A11Y / MOTION ============================ */
+.skip{position:absolute;left:-999px;top:0;background:var(--espresso);color:var(--paper);padding:.7em 1em;z-index:200;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<a href="#order" class="skip">Skip to building your order</a>
+
+<!-- ===================== NAV ===================== -->
+<header class="nav">
+  <div class="wrap nav__in">
+    <a href="#top" class="brand" aria-label="Wholesome Family Organics home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#3A2A1A"/><path d="M8 16c2.5-4 6.5-5.5 12-5.5S29.5 12 32 16c0 5.2-2.6 11.5-12 11.5S8 21.2 8 16z" fill="#C9A87C"/><circle cx="15" cy="17" r="1.7" fill="#3A2A1A"/><circle cx="25" cy="17" r="1.7" fill="#3A2A1A"/><path d="M16 24c1.3 1.2 6.7 1.2 8 0" stroke="#3A2A1A" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+      <span>Wholesome Family Organics<small>Kimball, MN</small></span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#beef">Our beef</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#availability">Availability</a>
+      <a href="#order" class="btn btn--go nav__cta">Build your order</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <div class="eyebrow hero__eyebrow">Family-raised &middot; Certified organic feed &middot; Est. on our farm</div>
+      <h1>Beef raised right, from our&nbsp;pasture to your <em>freezer</em>.</h1>
+      <p class="hero__lead">Every animal is born and raised on our Minnesota farm on 100% certified organic feed — no hormones, no antibiotics, ever. Dry-aged, hand-wrapped, and delivered to your door.</p>
+      <div class="hero__cta">
+        <a href="#order" class="btn btn--lg btn--go">Build your order &rarr;</a>
+        <a href="#beef" class="btn btn--lg btn--ghost">How it works</a>
+      </div>
+      <div class="hero__facts">
+        <div class="hero__fact"><b>100%</b>organic-fed,<br>born on our farm</div>
+        <div class="hero__fact"><b>7&ndash;10</b>days<br>dry-aged</div>
+        <div class="hero__fact"><b>Free</b>home<br>delivery</div>
+      </div>
+    </div>
+    <div class="hero__art">
+      <!-- Cow + calf + fence scene, echoing the farm's mark -->
+      <svg viewBox="0 0 520 420" role="img" aria-label="A cow and calf standing by a pasture fence">
+        <defs>
+          <linearGradient id="hideGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#C9A87C"/><stop offset="1" stop-color="#5A3A22"/>
+          </linearGradient>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#EBDFC6"/><stop offset="1" stop-color="#F2EAD9"/>
+          </linearGradient>
+        </defs>
+        <circle cx="260" cy="210" r="200" fill="url(#skyGrad)"/>
+        <circle cx="380" cy="120" r="44" fill="#EAD9B4" opacity=".7"/>
+        <!-- ground -->
+        <path d="M60 340 Q260 300 460 340 V420 H60 Z" fill="#5A6B3B" opacity=".22"/>
+        <line x1="60" y1="338" x2="460" y2="338" stroke="#5A6B3B" stroke-width="2" opacity=".4"/>
+        <!-- fence -->
+        <g stroke="#6E4527" stroke-width="7" stroke-linecap="round">
+          <line x1="95" y1="250" x2="95" y2="345"/><line x1="160" y1="250" x2="160" y2="345"/>
+          <line x1="78" y1="272" x2="178" y2="266"/><line x1="78" y1="300" x2="178" y2="294"/>
+        </g>
+        <!-- cow -->
+        <g>
+          <path d="M150 250
+            C150 210 175 196 210 196 L360 196
+            C400 196 420 214 420 250 C420 262 414 270 405 274
+            L400 330 L378 330 L374 280 C360 286 250 286 236 280
+            L232 330 L210 330 L206 274 C200 286 188 300 172 300
+            C150 300 150 280 150 268 Z" fill="url(#hideGrad)"/>
+          <!-- head -->
+          <path d="M150 250 C120 250 96 238 86 250 C80 258 84 276 96 282 C110 289 138 286 152 272 Z" fill="#6E4527"/>
+          <path d="M150 252 C128 252 110 244 100 252 C112 262 138 266 152 258 Z" fill="#3A2A1A" opacity=".5"/>
+          <path d="M150 214 l-12 -22 l20 8 Z" fill="#6E4527"/>
+          <ellipse cx="112" cy="244" rx="2.6" ry="3.2" fill="#2a1d10"/>
+          <path d="M360 200 l16 -30 l8 30 Z" fill="#6E4527"/>
+        </g>
+        <!-- calf -->
+        <g>
+          <path d="M300 312
+            C300 292 312 285 330 285 L398 285
+            C418 285 428 294 428 312 C428 318 425 322 420 324
+            L417 366 L406 366 L404 330 C396 333 342 333 334 330
+            L331 366 L320 366 L318 326 C314 332 308 338 300 338
+            C290 338 290 328 290 322 Z" fill="#8B5E3C"/>
+          <path d="M300 312 C285 312 274 306 268 312 C262 318 266 330 274 333 C284 336 296 332 302 324 Z" fill="#5A3A22"/>
+          <ellipse cx="280" cy="316" rx="2.2" ry="2.6" fill="#2a1d10"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TRUST STRIP ===================== -->
+<div class="strip">
+  <div class="wrap strip__in">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/></svg>No hormones or antibiotics</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18c4-1 5-6 16-9-3 9-9 11-13 10"/><path d="M4 20c2-4 6-6 12-7"/></svg>100% organic feed</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h13v10H3z"/><path d="M16 10h4l1 3v4h-5z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Free home delivery</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Dry-aged 7&ndash;10 days</span>
+  </div>
+</div>
+
+<!-- ===================== STORY ===================== -->
+<section class="pad story" id="beef">
+  <div class="wrap">
+    <div class="head"><div class="eyebrow">Our beef</div><h2>You know exactly what's in it, because we raised it.</h2></div>
+    <div class="story__grid">
+      <div class="story__copy">
+        <p class="quote">&ldquo;We're not willing to trade quality for speed or convenience.&rdquo;</p>
+        <p>All of our beef is born on our farm and raised on 100% certified organic feed. While the grass is green, the cattle graze on pasture using rotational grazing and sustainable practices; in winter they're fed organic hay and corn. They always have fresh, clean water — and never any antibiotics, vaccines, hormones, or steroids.</p>
+        <p>Pasture-fed beef is naturally leaner — when you brown the ground beef, it isn't swimming in grease. Because the animals choose their own diet from a diverse organic pasture, they're healthier, and the meat is higher in heart-healthy Omega-3s. We deliver every animal to a family-owned butcher ourselves, so we know with certainty what's in your meat.</p>
+        <div class="tags">
+          <span class="tag">Born &amp; raised here</span><span class="tag">Rotational grazing</span>
+          <span class="tag">Dry-aged</span><span class="tag">Wrapped, labeled &amp; frozen</span><span class="tag">High in Omega-3s</span>
+        </div>
+      </div>
+      <div class="story__card">
+        <div class="eyebrow" style="margin-bottom:1rem">From pasture to freezer</div>
+        <div class="spec"><span>Raised on</span><b>100% certified organic feed</b></div>
+        <div class="spec"><span>Added hormones</span><b>None, ever</b></div>
+        <div class="spec"><span>Dry-aged</span><b>7&ndash;10 days</b></div>
+        <div class="spec"><span>Packaged</span><b>Wrapped, labeled by cut, frozen</b></div>
+        <div class="spec"><span>Delivery</span><b>Free, to your home</b></div>
+        <div class="spec"><span>Freezer space (half)</span><b>~15 cu. ft.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRICING ===================== -->
+<section class="pad" id="pricing">
+  <div class="wrap">
+    <div class="head center"><div class="eyebrow">Pricing</div><h2>Simple, by the pound.</h2>
+      <p>Priced on <b>hanging weight</b> (the weight after butchering). Every price includes the processing fee, delivery to the butcher, and free delivery to your home. The final balance is set once the animal is processed, and is due at delivery.</p></div>
+    <div class="price__grid" id="priceGrid"><!-- rendered from config --></div>
+    <p class="price__example" id="priceExample"></p>
+  </div>
+</section>
+
+<!-- ===================== AVAILABILITY ===================== -->
+<section class="pad story" id="availability">
+  <div class="wrap">
+    <div class="head"><div class="eyebrow">Availability</div><h2>What's available now.</h2>
+      <p>Reserve your share by sending an order below — we'll call to confirm everything before the butcher makes a single cut.</p></div>
+    <div class="avail__grid" id="availGrid"><!-- rendered from config --></div>
+  </div>
+</section>
+
+<!-- ===================== ORDER BUILDER ===================== -->
+<section class="pad builder" id="order">
+  <div class="wrap">
+    <div class="head"><div class="eyebrow">Build your order</div><h2>Choose your cuts on the cow.</h2>
+      <p>Pick how much beef you'd like, then tap each part of the animal to choose your cuts. Anything you don't pick is ground into hamburger. The butcher will call to confirm before cutting.</p></div>
+
+    <!-- STEP 1 — amount -->
+    <div class="step">
+      <div class="step__label"><i>1</i> How much beef?</div>
+      <div class="amount" id="amountGroup" role="radiogroup" aria-label="Amount of beef">
+        <div class="amount__opt">
+          <input type="radio" name="amount" id="amtHalf" value="Half">
+          <label for="amtHalf">
+            <div class="amount__name">Half</div>
+            <div class="amount__price" id="amtHalfPrice"></div>
+            <div class="amount__meta" id="amtHalfMeta"></div>
+          </label>
+        </div>
+        <div class="amount__opt">
+          <input type="radio" name="amount" id="amtQuarter" value="Quarter">
+          <label for="amtQuarter">
+            <div class="amount__name">Quarter</div>
+            <div class="amount__price" id="amtQuarterPrice"></div>
+            <div class="amount__meta" id="amtQuarterMeta"></div>
+          </label>
+        </div>
+      </div>
+      <div class="amount__est" id="amountEst" aria-live="polite"></div>
+    </div>
+
+    <!-- STEP 2 — the cut tool -->
+    <div class="step">
+      <div class="step__label"><i>2</i> Pick your cuts</div>
+      <div class="tool" id="tool" hidden>
+        <div>
+          <div class="diagram">
+            <svg id="cowSvg" viewBox="0 0 640 380" role="group" aria-label="Beef cuts diagram — select a section">
+              <!-- silhouette base -->
+              <path d="M40 168 C58 150 70 120 88 104 C98 96 108 100 112 112 C118 100 126 96 134 110 C138 124 132 138 150 150
+                       L470 150 C500 150 520 120 540 130 L548 150 C556 152 560 160 556 172 L544 196
+                       C548 220 540 250 510 256 L505 330 L482 330 L478 270
+                       C460 280 250 280 232 270 L228 330 L206 330 L202 262
+                       C190 270 176 268 168 256 C150 258 60 250 44 230 C30 212 28 184 40 168 Z"
+                       fill="#6E4527" opacity=".25"/>
+              <!-- non-interactive belly / plate / flank (ground & trim) -->
+              <path d="M232 232 L478 232 L476 268 C460 278 250 278 234 268 Z" fill="#C9A87C" opacity=".55"/>
+              <text x="356" y="258" class="region-label" style="fill:#6E4527;font-size:11px">Trim &rarr; ground</text>
+              <!-- interactive regions -->
+              <g id="regions">
+                <path class="cut-region" data-region="chuck" tabindex="0" role="button" aria-label="Chuck — front shoulder"
+                      d="M152 152 L236 150 L240 232 L206 236 L172 230 L160 210 Z"/>
+                <path class="cut-region" data-region="brisket" tabindex="0" role="button" aria-label="Brisket — chest"
+                      d="M172 232 L232 232 L234 268 C214 270 196 264 188 256 C178 250 172 244 172 232 Z"/>
+                <path class="cut-region" data-region="rib" tabindex="0" role="button" aria-label="Rib"
+                      d="M240 150 L336 149 L338 230 L242 232 Z"/>
+                <path class="cut-region" data-region="loin" tabindex="0" role="button" aria-label="Loin — back"
+                      d="M338 149 L438 150 L440 228 L340 230 Z"/>
+                <path class="cut-region" data-region="round" tabindex="0" role="button" aria-label="Round — hindquarter"
+                      d="M438 150 C476 148 500 124 520 132 L528 152 C536 156 538 166 532 176 L522 200 C526 224 516 250 490 256 L478 250 L442 228 Z"/>
+                <path class="cut-region" data-region="shank" tabindex="0" role="button" aria-label="Shank — legs"
+                      d="M206 256 L230 250 L226 332 L204 332 Z M478 252 L508 252 L503 332 L481 332 Z"/>
+              </g>
+              <!-- region center labels -->
+              <g id="regionLabels"></g>
+              <!-- completion checks -->
+              <g id="regionChecks"></g>
+              <!-- head silhouette (non-interactive, drawn over) -->
+              <path d="M40 168 C58 150 70 120 88 104 C98 96 108 100 112 112 C118 100 126 96 134 110 C138 124 132 138 150 150 C150 150 120 150 96 168 C60 172 44 196 44 196 C30 188 30 180 40 168 Z" fill="#5A3A22"/>
+              <ellipse cx="62" cy="182" rx="3" ry="3.6" fill="#241810"/>
+            </svg>
+            <div class="diagram__legend">
+              <span><i class="dot" style="background:var(--leather)"></i> To choose</span>
+              <span><i class="dot" style="background:var(--tan)"></i> Open</span>
+              <span><i class="dot" style="background:var(--pasture)"></i> Done</span>
+            </div>
+            <div class="extras" id="extraChips"><!-- ground & specialty chips --></div>
+          </div>
+        </div>
+        <!-- drawer -->
+        <div class="drawer" id="drawer" aria-live="polite">
+          <div class="drawer__empty" id="drawerEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Tap a section of the cow<br>to choose its cuts.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- progress + submit -->
+    <div id="finishBlock" hidden>
+      <div class="progress">
+        <div class="progress__top"><span>Sections done</span><span id="progText">0 of 0</span></div>
+        <div class="bar"><i id="progBar" style="width:0%"></i></div>
+      </div>
+      <div class="builder__actions">
+        <button class="btn btn--go btn--lg" id="reviewBtn" disabled>Review &amp; submit order</button>
+        <button class="btn btn--ghost" id="grindRest" type="button">No strong preferences — grind anything I don't pick</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ===================== REVIEW MODAL ===================== -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="sheet">
+    <div class="sheet__head"><h3 id="modalTitle">Review your order</h3>
+      <button class="sheet__close" id="modalClose" aria-label="Close">&times;</button></div>
+    <div class="sheet__body" id="modalBody">
+      <div class="ticket" id="ticket"></div>
+      <form id="orderForm" novalidate>
+        <div class="field"><label for="fName">Name</label><input id="fName" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="fAddr">Address</label><input id="fAddr" name="address" autocomplete="address-line1" required></div>
+        <div class="field"><label for="fCity">City, State, ZIP</label><input id="fCity" name="city_state_zip" autocomplete="address-level2" required></div>
+        <div class="field field--row">
+          <div><label for="fPhone">Phone</label><input id="fPhone" name="phone" type="tel" autocomplete="tel" required></div>
+          <div><label for="fEmail">Email</label><input id="fEmail" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div class="field"><label for="fNotes">Special requests for the butcher (optional)</label><textarea id="fNotes" name="special_requests" placeholder="Any specific cut preferences, thickness, package sizes…"></textarea></div>
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+      </form>
+    </div>
+    <div class="sheet__foot">
+      <span class="form-msg" id="formMsg" aria-live="polite"></span>
+      <span style="display:flex;gap:.7rem;flex-wrap:wrap">
+        <button class="btn btn--ghost" id="backBtn" type="button">Keep editing</button>
+        <button class="btn btn--go" id="submitBtn" type="button">Submit order</button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <h4>Wholesome Family Organics</h4>
+      <p>Organically raised beef &amp; grains, from our family's farm to your table. Thank you for supporting your local organic family farm.</p>
+    </div>
+    <div>
+      <div class="foot__lbl">Visit / Write</div>
+      <p id="footAddr"></p>
+    </div>
+    <div>
+      <div class="foot__lbl">Get in touch</div>
+      <p><a id="footPhone" href="#"></a><br><a id="footEmail" href="#"></a></p>
+      <p style="margin-top:.6rem"><a href="#order" style="color:var(--tan)">Build your order &rarr;</a></p>
+    </div>
+  </div>
+  <div class="wrap foot__bottom">
+    <span>Ryan &amp; Amanda Steichen &middot; Kimball, Minnesota</span>
+    <span>Payment &amp; deposit handled directly with the farm.</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var CFG = window.WFO_CONFIG || {};
+  var P = CFG.pricing || {};
+  var $ = function(s,c){return (c||document).querySelector(s);};
+  var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
+  var money = function(n){return "$" + Math.round(n).toLocaleString("en-US");};
+
+  /* ---------- cut data model (maps to the farm's order form) ---------- */
+  var REGIONS = [
+    {id:"chuck", name:"Chuck", sub:"Front shoulder", center:[196,196], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
+      cuts:[{id:"chuck_roast",name:"Chuck Roast"},{id:"arm_roast",name:"Arm Roast"},{id:"stew",name:"Stew Meat",lbs:true}]},
+    {id:"rib", name:"Rib", sub:"Upper middle", center:[289,191], blurb:"The tender rib section — where rib-eye steaks come from.",
+      cuts:[{id:"ribeye",name:"Rib-eye Steak"},{id:"short_ribs",name:"Short Ribs"}]},
+    {id:"loin", name:"Loin", sub:"Upper back", center:[389,190], blurb:"The most tender part of the animal — the premium steaks.",
+      cuts:[{id:"tbone",name:"T-Bone Steak"},{id:"sirloin",name:"Sirloin Steak"}]},
+    {id:"round", name:"Round", sub:"Hindquarter", center:[485,196], blurb:"Lean rear muscle — great for roasts.",
+      cuts:[{id:"rump_round_roast",name:"Rump / Round Roast"}]},
+    {id:"brisket", name:"Brisket", sub:"Chest", center:[200,250], blurb:"Lower chest — low-and-slow favorite.",
+      cuts:[{id:"brisket",name:"Brisket"}]},
+    {id:"shank", name:"Shank", sub:"Legs", center:[217,283], blurb:"From the legs — rich, marrow-filled soup bones.",
+      cuts:[{id:"soup_bones",name:"Soup Bones"}]},
+    {id:"specialty", name:"Specialty", sub:"Organ meats", center:null, blurb:"Traditional, nutrient-dense organ cuts. Optional.",
+      cuts:[{id:"liver",name:"Liver"},{id:"tongue",name:"Tongue"}]},
+    {id:"ground", name:"Ground Beef", sub:"From the whole animal", center:null, blurb:"Everything you don't pick as a cut becomes lean ground beef. Choose your package size.",
+      cuts:[{id:"hamburger",name:"Ground Beef (Hamburger)",pkg:["1 lb","1½ lb","2 lb"],defaultOn:true}]}
+  ];
+
+  /* ---------- state ---------- */
+  var state = { amount:null, sections:{} };
+  REGIONS.forEach(function(r){
+    var cuts={};
+    r.cuts.forEach(function(c){ cuts[c.id]={on:!!c.defaultOn, pkg:c.pkg?c.pkg[0]:null, lbs:c.lbs?"":null}; });
+    state.sections[r.id]={complete:false, cuts:cuts};
+  });
+  var activeRegion=null;
+
+  /* ===================== render: pricing ===================== */
+  function inv(type){
+    var list=(CFG.inventory||[]).filter(function(b){return b.type===type;});
+    var total=0,claimed=0,next=null;
+    list.forEach(function(b){ total+=b.total; claimed+=b.claimed;
+      if(b.total-b.claimed>0 && (!next||b.readyDate<next)) next=b.readyDate; });
+    return {total:total,claimed:claimed,remaining:total-claimed,next:next,batches:list};
+  }
+  function fmtDate(d){ if(!d) return null; var p=d.split("-");
+    var m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return m[parseInt(p[1],10)-1]+" "+parseInt(p[2],10)+", "+p[0]; }
+
+  function renderPricing(){
+    var rows=[
+      {type:"Half", rate:P.halfPricePerLb, dep:P.halfDeposit, lo:P.halfWeightLow, hi:P.halfWeightHigh},
+      {type:"Quarter", rate:P.quarterPricePerLb, dep:P.quarterDeposit, lo:P.quarterWeightLow, hi:P.quarterWeightHigh}
+    ];
+    $("#priceGrid").innerHTML = rows.map(function(r){
+      var est = money(r.rate*r.lo)+"–"+money(r.rate*r.hi);
+      var note = r.dep>0 ? '<div class="pcard__note">A '+money(r.dep)+' deposit is due with your order for a '+r.type.toLowerCase()+'.</div>' : '';
+      return '<div class="pcard">'+
+        '<div class="pcard__type">'+r.type+' Beef</div>'+
+        '<div class="pcard__rate">$'+r.rate.toFixed(2)+'<small>/lb</small></div>'+
+        '<div class="pcard__unit">Hanging weight</div>'+
+        '<ul>'+
+          '<li>Processing fee included</li>'+
+          '<li>Delivery to the butcher included</li>'+
+          '<li>Free delivery to your home</li>'+
+          '<li>Typical hanging weight '+r.lo+'–'+r.hi+' lbs</li>'+
+          '<li>Est. total '+est+' (final set by weight)</li>'+
+        '</ul>'+ note +
+      '</div>';
+    }).join("");
+    $("#priceExample").innerHTML = "Yield is roughly "+P.yieldLowPct+"–"+P.yieldHighPct+
+      "% of hanging weight in finished cuts. <b>Example:</b> $"+P.quarterPricePerLb.toFixed(2)+
+      " &times; 180 lbs = <b>"+money(P.quarterPricePerLb*180)+"</b> for a quarter.";
+  }
+
+  /* ===================== render: availability ===================== */
+  function renderAvailability(){
+    var list=CFG.inventory||[];
+    if(!list.length){ $("#availGrid").innerHTML='<p class="acard__note">No batches are listed right now — send an order and we’ll add you to the list for the next one.</p>'; return; }
+    $("#availGrid").innerHTML = list.map(function(b){
+      var rem=b.total-b.claimed, out=rem<=0, pct=Math.min(100,Math.round(b.claimed/b.total*100));
+      return '<div class="acard'+(out?' is-out':'')+'">'+
+        '<div class="acard__top"><span class="acard__type">'+b.type+'</span>'+
+          '<span class="acard__date">Ready '+(fmtDate(b.readyDate)||"TBD")+'</span></div>'+
+        '<div class="acard__count">'+(out?'<b>Fully spoken for</b>':'<b>'+rem+'</b> of '+b.total+' available')+'</div>'+
+        '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+        '<div class="acard__note">'+(out?(CFG.soldOutMessage||"More available soon."):(b.note||(b.claimed+' of '+b.total+' claimed')))+'</div>'+
+      '</div>';
+    }).join("");
+  }
+
+  /* ===================== amount step ===================== */
+  function setupAmount(){
+    function fill(type,priceEl,metaEl){
+      var rate = type==="Half"?P.halfPricePerLb:P.quarterPricePerLb;
+      var dep = type==="Half"?P.halfDeposit:P.quarterDeposit;
+      var i=inv(type);
+      $(priceEl).textContent = "$"+rate.toFixed(2)+" / lb hanging weight";
+      var bits=[];
+      if(dep>0) bits.push(money(dep)+" deposit");
+      if(i.remaining>0 && i.next) bits.push(i.remaining+" available · ready "+fmtDate(i.next));
+      else if(i.total>0) bits.push("Currently spoken for — join the next batch");
+      $(metaEl).textContent = bits.join("  ·  ");
+    }
+    fill("Half","#amtHalfPrice","#amtHalfMeta");
+    fill("Quarter","#amtQuarterPrice","#amtQuarterMeta");
+
+    $$("input[name=amount]").forEach(function(r){
+      r.addEventListener("change",function(){
+        state.amount=r.value;
+        var rate = r.value==="Half"?P.halfPricePerLb:P.quarterPricePerLb;
+        var lo=r.value==="Half"?P.halfWeightLow:P.quarterWeightLow;
+        var hi=r.value==="Half"?P.halfWeightHigh:P.quarterWeightHigh;
+        var dep=r.value==="Half"?P.halfDeposit:P.quarterDeposit;
+        $("#amountEst").innerHTML="Estimated total for a "+r.value.toLowerCase()+": <b>"+
+          money(rate*lo)+"–"+money(rate*hi)+"</b>"+(dep>0?" · "+money(dep)+" deposit with order":"")+
+          ". Final price is set by actual hanging weight.";
+        $("#tool").hidden=false;
+        $("#finishBlock").hidden=false;
+        updateProgress();
+      });
+    });
+  }
+
+  /* ===================== cut tool ===================== */
+  function buildLabelsAndChecks(){
+    var lbls="", chks="";
+    REGIONS.forEach(function(r){
+      if(!r.center) return;
+      lbls += '<text class="region-label" x="'+r.center[0]+'" y="'+(r.center[1]+4)+'" data-lbl="'+r.id+'">'+r.name.toUpperCase()+'</text>';
+      chks += '<g class="region-check" data-check="'+r.id+'" transform="translate('+(r.center[0])+','+(r.center[1]-20)+')">'+
+              '<circle r="11" fill="#3A2A1A"/><path d="M-5 0 l3.5 4 L6 -4" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>';
+    });
+    $("#regionLabels").innerHTML=lbls;
+    $("#regionChecks").innerHTML=chks;
+  }
+
+  function buildExtraChips(){
+    var html="";
+    REGIONS.filter(function(r){return !r.center;}).forEach(function(r){
+      html += '<button class="chip" type="button" data-region="'+r.id+'">'+r.name+'</button>';
+    });
+    $("#extraChips").innerHTML=html;
+  }
+
+  function openRegion(id){
+    activeRegion=id;
+    var r=REGIONS.filter(function(x){return x.id===id;})[0];
+    var s=state.sections[id];
+    // highlight
+    $$(".cut-region").forEach(function(p){ p.classList.toggle("is-active", p.getAttribute("data-region")===id); });
+    $$(".chip").forEach(function(c){ c.classList.toggle("is-active", c.getAttribute("data-region")===id); });
+
+    var rows = r.cuts.map(function(c){
+      var cs=s.cuts[c.id];
+      var opt="";
+      if(c.pkg){
+        opt='<div class="cut__opt" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>Package size</label><select data-pkg="'+c.id+'">'+
+            c.pkg.map(function(p){return '<option'+(p===cs.pkg?' selected':'')+'>'+p+'</option>';}).join("")+'</select></div>';
+      } else if(c.lbs){
+        opt='<div class="cut__opt" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>About how many pounds?</label><input type="number" min="0" step="1" inputmode="numeric" placeholder="e.g. 10" data-lbs="'+c.id+'" value="'+(cs.lbs||"")+'"></div>';
+      }
+      return '<div><div class="cut'+(cs.on?' on':'')+'" data-cut="'+c.id+'" role="checkbox" tabindex="0" aria-checked="'+cs.on+'">'+
+        '<span class="cut__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>'+
+        '<span class="cut__name">'+c.name+'</span></div>'+opt+'</div>';
+    }).join("");
+
+    $("#drawer").innerHTML =
+      '<div class="panel">'+
+        '<div class="panel__type">'+(r.sub||"")+'</div>'+
+        '<h3>'+r.name+'</h3>'+
+        '<p class="panel__blurb">'+r.blurb+'</p>'+
+        rows+
+        '<div class="panel__actions">'+
+          '<button class="btn btn--go" type="button" data-save>Save section</button>'+
+          (id==="ground"?"":'<button class="btn btn--ghost" type="button" data-skip>Skip — grind it</button>')+
+        '</div>'+
+      '</div>';
+
+    // wire cut toggles
+    $$(".cut",$("#drawer")).forEach(function(el){
+      function toggle(){
+        var cid=el.getAttribute("data-cut");
+        var cs=s.cuts[cid]; cs.on=!cs.on;
+        el.classList.toggle("on",cs.on); el.setAttribute("aria-checked",cs.on);
+        var optEl=$('[data-opt="'+cid+'"]',$("#drawer")); if(optEl) optEl.hidden=!cs.on;
+      }
+      el.addEventListener("click",toggle);
+      el.addEventListener("keydown",function(e){ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} });
+    });
+    $$("[data-pkg]",$("#drawer")).forEach(function(sel){ sel.addEventListener("change",function(){ s.cuts[sel.getAttribute("data-pkg")].pkg=sel.value; }); });
+    $$("[data-lbs]",$("#drawer")).forEach(function(inp){ inp.addEventListener("input",function(){ s.cuts[inp.getAttribute("data-lbs")].lbs=inp.value; }); });
+    $("[data-save]",$("#drawer")).addEventListener("click",function(){ completeRegion(id); });
+    var skip=$("[data-skip]",$("#drawer")); if(skip) skip.addEventListener("click",function(){
+      r.cuts.forEach(function(c){ s.cuts[c.id].on=false; }); completeRegion(id);
+    });
+  }
+
+  function completeRegion(id){
+    state.sections[id].complete=true;
+    var p=$('.cut-region[data-region="'+id+'"]'); if(p) p.classList.remove("is-active");
+    $$('.cut-region[data-region="'+id+'"]').forEach(function(el){el.classList.add("is-done");});
+    var chk=$('[data-check="'+id+'"]'); if(chk) chk.classList.add("show");
+    var chip=$('.chip[data-region="'+id+'"]'); if(chip){chip.classList.remove("is-active");chip.classList.add("is-done");}
+    closeDrawer();
+    updateProgress();
+    // gently nudge to next undone region
+    var next=REGIONS.filter(function(r){return !state.sections[r.id].complete;})[0];
+    if(next) { /* leave for user */ }
+  }
+
+  function closeDrawer(){
+    activeRegion=null;
+    $$(".cut-region").forEach(function(p){p.classList.remove("is-active");});
+    $$(".chip").forEach(function(c){c.classList.remove("is-active");});
+    $("#drawer").innerHTML=
+      '<div class="drawer__empty">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'+
+      'Tap a section of the cow<br>to choose its cuts.</div>';
+  }
+
+  function updateProgress(){
+    var total=REGIONS.length;
+    var done=REGIONS.filter(function(r){return state.sections[r.id].complete;}).length;
+    $("#progText").textContent=done+" of "+total;
+    $("#progBar").style.width=Math.round(done/total*100)+"%";
+    var ready = state.amount && done===total;
+    $("#reviewBtn").disabled=!ready;
+  }
+
+  function wireDiagram(){
+    $$(".cut-region").forEach(function(p){
+      var id=p.getAttribute("data-region");
+      p.addEventListener("click",function(){ openRegion(id); });
+      p.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();openRegion(id);} });
+    });
+    $$(".chip").forEach(function(c){ c.addEventListener("click",function(){ openRegion(c.getAttribute("data-region")); }); });
+    $("#grindRest").addEventListener("click",function(){
+      REGIONS.forEach(function(r){ if(!state.sections[r.id].complete) completeRegion(r.id); });
+    });
+  }
+
+  /* ===================== review + summary ===================== */
+  function orderLines(){
+    // returns array of {section, items:[strings]}
+    return REGIONS.map(function(r){
+      var s=state.sections[r.id], items=[];
+      r.cuts.forEach(function(c){
+        var cs=s.cuts[c.id];
+        if(cs.on){
+          var label=c.name;
+          if(c.pkg) label+=" ("+cs.pkg+" packages)";
+          if(c.lbs) label+=cs.lbs?(" ("+cs.lbs+" lbs)"):" (amount TBD)";
+          items.push(label);
+        }
+      });
+      return {section:r.name, items:items};
+    });
+  }
+
+  function buildTicket(){
+    var lines=orderLines();
+    var html='<div class="ticket__hd"><b>'+(CFG.businessName||"Beef Order")+'</b><span>'+(state.amount||"")+' beef</span></div>';
+    var rate = state.amount==="Half"?P.halfPricePerLb:P.quarterPricePerLb;
+    var dep = state.amount==="Half"?P.halfDeposit:P.quarterDeposit;
+    html+='<div class="ticket__row"><span>Amount</span><span>'+state.amount+' &middot; $'+(rate?rate.toFixed(2):"")+'/lb hanging wt</span></div>';
+    if(dep>0) html+='<div class="ticket__row"><span>Deposit with order</span><span>'+money(dep)+'</span></div>';
+    lines.forEach(function(l){
+      html+='<div class="ticket__sec">'+l.section+'</div>';
+      if(l.items.length){ l.items.forEach(function(it){ html+='<div class="ticket__row"><span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>'+it+'</span><span></span></div>'; }); }
+      else html+='<div class="ticket__none">Grind into hamburger</div>';
+    });
+    $("#ticket").innerHTML=html;
+  }
+
+  /* ===================== PDF ===================== */
+  function buildPDF(data){
+    var jsPDF = window.jspdf && window.jspdf.jsPDF; if(!jsPDF) return null;
+    var doc=new jsPDF({unit:"pt",format:"letter"});
+    var W=612, x=54, y=64;
+    doc.setFillColor(58,42,26); doc.rect(0,0,W,90,"F");
+    doc.setTextColor(242,234,217); doc.setFont("helvetica","bold"); doc.setFontSize(20);
+    doc.text(CFG.businessName||"Beef Order", x, 46);
+    doc.setFont("courier","normal"); doc.setFontSize(9);
+    doc.text("BEEF PURCHASE ORDER", x, 64);
+    doc.text((CFG.businessAddress||"")+"  ·  "+(CFG.businessPhone||""), x, 78);
+    y=120; doc.setTextColor(40,28,16);
+    function H(t){ doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59); doc.text(t.toUpperCase(),x,y); y+=16; doc.setTextColor(40,28,16); }
+    function L(a,b){ doc.setFont("helvetica","normal"); doc.setFontSize(11);
+      doc.text(String(a),x,y); if(b!=null){doc.setFont("helvetica","bold");doc.text(String(b),x+150,y);} y+=17; }
+    H("Customer");
+    L("Name:",data.name); L("Address:",data.address); L("City/State/ZIP:",data.city_state_zip);
+    L("Phone:",data.phone); L("Email:",data.email);
+    y+=6; var rate=state.amount==="Half"?P.halfPricePerLb:P.quarterPricePerLb;
+    var dep=state.amount==="Half"?P.halfDeposit:P.quarterDeposit;
+    H("Order");
+    L("Amount:",state.amount+" beef  ($"+(rate?rate.toFixed(2):"")+"/lb hanging weight)");
+    if(dep>0) L("Deposit:",money(dep)+" due with order");
+    y+=6; H("Cuts requested");
+    orderLines().forEach(function(l){
+      doc.setFont("courier","bold"); doc.setFontSize(9); doc.text(l.section,x,y); y+=14;
+      doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
+      if(l.items.length){ l.items.forEach(function(it){ doc.text("•  "+it, x+12, y); y+=15; }); }
+      else { doc.setTextColor(120,90,60); doc.text("Grind into hamburger", x+12, y); doc.setTextColor(40,28,16); y+=15; }
+      y+=3; if(y>720){ doc.addPage(); y=64; }
+    });
+    if(data.special_requests){ y+=6; H("Special requests"); doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
+      doc.splitTextToSize(data.special_requests,W-2*x).forEach(function(ln){ doc.text(ln,x,y); y+=15; }); }
+    doc.setFont("courier","normal"); doc.setFontSize(8); doc.setTextColor(120,90,60);
+    doc.text("Anything not selected is ground into hamburger. The butcher will call to confirm before cutting.", x, 760);
+    return doc;
+  }
+
+  function orderText(data){
+    var t=(CFG.businessName||"")+" — Beef Order\n\n";
+    t+="Amount: "+state.amount+" beef\n";
+    t+="Name: "+data.name+"\nAddress: "+data.address+"\nCity/State/ZIP: "+data.city_state_zip+"\nPhone: "+data.phone+"\nEmail: "+data.email+"\n\nCUTS REQUESTED:\n";
+    orderLines().forEach(function(l){ t+="\n"+l.section+":\n";
+      if(l.items.length) l.items.forEach(function(it){t+="  - "+it+"\n";}); else t+="  - Grind into hamburger\n"; });
+    if(data.special_requests) t+="\nSpecial requests: "+data.special_requests+"\n";
+    t+="\n(Anything not selected is ground into hamburger. Butcher will call to confirm before cutting.)";
+    return t;
+  }
+
+  /* ===================== submit ===================== */
+  function validate(data){
+    if(!data.name) return "Please add your name.";
+    if(!data.address) return "Please add your address.";
+    if(!data.city_state_zip) return "Please add your city, state, and ZIP.";
+    if(!data.phone) return "Please add a phone number.";
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) return "Please add a valid email.";
+    return null;
+  }
+
+  function submit(){
+    var form=$("#orderForm");
+    var data={ name:form.name.value.trim(), address:form.address.value.trim(),
+      city_state_zip:form.city_state_zip.value.trim(), phone:form.phone.value.trim(),
+      email:form.email.value.trim(), special_requests:form.special_requests.value.trim() };
+    var err=validate(data);
+    var msg=$("#formMsg");
+    if(err){ msg.className="form-msg err"; msg.textContent=err; return; }
+
+    var key=CFG.web3formsAccessKey||"";
+    var doc=buildPDF(data);
+    var pdfBlob = doc ? doc.output("blob") : null;
+
+    if(!key || key.indexOf("PASTE")===0){
+      // No key yet — let the customer download their order so nothing is lost.
+      msg.className="form-msg err";
+      msg.innerHTML="Online sending isn't set up yet. Your order PDF will download — please email it to "+(CFG.businessEmail||"the farm")+".";
+      if(doc) doc.save("beef-order.pdf");
+      return;
+    }
+
+    msg.className="form-msg"; msg.textContent="Sending your order…";
+    $("#submitBtn").disabled=true;
+
+    var fd=new FormData();
+    fd.append("access_key",key);
+    fd.append("subject","New Beef Order — "+data.name+" ("+state.amount+")");
+    fd.append("from_name",(CFG.businessName||"Farm")+" website");
+    fd.append("Customer",data.name);
+    fd.append("Phone",data.phone);
+    fd.append("Email",data.email);
+    fd.append("Address",data.address+", "+data.city_state_zip);
+    fd.append("Amount",state.amount+" beef");
+    fd.append("Order",orderText(data));
+    if(data.special_requests) fd.append("Special requests",data.special_requests);
+    fd.append("botcheck", form.botcheck.checked ? "1":"");
+    if(pdfBlob) fd.append("attachment", pdfBlob, "beef-order-"+data.name.replace(/\W+/g,"_")+".pdf");
+
+    fetch("https://api.web3forms.com/submit",{method:"POST",body:fd})
+      .then(function(r){return r.json();})
+      .then(function(res){
+        if(res.success){ showSuccess(doc); }
+        else { throw new Error(res.message||"send failed"); }
+      })
+      .catch(function(){
+        msg.className="form-msg err";
+        msg.innerHTML="Couldn't send automatically. Your order PDF will download — please email it to "+(CFG.businessEmail||"the farm")+".";
+        if(doc) doc.save("beef-order.pdf");
+        $("#submitBtn").disabled=false;
+      });
+  }
+
+  function showSuccess(doc){
+    $("#modalBody").innerHTML=
+      '<div class="done-state">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>'+
+      '<h3>Order sent — thank you!</h3>'+
+      '<p>Your order is on its way to '+(CFG.businessName||"the farm")+'. We’ll call to confirm everything before the butcher makes a cut. '+
+      'Payment and any deposit are handled directly with the farm.</p>'+
+      '<button class="btn btn--ghost" id="dlBtn" type="button" style="margin-top:.5rem">Download a copy (PDF)</button>'+
+      '</div>';
+    $("#modalTitle").textContent="All set";
+    $(".sheet__foot").style.display="none";
+    if(doc) $("#dlBtn").addEventListener("click",function(){ doc.save("beef-order.pdf"); });
+  }
+
+  /* ===================== modal wiring ===================== */
+  function openModal(){ buildTicket(); $("#modal").classList.add("open"); document.body.style.overflow="hidden"; setTimeout(function(){$("#fName").focus();},60); }
+  function closeModal(){ $("#modal").classList.remove("open"); document.body.style.overflow=""; }
+
+  /* ===================== footer ===================== */
+  function renderFooter(){
+    $("#footAddr").innerHTML=(CFG.businessAddress||"").replace(", ","<br>").replace(", ","<br>");
+    var ph=$("#footPhone"); ph.textContent=CFG.businessPhone||""; ph.href="tel:"+(CFG.businessPhone||"").replace(/\D/g,"");
+    var em=$("#footEmail"); em.textContent=CFG.businessEmail||""; em.href="mailto:"+(CFG.businessEmail||"");
+  }
+
+  /* ===================== init ===================== */
+  renderPricing(); renderAvailability(); renderFooter();
+  setupAmount(); buildLabelsAndChecks(); buildExtraChips(); wireDiagram(); updateProgress();
+
+  $("#reviewBtn").addEventListener("click",function(){ if(!$("#reviewBtn").disabled) openModal(); });
+  $("#modalClose").addEventListener("click",closeModal);
+  $("#backBtn").addEventListener("click",closeModal);
+  $("#submitBtn").addEventListener("click",submit);
+  $("#modal").addEventListener("click",function(e){ if(e.target===$("#modal")) closeModal(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && $("#modal").classList.contains("open")) closeModal(); });
+})();
+</script>
+</body>
+</html>
