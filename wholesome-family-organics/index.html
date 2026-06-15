@@ -491,41 +491,40 @@ section{position:relative}
       <div class="tool" id="tool" hidden>
         <div>
           <div class="diagram">
-            <svg id="cowSvg" viewBox="0 0 600 315" role="group" aria-label="Beef cuts chart — tap a numbered section to choose its cuts">
-              <image href="assets/picker-cow.jpg" x="0" y="0" width="600" height="315" preserveAspectRatio="xMidYMid meet"/>
+            <svg id="cowSvg" viewBox="0 0 600 366" role="group" aria-label="Beef cuts chart — tap a numbered section to choose its cuts">
+              <image href="assets/picker-cow.jpg" x="0" y="0" width="600" height="366" preserveAspectRatio="xMidYMid meet"/>
               <!-- dashed primal dividers -->
               <g stroke="#2A1C10" stroke-width="1.3" stroke-dasharray="3 5" opacity=".5" fill="none" stroke-linecap="round">
-                <path d="M220 15 L218 154"/>
-                <path d="M312 13 L312 152"/>
-                <path d="M382 14 L384 150"/>
-                <path d="M452 16 C462 60 460 110 458 150"/>
-                <path d="M130 156 L500 150"/>
-                <path d="M131 156 L130 205"/>
-                <path d="M322 150 L322 240"/>
-                <path d="M372 150 L370 238"/>
-                <path d="M64 202 L132 200"/>
-                <path d="M370 202 L452 200"/>
+                <path d="M248 46 L248 150"/>
+                <path d="M317 47 L317 148"/>
+                <path d="M379 48 L379 147"/>
+                <path d="M444 50 C450 95 449 125 446 147"/>
+                <path d="M150 150 L490 147"/>
+                <path d="M200 150 L200 248"/>
+                <path d="M348 147 L348 243"/>
+                <path d="M189 248 L237 246"/>
+                <path d="M496 235 L571 235"/>
               </g>
               <!-- clickable region overlays (aligned to the illustration) -->
               <g id="regions">
                 <path class="cut-region" data-region="chuck" tabindex="0" role="button" aria-label="Chuck — front shoulder"
-                      d="M132 40 L220 15 L218 154 L132 158 Z"/>
+                      d="M150 44 L190 32 L248 46 L248 150 L150 154 Z"/>
                 <path class="cut-region" data-region="rib" tabindex="0" role="button" aria-label="Rib"
-                      d="M220 15 L312 13 L312 152 L218 154 Z"/>
+                      d="M248 46 L317 47 L317 148 L248 150 Z"/>
                 <path class="cut-region" data-region="loin" tabindex="0" role="button" aria-label="Loin"
-                      d="M312 13 L382 14 L384 150 L312 152 Z"/>
+                      d="M317 47 L379 48 L379 147 L317 148 Z"/>
                 <path class="cut-region" data-region="sirloin" tabindex="0" role="button" aria-label="Sirloin"
-                      d="M382 14 L452 16 L458 150 L384 150 Z"/>
+                      d="M379 48 L444 50 L446 147 L379 147 Z"/>
                 <path class="cut-region" data-region="round" tabindex="0" role="button" aria-label="Round — hindquarter"
-                      d="M452 16 C490 16 522 30 538 64 C548 96 546 150 532 196 C520 214 505 216 496 210 L458 150 Z"/>
+                      d="M444 50 C476 48 542 54 575 74 C595 94 593 152 580 200 C570 224 540 232 503 230 L446 147 Z"/>
                 <path class="cut-region" data-region="brisket" tabindex="0" role="button" aria-label="Brisket — chest"
-                      d="M66 150 L130 156 L130 205 L70 205 Z"/>
+                      d="M121 150 L196 150 L200 252 L150 256 L123 200 Z"/>
                 <path class="cut-region" data-region="plate" tabindex="0" role="button" aria-label="Plate"
-                      d="M132 156 L320 150 L318 240 L200 248 L136 240 Z"/>
+                      d="M237 150 L348 147 L348 243 L292 250 L240 243 Z"/>
                 <path class="cut-region" data-region="flank" tabindex="0" role="button" aria-label="Flank"
-                      d="M322 150 L372 150 L370 238 L326 240 Z"/>
+                      d="M348 147 L488 148 L486 232 L352 240 Z"/>
                 <path class="cut-region" data-region="shank" tabindex="0" role="button" aria-label="Shank — legs"
-                      d="M64 200 L132 200 L126 312 L70 312 Z M370 200 L452 200 L446 312 L376 312 Z"/>
+                      d="M189 246 L237 246 L233 363 L193 363 Z M496 235 L571 235 L566 360 L500 360 Z"/>
               </g>
               <!-- numbers -->
               <g id="regionLabels"></g>
@@ -625,23 +624,23 @@ section{position:relative}
 
   /* ---------- cut data model (maps to the farm's order form) ---------- */
   var REGIONS = [
-    {id:"chuck", num:1, name:"Chuck", sub:"Front shoulder", center:[176,86], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
+    {id:"chuck", num:1, name:"Chuck", sub:"Front shoulder", center:[198,96], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
       cuts:[{id:"chuck_roast",name:"Chuck Roast"},{id:"arm_roast",name:"Arm Roast"},{id:"seven_bone",name:"7-Bone Roast"},{id:"shoulder_steak",name:"Shoulder Steak"},{id:"stew",name:"Stew Meat",lbs:true}]},
-    {id:"rib", num:2, name:"Rib", sub:"Fore-rib", center:[265,82], blurb:"The tender rib section — home of the rib-eye and prime rib.",
+    {id:"rib", num:2, name:"Rib", sub:"Fore-rib", center:[282,95], blurb:"The tender rib section — home of the rib-eye and prime rib.",
       cuts:[{id:"ribeye",name:"Rib-eye Steak"},{id:"ribeye_roast",name:"Rib-eye Roast (Prime Rib)"},{id:"rib_steak",name:"Rib Steak"},{id:"back_ribs",name:"Back Ribs"}]},
-    {id:"loin", num:3, name:"Loin", sub:"Short loin", center:[348,80], blurb:"The most tender part of the animal — the premium steaks.",
+    {id:"loin", num:3, name:"Loin", sub:"Short loin", center:[348,95], blurb:"The most tender part of the animal — the premium steaks.",
       cuts:[{id:"tbone",name:"T-Bone Steak"},{id:"porterhouse",name:"Porterhouse"},{id:"strip",name:"NY Strip Steak"},{id:"filet",name:"Filet Mignon"}]},
-    {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[418,84], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
+    {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[412,96], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
       cuts:[{id:"top_sirloin",name:"Top Sirloin Steak"},{id:"tritip",name:"Tri-Tip"},{id:"petite_sirloin",name:"Petite Sirloin"}]},
-    {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[495,98], blurb:"Lean rear muscle — great for roasts and lean steaks.",
+    {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[512,120], blurb:"Lean rear muscle — great for roasts and lean steaks.",
       cuts:[{id:"rump_roast",name:"Rump Roast"},{id:"top_round",name:"Top Round"},{id:"bottom_round",name:"Bottom Round"},{id:"eye_round",name:"Eye of Round"},{id:"tip_steak",name:"Sirloin Tip Steak"},{id:"cube_steak",name:"Cube Steak"}]},
-    {id:"brisket", num:6, name:"Brisket", sub:"Chest", center:[99,180], blurb:"Lower chest — the low-and-slow favorite.",
+    {id:"brisket", num:6, name:"Brisket", sub:"Chest", center:[160,205], blurb:"Lower chest — the low-and-slow favorite.",
       cuts:[{id:"brisket",name:"Brisket"}]},
-    {id:"plate", num:7, name:"Plate", sub:"Lower mid-belly", center:[224,198], blurb:"The belly — short ribs and skirt steak.",
+    {id:"plate", num:7, name:"Plate", sub:"Lower mid-belly", center:[293,197], blurb:"The belly — short ribs and skirt steak.",
       cuts:[{id:"short_ribs",name:"Short Ribs"},{id:"skirt",name:"Skirt Steak"}]},
-    {id:"flank", num:8, name:"Flank", sub:"Lower rear belly", center:[347,193], blurb:"Lean, richly flavored — flank steak and stir-fry strips.",
+    {id:"flank", num:8, name:"Flank", sub:"Lower rear belly", center:[416,193], blurb:"Lean, richly flavored — flank steak and stir-fry strips.",
       cuts:[{id:"flank_steak",name:"Flank Steak"},{id:"stir_strips",name:"Stir-Fry Strips"}]},
-    {id:"shank", num:9, name:"Shank", sub:"Legs", center:[98,252], blurb:"From the legs — rich, marrow-filled soup bones and cross-cuts.",
+    {id:"shank", num:9, name:"Shank", sub:"Legs", center:[213,305], blurb:"From the legs — rich, marrow-filled soup bones and cross-cuts.",
       cuts:[{id:"soup_bones",name:"Soup Bones"},{id:"shank_cross",name:"Shank Cross-cut (Osso Buco)"}]},
     {id:"specialty", num:null, name:"Specialty", sub:"Organ meats & extras", center:null, blurb:"Traditional, nutrient-dense extras. All optional.",
       cuts:[{id:"liver",name:"Liver"},{id:"heart",name:"Heart"},{id:"tongue",name:"Tongue"},{id:"oxtail",name:"Ox-tail"},{id:"tallow",name:"Tallow (rendering fat)"}]},
