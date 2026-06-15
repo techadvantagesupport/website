@@ -70,26 +70,34 @@ const WFO_CONFIG = {
   /* --------------------------------------------------------------------------
      3) INVENTORY  — what you currently have available
      --------------------------------------------------------------------------
-     Each { ... } block below is ONE batch of beef.
-       type      : "Half"  or  "Quarter"
-       total     : how many shares this batch has
-       claimed   : how many have been spoken for so far  (raise this number
-                   each time you CONFIRM an order, so the site shows the
-                   right availability)
-       readyDate : when the meat will be ready for delivery  ("YYYY-MM-DD")
-       note      : optional short note (leave as "" for none)
+     You only track QUARTERS. Halves are figured out automatically:
+        1 half = 2 quarters,  so  halves available = quarters ÷ 2 (rounded down).
 
-     To add another batch: copy a whole { ... } block, paste it, and add a
-     comma between blocks.
+     Each { ... } block below is ONE delivery date.
+       readyDate     : when the meat will be ready  ("YYYY-MM-DD")
+       quartersTotal : how many quarters this batch has when full (set once;
+                       this is what the availability bar measures against).
+                       A whole animal = 4 quarters.
+       quartersLeft  : how many quarters are still available right now.
+                       *** This is the only number you change as you sell. ***
+       note          : optional short note (leave as "" for none)
+
+     WHEN YOU CONFIRM A SALE, lower "quartersLeft":
+        • a QUARTER sold  ->  subtract 1
+        • a HALF sold     ->  subtract 2
+     Example: quartersLeft is 3  ->  the site shows "3 quarters or 1 half".
+     If that half sells, change quartersLeft from 3 to 1.
+
+     To add another delivery: copy a whole { ... } block, paste it, add a comma.
      To temporarily hide all availability: set the list to  []
   -------------------------------------------------------------------------- */
   inventory: [
-    { type: "Quarter", total: 6, claimed: 2, readyDate: "2026-07-15", note: "" },
-    { type: "Half",    total: 4, claimed: 1, readyDate: "2026-08-01", note: "" },
-    { type: "Quarter", total: 4, claimed: 0, readyDate: "2026-10-01", note: "Fall batch" },
+    { readyDate: "2026-07-15", quartersTotal: 6, quartersLeft: 4, note: "" },
+    { readyDate: "2026-08-01", quartersTotal: 4, quartersLeft: 3, note: "" },
+    { readyDate: "2026-10-01", quartersTotal: 4, quartersLeft: 4, note: "Fall batch" },
   ],
 
-  // Message shown when a beef type is fully claimed but more is coming.
+  // Message shown when a delivery is fully sold but more is coming.
   soldOutMessage: "Currently spoken for — more available soon. Send your order and we'll add you to the list for the next batch.",
 };
 
