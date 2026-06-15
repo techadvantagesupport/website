@@ -1,39 +1,34 @@
-/**
- * Wholesome Family Organics — inventory + order backend (Google Apps Script).
- *
- * WHAT IT DOES
- *   • GET  -> returns the current inventory (read from the "Inventory" sheet)
- *   • POST -> places an order: subtracts quarters from the chosen delivery
- *             (Half = 2 quarters, Quarter = 1), logs the order, returns the
- *             updated inventory. Uses a lock so two orders can't oversell.
- *
- * SETUP (see SETUP.md for the step-by-step):
- *   1. Make a Google Sheet with a tab named  Inventory  and this header row:
- *          readyDate | quartersTotal | quartersLeft | note
- *      (readyDate like 2026-07-15). One row per delivery.
- *   2. Extensions > Apps Script. Delete the sample, paste THIS file. Save.
- *   3. Deploy > New deployment > type "Web app":
- *          Execute as: Me      Who has access: Anyone
- *      Authorize when prompted. Copy the Web app URL that ends in /exec.
- *   4. Paste that URL into config.js  ->  inventoryApiUrl: "...".
- */
+// Wholesome Family Organics - inventory + order backend (Google Apps Script).
+//
+// WHAT IT DOES
+//   GET  -> returns current inventory + pricing (read from the Sheet)
+//   POST -> places an order: subtracts quarters from the chosen delivery
+//           (Half = 2 quarters, Quarter = 1), logs the order, returns the
+//           updated inventory. Uses a lock so two orders can't oversell.
+//
+// SETUP (see SETUP.md):
+//   1. Sheet with an "Inventory" tab: readyDate | quartersTotal | quartersLeft | note
+//   2. Extensions > Apps Script. Select all, delete, paste THIS file. Save.
+//   3. Deploy > New deployment > Web app. Execute as: Me. Access: Anyone.
+//      Authorize, then copy the Web app URL ending in /exec.
+//   4. Paste that URL into config.js -> inventoryApiUrl: "...".
 
 var INV_SHEET = "Inventory";   // tab the business edits (falls back to the first tab if not found)
 var LOG_SHEET = "Orders";      // created automatically; the order log
 var PRICE_SHEET = "Pricing";   // created automatically with the defaults below
 
-// Default prices/settings — used to create the Pricing tab the first time.
+// Default prices/settings - used to create the Pricing tab the first time.
 // After that, the business edits the values in the Pricing tab, not here.
 var PRICE_DEFAULTS = [
   ["key", "value", "what it controls"],
-  ["halfPricePerLb",    5.48, "Half — price per lb (hanging weight)"],
-  ["quarterPricePerLb", 5.68, "Quarter — price per lb (hanging weight)"],
-  ["halfDeposit",        500, "Half — deposit due with order"],
-  ["quarterDeposit",       0, "Quarter — deposit due with order (0 = none)"],
-  ["halfWeightLow",      320, "Half — typical hanging weight low (lbs)"],
-  ["halfWeightHigh",     430, "Half — typical hanging weight high (lbs)"],
-  ["quarterWeightLow",   150, "Quarter — typical hanging weight low (lbs)"],
-  ["quarterWeightHigh",  215, "Quarter — typical hanging weight high (lbs)"],
+  ["halfPricePerLb",    5.48, "Half - price per lb (hanging weight)"],
+  ["quarterPricePerLb", 5.68, "Quarter - price per lb (hanging weight)"],
+  ["halfDeposit",        500, "Half - deposit due with order"],
+  ["quarterDeposit",       0, "Quarter - deposit due with order (0 = none)"],
+  ["halfWeightLow",      320, "Half - typical hanging weight low (lbs)"],
+  ["halfWeightHigh",     430, "Half - typical hanging weight high (lbs)"],
+  ["quarterWeightLow",   150, "Quarter - typical hanging weight low (lbs)"],
+  ["quarterWeightHigh",  215, "Quarter - typical hanging weight high (lbs)"],
   ["yieldLowPct",         60, "Yield % of hanging weight, low"],
   ["yieldHighPct",        70, "Yield % of hanging weight, high"]
 ];
