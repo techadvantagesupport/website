@@ -18,8 +18,13 @@
  *   4. Paste that URL into config.js  ->  inventoryApiUrl: "...".
  */
 
-var INV_SHEET = "Inventory";   // tab the business edits
+var INV_SHEET = "Inventory";   // tab the business edits (falls back to the first tab if not found)
 var LOG_SHEET = "Orders";      // created automatically; the order log
+
+function invSheet_() {
+  var ss = SpreadsheetApp.getActive();
+  return ss.getSheetByName(INV_SHEET) || ss.getSheets()[0];
+}
 
 function doGet(e) {
   return json_({ ok: true, inventory: readInventory_() });
@@ -39,7 +44,7 @@ function doPost(e) {
 }
 
 function readInventory_() {
-  var sh = SpreadsheetApp.getActive().getSheetByName(INV_SHEET);
+  var sh = invSheet_();
   if (!sh) return [];
   var rows = sh.getDataRange().getValues();
   var out = [];
@@ -57,7 +62,7 @@ function readInventory_() {
 }
 
 function placeOrder_(body) {
-  var sh = SpreadsheetApp.getActive().getSheetByName(INV_SHEET);
+  var sh = invSheet_();
   if (!sh) return { ok: false, error: "no Inventory sheet" };
   var take = body.amount === "Half" ? 2 : 1;         // quarters to subtract
   var rows = sh.getDataRange().getValues();
