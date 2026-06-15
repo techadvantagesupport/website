@@ -931,8 +931,10 @@ section{position:relative}
     y+=10; doc.setDrawColor(200,185,150); doc.line(x,y,W-x,y); y+=22;
     doc.setTextColor(40,28,16); doc.setFont("helvetica","bold"); doc.setFontSize(14);
     doc.text("Beef Purchase Order", x, y); y+=22;
-    function H(t){ doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59); doc.text(t.toUpperCase(),x,y); y+=16; doc.setTextColor(40,28,16); }
-    function L(a,b){ doc.setFont("helvetica","normal"); doc.setFontSize(11);
+    var BOT=744, TOP=58;  // bottom limit / top of a continued page (letter = 792pt tall)
+    function brk(h){ if(y + (h||14) > BOT){ doc.addPage(); y=TOP; } }
+    function H(t){ brk(30); doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59); doc.text(t.toUpperCase(),x,y); y+=16; doc.setTextColor(40,28,16); }
+    function L(a,b){ brk(17); doc.setFont("helvetica","normal"); doc.setFontSize(11);
       doc.text(String(a),x,y); if(b!=null){doc.setFont("helvetica","bold");doc.text(String(b),x+150,y);} y+=17; }
     H("Customer");
     L("Name:",data.name); L("Address:",data.address); L("City/State/ZIP:",data.city_state_zip);
@@ -944,16 +946,18 @@ section{position:relative}
     if(dep>0) L("Deposit:",money(dep)+" due with order");
     y+=6; H("Cuts requested");
     orderLines().forEach(function(l){
+      brk(30);  // keep a section header with at least its first line
       doc.setFont("courier","bold"); doc.setFontSize(9); doc.text(l.section,x,y); y+=14;
       doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
-      if(l.items.length){ l.items.forEach(function(it){ doc.text("•  "+it, x+12, y); y+=15; }); }
-      else { doc.setTextColor(120,90,60); doc.text("Grind into hamburger", x+12, y); doc.setTextColor(40,28,16); y+=15; }
-      y+=3; if(y>720){ doc.addPage(); y=64; }
+      if(l.items.length){ l.items.forEach(function(it){ brk(15); doc.text("•  "+it, x+12, y); y+=15; }); }
+      else { brk(15); doc.setTextColor(120,90,60); doc.text("Grind into hamburger", x+12, y); doc.setTextColor(40,28,16); y+=15; }
+      y+=4;
     });
     if(data.special_requests){ y+=6; H("Special requests"); doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
-      doc.splitTextToSize(data.special_requests,W-2*x).forEach(function(ln){ doc.text(ln,x,y); y+=15; }); }
+      doc.splitTextToSize(data.special_requests,W-2*x).forEach(function(ln){ brk(15); doc.text(ln,x,y); y+=15; }); }
     doc.setFont("courier","normal"); doc.setFontSize(8); doc.setTextColor(120,90,60);
-    doc.text("Anything not selected is ground into hamburger. The butcher will call to confirm before cutting.", x, 760);
+    if(y > 758){ doc.addPage(); y=TOP; }
+    doc.text("Anything not selected is ground into hamburger. The butcher will call to confirm before cutting.", x, 772);
     return doc;
   }
 
