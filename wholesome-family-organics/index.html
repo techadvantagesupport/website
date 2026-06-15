@@ -493,86 +493,32 @@ section{position:relative}
       <div class="tool" id="tool" hidden>
         <div>
           <div class="diagram">
-            <svg id="cowSvg" viewBox="0 0 860 470" role="group" aria-label="Beef cuts chart — tap a numbered section to choose its cuts">
-              <defs>
-                <linearGradient id="chartHide" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#C58F5B"/><stop offset=".5" stop-color="#9A6334"/><stop offset="1" stop-color="#6E4527"/>
-                </linearGradient>
-                <radialGradient id="parch" cx="50%" cy="40%" r="78%">
-                  <stop offset="0" stop-color="#F3E8CE"/><stop offset="1" stop-color="#E0CB9F"/>
-                </radialGradient>
-                <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/>
-                  <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .05 0"/></filter>
-              </defs>
-              <rect x="0" y="0" width="860" height="470" fill="url(#parch)"/>
-              <rect x="0" y="0" width="860" height="470" filter="url(#grain)"/>
-              <!-- ground -->
-              <g stroke="#8A5A30" stroke-linecap="round" opacity=".45">
-                <line x1="150" y1="438" x2="700" y2="438" stroke-width="1.6"/>
-                <line x1="205" y1="446" x2="245" y2="446" stroke-width="1.2"/>
-                <line x1="300" y1="448" x2="360" y2="448" stroke-width="1.2"/>
-                <line x1="430" y1="446" x2="470" y2="446" stroke-width="1.2"/>
-                <line x1="560" y1="448" x2="612" y2="448" stroke-width="1.2"/>
-              </g>
-              <!-- cow illustration -->
-              <g id="cowArt" stroke="#3A2A1A" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
-                <!-- far legs -->
-                <path d="M240 314 C236 352 236 388 239 416 L257 418 C260 388 260 352 264 312 Z" fill="#7A4F2E"/>
-                <path d="M626 312 C630 344 628 376 626 396 L626 416 L644 418 C647 388 648 354 642 326 Z" fill="#7A4F2E"/>
-                <!-- body -->
-                <path d="M96 248 C72 246 60 238 58 224 C56 212 64 204 78 200 C92 194 98 182 106 170
-                         C114 160 130 151 152 150 C180 149 202 149 224 145 C264 136 308 126 356 124
-                         C440 118 520 118 580 124 C612 127 637 135 654 150 C668 178 663 220 650 256
-                         C642 286 627 303 608 314 C588 324 470 338 372 336 C312 335 268 330 250 322
-                         C228 316 205 308 190 294 C176 280 170 266 174 252 C150 250 120 249 96 248 Z" fill="url(#chartHide)"/>
-                <!-- near legs -->
-                <path d="M214 312 C210 350 210 388 213 416 L233 418 C236 388 236 350 240 310 Z" fill="url(#chartHide)"/>
-                <path d="M598 306 C604 340 600 372 600 392 L600 416 L620 418 C623 388 624 352 618 322 C614 312 606 306 600 304 Z" fill="url(#chartHide)"/>
-                <!-- hooves -->
-                <ellipse cx="223" cy="418" rx="11" ry="5" fill="#241810" stroke="none"/>
-                <ellipse cx="610" cy="418" rx="11" ry="5" fill="#241810" stroke="none"/>
-                <ellipse cx="248" cy="418" rx="10" ry="4.5" fill="#1d130a" stroke="none"/>
-                <ellipse cx="635" cy="418" rx="10" ry="4.5" fill="#1d130a" stroke="none"/>
-                <!-- tail -->
-                <path d="M652 154 C674 164 674 206 668 246 C664 276 670 298 663 314" fill="none" stroke="#3A2A1A" stroke-width="5"/>
-                <path d="M663 310 C654 322 661 334 657 344 C669 339 675 324 672 308 Z" fill="#3A2A1A"/>
-                <!-- horns -->
-                <path d="M150 150 C145 137 149 126 158 121 C157 132 160 142 162 150 Z" fill="#E8D9B5"/>
-                <path d="M168 150 C172 136 182 130 192 131 C184 139 178 145 181 151 Z" fill="#E8D9B5"/>
-                <!-- ear -->
-                <path d="M188 150 C208 137 223 145 217 162 C209 173 193 167 187 156 Z" fill="#8B5E3C"/>
-                <!-- white face -->
-                <path d="M96 248 C72 246 60 236 58 224 C56 212 64 204 78 200 C92 194 98 184 106 172 C112 184 110 202 102 218 C96 232 102 242 96 248 Z" fill="#EBDCC0" stroke-width="2"/>
-                <ellipse cx="98" cy="201" rx="4.2" ry="5.4" fill="#241810" stroke="none"/>
-                <ellipse cx="66" cy="216" rx="3.4" ry="4.6" fill="#241810" stroke="none"/>
-                <path d="M58 231 C70 237 84 237 92 232" fill="none" stroke="#3A2A1A" stroke-width="1.6"/>
-              </g>
+            <svg id="cowSvg" viewBox="0 0 600 338" role="group" aria-label="Beef cuts chart — tap a numbered section to choose its cuts">
+              <image href="assets/picker-cow.jpg" x="0" y="0" width="600" height="338" preserveAspectRatio="xMidYMid meet"/>
               <!-- dashed primal dividers -->
-              <g stroke="#3A2A1A" stroke-width="1.7" stroke-dasharray="4 6" opacity=".75" fill="none" stroke-linecap="round">
-                <path d="M300 130 C302 185 305 225 306 254"/>
-                <path d="M390 125 L394 254"/>
-                <path d="M470 123 L473 251"/>
-                <path d="M548 127 C552 175 553 215 553 250"/>
-                <path d="M180 253 C320 268 430 266 553 251"/>
-                <path d="M210 254 L211 312"/>
-                <path d="M553 250 C600 290 575 300 560 302"/>
+              <g stroke="#2A1C10" stroke-width="1.3" stroke-dasharray="3 5" opacity=".5" fill="none" stroke-linecap="round">
+                <path d="M265 74 L270 198"/>
+                <path d="M345 70 L348 196"/>
+                <path d="M422 72 L424 194"/>
+                <path d="M498 78 C501 130 501 165 500 190"/>
+                <path d="M188 192 C320 206 430 204 552 184"/>
               </g>
-              <!-- clickable region overlays -->
+              <!-- clickable region overlays (aligned to the illustration) -->
               <g id="regions">
                 <path class="cut-region" data-region="chuck" tabindex="0" role="button" aria-label="Chuck — front shoulder"
-                      d="M186 178 C220 150 270 132 302 130 L306 254 L212 260 L184 224 Z"/>
+                      d="M188 95 L265 70 L270 200 L210 206 L185 150 Z"/>
                 <path class="cut-region" data-region="rib" tabindex="0" role="button" aria-label="Rib"
-                      d="M302 130 L390 125 L394 254 L306 254 Z"/>
+                      d="M265 70 L345 68 L348 198 L270 200 Z"/>
                 <path class="cut-region" data-region="shortloin" tabindex="0" role="button" aria-label="Short loin"
-                      d="M390 125 L470 123 L473 251 L394 254 Z"/>
+                      d="M345 68 L422 70 L424 195 L348 198 Z"/>
                 <path class="cut-region" data-region="sirloin" tabindex="0" role="button" aria-label="Sirloin"
-                      d="M470 123 L548 127 L553 250 L473 251 Z"/>
+                      d="M422 70 L498 74 L501 192 L424 195 Z"/>
                 <path class="cut-region" data-region="round" tabindex="0" role="button" aria-label="Round — hindquarter"
-                      d="M548 127 C600 130 636 138 654 152 C666 182 662 224 648 256 C628 296 590 304 560 302 L553 250 Z"/>
+                      d="M498 74 C540 78 558 108 560 148 C561 174 548 192 534 198 L501 192 Z"/>
                 <path class="cut-region" data-region="brisket" tabindex="0" role="button" aria-label="Brisket — chest"
-                      d="M184 256 L306 254 L306 300 C270 314 232 312 206 300 C190 292 184 274 184 256 Z"/>
+                      d="M185 152 L246 196 L244 228 L194 220 L183 184 Z"/>
                 <path class="cut-region" data-region="shank" tabindex="0" role="button" aria-label="Shank — legs"
-                      d="M206 300 L244 300 L240 420 L206 420 Z M592 300 L626 300 L622 420 L594 420 Z"/>
+                      d="M200 206 L250 206 L246 300 L202 300 Z M470 198 L540 198 L535 300 L474 300 Z"/>
               </g>
               <!-- numbers -->
               <g id="regionLabels"></g>
@@ -671,19 +617,19 @@ section{position:relative}
 
   /* ---------- cut data model (maps to the farm's order form) ---------- */
   var REGIONS = [
-    {id:"chuck", num:1, name:"Chuck", sub:"Front shoulder", center:[244,200], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
+    {id:"chuck", num:1, name:"Chuck", sub:"Front shoulder", center:[228,140], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
       cuts:[{id:"chuck_roast",name:"Chuck Roast"},{id:"arm_roast",name:"Arm Roast"},{id:"stew",name:"Stew Meat",lbs:true}]},
-    {id:"rib", num:2, name:"Rib", sub:"Upper fore-rib", center:[348,190], blurb:"The tender rib section — where rib-eye steaks come from.",
+    {id:"rib", num:2, name:"Rib", sub:"Upper fore-rib", center:[306,134], blurb:"The tender rib section — where rib-eye steaks come from.",
       cuts:[{id:"ribeye",name:"Rib-eye Steak"},{id:"short_ribs",name:"Short Ribs"}]},
-    {id:"shortloin", num:3, name:"Short Loin", sub:"Upper back", center:[431,188], blurb:"The most tender part of the animal — home of the T-bone.",
+    {id:"shortloin", num:3, name:"Short Loin", sub:"Upper back", center:[384,132], blurb:"The most tender part of the animal — home of the T-bone.",
       cuts:[{id:"tbone",name:"T-Bone Steak"}]},
-    {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[510,188], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
+    {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[460,132], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
       cuts:[{id:"sirloin",name:"Sirloin Steak"}]},
-    {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[598,205], blurb:"Lean rear muscle — great for roasts.",
+    {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[526,135], blurb:"Lean rear muscle — great for roasts.",
       cuts:[{id:"rump_round_roast",name:"Rump / Round Roast"}]},
-    {id:"brisket", num:6, name:"Brisket", sub:"Chest", center:[245,278], blurb:"Lower chest — low-and-slow favorite.",
+    {id:"brisket", num:6, name:"Brisket", sub:"Chest", center:[212,192], blurb:"Lower chest — low-and-slow favorite.",
       cuts:[{id:"brisket",name:"Brisket"}]},
-    {id:"shank", num:7, name:"Shank", sub:"Legs", center:[224,355], blurb:"From the legs — rich, marrow-filled soup bones.",
+    {id:"shank", num:7, name:"Shank", sub:"Legs", center:[224,258], blurb:"From the legs — rich, marrow-filled soup bones.",
       cuts:[{id:"soup_bones",name:"Soup Bones"}]},
     {id:"specialty", num:null, name:"Specialty", sub:"Organ meats", center:null, blurb:"Traditional, nutrient-dense organ cuts. Optional.",
       cuts:[{id:"liver",name:"Liver"},{id:"tongue",name:"Tongue"}]},
