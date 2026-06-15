@@ -44,6 +44,16 @@ const WFO_CONFIG = {
   businessPhone: "320-493-0877",
   businessAddress: "19925 County Rd. 141, Kimball, MN 55353",
 
+  /* --------------------------------------------------------------------------
+     LIVE INVENTORY (optional) — automatic decrement via a Google Sheet
+     --------------------------------------------------------------------------
+     Leave BLANK ("") to manage inventory by hand in the list further below.
+     To turn on automatic inventory: follow backend/SETUP.md, then paste the
+     Apps Script Web-App URL (ending in /exec) here. When set, the site reads
+     live quantities from your Sheet and subtracts from them on every order.
+  -------------------------------------------------------------------------- */
+  inventoryApiUrl: "",
+
 
   /* --------------------------------------------------------------------------
      2) PRICING  (per pound, hanging weight)

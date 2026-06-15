@@ -189,6 +189,11 @@ section{position:relative}
 .amount__meta{font-family:var(--mono);font-size:.76rem;color:rgba(242,234,217,.7);margin-top:.6rem;line-height:1.5}
 .amount__est{margin-top:1rem;font-family:var(--mono);font-size:.84rem;color:rgba(242,234,217,.85);min-height:1.4em}
 .amount__est b{color:var(--tan)}
+.amount__deliv{margin-top:1rem;max-width:420px}
+.amount__deliv[hidden]{display:none}
+.amount__delivlbl{display:block;font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tan);margin-bottom:.4rem}
+#delivSelect{width:100%;font-family:var(--body);font-size:1rem;padding:.7em .85em;border-radius:9px;border:2px solid rgba(242,234,217,.4);background:var(--espresso);color:var(--paper)}
+#delivSelect:focus-visible{outline:3px solid var(--pasture);outline-offset:2px}
 
 /* the cut tool */
 .tool{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(1.2rem,3vw,2.4rem);align-items:start}
@@ -483,6 +488,10 @@ section{position:relative}
         </div>
       </div>
       <div class="amount__est" id="amountEst" aria-live="polite"></div>
+      <div class="amount__deliv" id="amountDeliv" hidden>
+        <label class="amount__delivlbl" for="delivSelect">Choose your delivery</label>
+        <select id="delivSelect"></select>
+      </div>
     </div>
 
     <!-- STEP 2 — the cut tool -->
@@ -621,6 +630,7 @@ section{position:relative}
   var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
   var money = function(n){return "$" + Math.round(n).toLocaleString("en-US");};
   var LOGO_IMG = new Image(); LOGO_IMG.src = "assets/logo-full.png";  // preloaded for the PDF header
+  var INVENTORY = (CFG.inventory||[]).slice();  // live inventory (from config, or replaced by the Sheet API)
 
   /* ---------- cut data model (maps to the farm's order form) ---------- */
   var REGIONS = [
@@ -649,7 +659,7 @@ section{position:relative}
   ];
 
   /* ---------- state ---------- */
-  var state = { amount:null, sections:{} };
+  var state = { amount:null, deliveryDate:null, sections:{} };
   REGIONS.forEach(function(r){
     var cuts={};
     r.cuts.forEach(function(c){ cuts[c.id]={on:!!c.defaultOn, pkg:c.pkg?c.pkg[0]:null, lbs:c.lbs?"":null}; });
@@ -660,7 +670,7 @@ section{position:relative}
   /* ===================== render: pricing ===================== */
   // Inventory is tracked in QUARTERS per delivery. Halves are derived: 1 half = 2 quarters.
   function inv(type){
-    var list=CFG.inventory||[];
+    var list=INVENTORY||[];
     var total=0,remaining=0,next=null;
     list.forEach(function(b){
       var qLeft=b.quartersLeft||0, qTot=b.quartersTotal||0;
@@ -703,7 +713,7 @@ section{position:relative}
 
   /* ===================== render: availability ===================== */
   function renderAvailability(){
-    var list=CFG.inventory||[];
+    var list=INVENTORY||[];
     if(!list.length){ $("#availGrid").innerHTML='<p class="acard__note">No deliveries are listed right now — send an order and we’ll add you to the list for the next one.</p>'; return; }
     $("#availGrid").innerHTML = list.map(function(b){
       var qLeft=b.quartersLeft||0, qTot=b.quartersTotal||0, halves=Math.floor(qLeft/2);
@@ -721,7 +731,7 @@ section{position:relative}
   }
 
   /* ===================== amount step ===================== */
-  function setupAmount(){
+  function refreshAmountMeta(){
     function fill(type,priceEl,metaEl){
       var rate = type==="Half"?P.halfPricePerLb:P.quarterPricePerLb;
       var dep = type==="Half"?P.halfDeposit:P.quarterDeposit;
@@ -735,7 +745,30 @@ section{position:relative}
     }
     fill("Half","#amtHalfPrice","#amtHalfMeta");
     fill("Quarter","#amtQuarterPrice","#amtQuarterMeta");
+  }
 
+  function deliveriesFor(type){
+    return (INVENTORY||[]).map(function(b){
+      var qLeft=b.quartersLeft||0;
+      return { readyDate:b.readyDate, units: type==="Half"?Math.floor(qLeft/2):qLeft };
+    }).filter(function(d){ return d.units>0 && d.readyDate; })
+      .sort(function(a,b){ return a.readyDate<b.readyDate?-1:1; });
+  }
+
+  function populateDeliveries(type){
+    var sel=$("#delivSelect"), wrap=$("#amountDeliv");
+    var list=deliveriesFor(type), unit = type==="Half"?"half":"quarter";
+    if(!list.length){ wrap.hidden=true; sel.innerHTML=""; state.deliveryDate=null; return; }
+    sel.innerHTML = list.map(function(d){
+      var word = d.units===1 ? unit : (unit==="half"?"halves":"quarters");
+      return '<option value="'+d.readyDate+'">Ready '+fmtDate(d.readyDate)+'  ('+d.units+' '+word+' left)</option>';
+    }).join("");
+    wrap.hidden=false; state.deliveryDate=list[0].readyDate; sel.value=state.deliveryDate;
+  }
+
+  function setupAmount(){
+    refreshAmountMeta();
+    $("#delivSelect").addEventListener("change",function(){ state.deliveryDate=this.value; });
     $$("input[name=amount]").forEach(function(r){
       r.addEventListener("change",function(){
         state.amount=r.value;
@@ -746,11 +779,31 @@ section{position:relative}
         $("#amountEst").innerHTML="Estimated total for a "+r.value.toLowerCase()+": <b>"+
           money(rate*lo)+"–"+money(rate*hi)+"</b>"+(dep>0?" · "+money(dep)+" deposit with order":"")+
           ". Final price is set by actual hanging weight.";
+        populateDeliveries(r.value);
         $("#tool").hidden=false;
         $("#finishBlock").hidden=false;
         updateProgress();
       });
     });
+  }
+
+  /* ---- live inventory from the Google Sheet API (optional) ---- */
+  function loadInventory(done){
+    if(!CFG.inventoryApiUrl){ done&&done(); return; }
+    fetch(CFG.inventoryApiUrl,{method:"GET"}).then(function(r){return r.json();}).then(function(d){
+      if(d && d.inventory && d.inventory.length){ INVENTORY=d.inventory; }
+    }).catch(function(){ /* keep config.js fallback */ }).then(function(){ done&&done(); });
+  }
+  function postOrderToApi(data){
+    if(!CFG.inventoryApiUrl || !state.deliveryDate) return;
+    try{
+      fetch(CFG.inventoryApiUrl,{method:"POST",body:JSON.stringify({
+        action:"order", amount:state.amount, readyDate:state.deliveryDate,
+        name:data.name, email:data.email, phone:data.phone, cuts:orderText(data)
+      })}).then(function(r){return r.json();}).then(function(res){
+        if(res && res.inventory){ INVENTORY=res.inventory; renderAvailability(); refreshAmountMeta(); }
+      }).catch(function(){});
+    }catch(e){}
   }
 
   /* ===================== cut tool ===================== */
@@ -907,6 +960,7 @@ section{position:relative}
     var rate = state.amount==="Half"?P.halfPricePerLb:P.quarterPricePerLb;
     var dep = state.amount==="Half"?P.halfDeposit:P.quarterDeposit;
     html+='<div class="ticket__row"><span>Amount</span><span>'+state.amount+' &middot; $'+(rate?rate.toFixed(2):"")+'/lb hanging wt</span></div>';
+    html+='<div class="ticket__row"><span>Delivery</span><span>'+(state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch")+'</span></div>';
     if(dep>0) html+='<div class="ticket__row"><span>Deposit with order</span><span>'+money(dep)+'</span></div>';
     lines.forEach(function(l){
       html+='<div class="ticket__sec">'+l.section+'</div>';
@@ -952,6 +1006,7 @@ section{position:relative}
     var dep=state.amount==="Half"?P.halfDeposit:P.quarterDeposit;
     H("Order");
     L("Amount:",state.amount+" beef  ($"+(rate?rate.toFixed(2):"")+"/lb hanging weight)");
+    L("Delivery:",state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch");
     if(dep>0) L("Deposit:",money(dep)+" due with order");
     y+=6; H("Cuts requested");
     orderLines().forEach(function(l){
@@ -973,6 +1028,7 @@ section{position:relative}
   function orderText(data){
     var t=(CFG.businessName||"")+" — Beef Order\n\n";
     t+="Amount: "+state.amount+" beef\n";
+    t+="Delivery: "+(state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch")+"\n";
     t+="Name: "+data.name+"\nAddress: "+data.address+"\nCity/State/ZIP: "+data.city_state_zip+"\nPhone: "+data.phone+"\nEmail: "+data.email+"\n\nCUTS REQUESTED:\n";
     orderLines().forEach(function(l){ t+="\n"+l.section+":\n";
       if(l.items.length) l.items.forEach(function(it){t+="  - "+it+"\n";}); else t+="  - Grind into hamburger\n"; });
@@ -1000,6 +1056,8 @@ section{position:relative}
     var msg=$("#formMsg");
     if(err){ msg.className="form-msg err"; msg.textContent=err; return; }
 
+    postOrderToApi(data);  // auto-decrement the Google Sheet (best-effort; no-op if not configured)
+
     var key=CFG.web3formsAccessKey||"";
     var doc=buildPDF(data);
     var pdfBlob = doc ? doc.output("blob") : null;
@@ -1024,6 +1082,7 @@ section{position:relative}
     fd.append("Email",data.email);
     fd.append("Address",data.address+", "+data.city_state_zip);
     fd.append("Amount",state.amount+" beef");
+    fd.append("Delivery",state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch");
     fd.append("Order",orderText(data));
     if(data.special_requests) fd.append("Special requests",data.special_requests);
     fd.append("botcheck", form.botcheck.checked ? "1":"");
@@ -1073,6 +1132,8 @@ section{position:relative}
   /* ===================== init ===================== */
   renderPricing(); renderAvailability(); renderFooter();
   setupAmount(); buildNumbers(); buildLegend(); buildExtraChips(); wireDiagram(); updateProgress();
+  // If a Google Sheet API is configured, refresh with live quantities.
+  loadInventory(function(){ renderAvailability(); refreshAmountMeta(); });
 
   $("#reviewBtn").addEventListener("click",function(){ if(!$("#reviewBtn").disabled) openModal(); });
   $("#modalClose").addEventListener("click",closeModal);
