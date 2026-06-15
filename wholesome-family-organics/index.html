@@ -976,7 +976,8 @@ section{position:relative}
     fd.append("Order",orderText(data));
     if(data.special_requests) fd.append("Special requests",data.special_requests);
     fd.append("botcheck", form.botcheck.checked ? "1":"");
-    if(pdfBlob) fd.append("attachment", pdfBlob, "beef-order-"+data.name.replace(/\W+/g,"_")+".pdf");
+    // Attachments are a Web3Forms Pro feature — only attach if explicitly enabled.
+    if(CFG.attachPdf && pdfBlob) fd.append("attachment", pdfBlob, "beef-order-"+data.name.replace(/\W+/g,"_")+".pdf");
 
     fetch("https://api.web3forms.com/submit",{method:"POST",body:fd})
       .then(function(r){return r.json();})
@@ -984,7 +985,8 @@ section{position:relative}
         if(res.success){ showSuccess(doc); }
         else { throw new Error(res.message||"send failed"); }
       })
-      .catch(function(){
+      .catch(function(e){
+        if(window.console&&console.error) console.error("Web3Forms submit failed:", e && e.message ? e.message : e);
         msg.className="form-msg err";
         msg.innerHTML="Couldn't send automatically. Your order PDF will download — please email it to "+(CFG.businessEmail||"the farm")+".";
         if(doc) doc.save("beef-order.pdf");

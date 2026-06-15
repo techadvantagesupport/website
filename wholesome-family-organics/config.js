@@ -30,6 +30,14 @@ const WFO_CONFIG = {
   -------------------------------------------------------------------------- */
   web3formsAccessKey: "bce0ef79-b457-4132-b591-87ddae58d2a0",
 
+  // Attach the order as a PDF file to the email?
+  //   false = order is written into the email body (works on the FREE plan).
+  //   true  = order PDF is attached to the email — but this ONLY works if your
+  //           Web3Forms account is on a PAID (Pro) plan; on the free plan it
+  //           causes sending to fail. Customers can always download the PDF
+  //           themselves either way.
+  attachPdf: false,
+
   // Shown to the customer after they submit, and used in the email subject.
   businessName: "Wholesome Family Organics",
   businessEmail: "rdsteichen@yahoo.com",   // shown on the site (contact)
