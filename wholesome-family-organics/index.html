@@ -69,13 +69,18 @@ section{position:relative}
   border-bottom:1px solid var(--cream-line)}
 .nav__in{display:flex;align-items:center;justify-content:space-between;height:64px}
 .brand{display:flex;align-items:center;gap:.65rem;font-family:var(--display);font-weight:800;font-size:1.06rem;text-decoration:none;letter-spacing:-.02em}
-.brand svg{width:34px;height:34px;flex:none}
+.brand svg{width:54px;height:39px;flex:none}
 .brand small{display:block;font-family:var(--mono);font-weight:500;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--leather-d);margin-top:1px}
 .nav__links{display:flex;align-items:center;gap:1.6rem}
 .nav__links a{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--espresso);opacity:.78}
 .nav__links a:hover{opacity:1}
 .nav__cta{font-size:.74rem;padding:.7em 1.2em}
-@media(max-width:760px){.nav__links a:not(.nav__cta){display:none}}
+@media(max-width:760px){
+  .nav__links a:not(.nav__cta){display:none}
+  .brand small{display:none}
+  .brand{font-size:.98rem;line-height:1.05}
+  .brand svg{width:44px;height:32px}
+}
 
 /* ============================ HERO ============================ */
 .hero{padding:clamp(2.5rem,6vw,5rem) 0 clamp(2rem,5vw,4rem);overflow:hidden}
@@ -187,22 +192,26 @@ section{position:relative}
 .tool{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(1.2rem,3vw,2.4rem);align-items:start}
 .tool[hidden]{display:none}
 .diagram{background:var(--paper);border-radius:var(--radius);padding:1.2rem 1.2rem .8rem;box-shadow:var(--shadow)}
-.diagram svg{width:100%;height:auto;touch-action:manipulation}
-.cut-region{fill:var(--leather);stroke:var(--paper);stroke-width:2.5;cursor:pointer;
-  transition:fill .25s ease, transform .2s ease;transform-box:fill-box;transform-origin:center}
-.cut-region:hover{fill:var(--leather-d)}
-.cut-region.is-active{fill:var(--tan)}
-.cut-region.is-done{fill:var(--pasture)}
-.cut-region:focus-visible{outline:none;fill:var(--tan)}
-.region-label{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.03em;fill:var(--paper);
-  text-anchor:middle;pointer-events:none;text-transform:uppercase;
-  paint-order:stroke;stroke:rgba(40,28,16,.55);stroke-width:3.4px;stroke-linejoin:round}
-.region-check{opacity:0;transition:opacity .3s ease;pointer-events:none}
-.region-check.show{opacity:1}
-.diagram__legend{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:.6rem;
-  font-family:var(--mono);font-size:.72rem;color:var(--leather-d);text-transform:uppercase;letter-spacing:.05em}
-.diagram__legend span{display:inline-flex;align-items:center;gap:.4rem}
-.dot{width:13px;height:13px;border-radius:4px;display:inline-block;border:2px solid var(--paper)}
+.diagram > svg{width:100%;height:auto;touch-action:manipulation}
+.cut-region{fill:transparent;stroke:none;cursor:pointer;transition:fill .25s ease}
+.cut-region:hover{fill:rgba(58,42,26,.16)}
+.cut-region.is-active{fill:rgba(201,168,124,.5)}
+.cut-region.is-done{fill:rgba(90,107,59,.58)}
+.cut-region:focus-visible{outline:none;fill:rgba(201,168,124,.5)}
+.region-num{font-family:var(--display);font-weight:800;font-size:30px;fill:#2A1C10;text-anchor:middle;dominant-baseline:middle;
+  pointer-events:none;paint-order:stroke;stroke:rgba(243,232,206,.75);stroke-width:3.2px;stroke-linejoin:round}
+.region-num.is-done{fill:#39471f}
+.cowlegend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem .7rem;margin-top:1rem}
+.leg{display:flex;align-items:center;gap:.6rem;background:transparent;border:0;cursor:pointer;text-align:left;width:100%;
+  font-family:var(--body);font-size:.92rem;color:var(--espresso);padding:.35rem .4rem;border-radius:9px;transition:background .2s}
+.leg:hover{background:var(--paper-2)}
+.leg__n{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:50%;
+  font-family:var(--display);font-weight:800;font-size:.9rem;background:var(--leather);color:var(--paper);transition:background .2s}
+.leg.is-active .leg__n{background:var(--tan);color:var(--espresso)}
+.leg.is-done .leg__n{background:var(--pasture)}
+.leg.is-done .leg__name{color:var(--leather-d)}
+.leg__check{margin-left:auto;width:16px;height:16px;color:var(--pasture);opacity:0;flex:none}
+.leg.is-done .leg__check{opacity:1}
 .extras{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-top:.4rem}
 .chip{font-family:var(--mono);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
   background:var(--paper-2);border:1.5px solid var(--leather);color:var(--espresso);padding:.55em 1em;border-radius:999px;
@@ -306,12 +315,53 @@ section{position:relative}
 <body>
 <a href="#order" class="skip">Skip to building your order</a>
 
+<!-- Brand emblem (cow + calf + fence) from the business card — reused in header & hero -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="embGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#D2A878"/><stop offset=".55" stop-color="#8B5A33"/><stop offset="1" stop-color="#4E331E"/>
+  </linearGradient>
+  <symbol id="wfoEmblem" viewBox="0 0 132 96">
+    <!-- fence -->
+    <g fill="#7A5230">
+      <rect x="11" y="30" width="5" height="52" rx="2"/><rect x="33" y="30" width="5" height="52" rx="2"/>
+      <rect x="7" y="40" width="35" height="5" rx="2"/><rect x="7" y="58" width="35" height="5" rx="2"/>
+    </g>
+    <g stroke="#7A5230" stroke-width="4" stroke-linecap="round"><line x1="14" y1="45" x2="36" y2="61"/><line x1="36" y1="45" x2="14" y2="61"/></g>
+    <!-- cow -->
+    <path d="M48 46 C42 48 40 58 43 70" fill="none" stroke="#4E331E" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M41 66 C38 71 43 75 41 79 C46 76 48 70 46 65 Z" fill="#4E331E"/>
+    <g fill="url(#embGrad)" stroke="#F4ECD8" stroke-width="1.4" stroke-linejoin="round">
+      <path d="M99 58 L97 80 L103 80 L104 58 Z"/><path d="M107 56 L106 80 L111 80 L112 56 Z"/>
+      <path d="M50 60 L48 80 L54 80 L55 60 Z"/><path d="M58 60 L57 80 L62 80 L63 60 Z"/>
+    </g>
+    <path d="M48 46 C46 38 51 33 60 32 C74 31 88 31 98 34 C101 30 105 26 111 25 C117 24 123 27 123 33
+             C123 36 121 38 117 38 C118 41 117 44 114 46 C112 49 109 50 106 49 C104 52 101 54 100 58
+             C99 62 98 66 97 68 C92 69 70 70 56 68 C52 67 49 64 48 60 C47 55 48 50 48 46 Z"
+          fill="url(#embGrad)" stroke="#F4ECD8" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M103 29 C99 25 95 27 98 32 C100 34 103 33 103 29 Z" fill="url(#embGrad)" stroke="#F4ECD8" stroke-width="1.2"/>
+    <circle cx="116" cy="33" r="1.7" fill="#3A2A1A"/>
+    <g fill="#3A2A1A"><ellipse cx="100.5" cy="80" rx="3.2" ry="1.4"/><ellipse cx="109" cy="80" rx="3" ry="1.3"/><ellipse cx="51" cy="80" rx="3.2" ry="1.4"/><ellipse cx="60" cy="80" rx="3" ry="1.3"/></g>
+    <!-- calf (in front) -->
+    <path d="M60 58 C56 60 55 68 58 77" fill="none" stroke="#4E331E" stroke-width="2" stroke-linecap="round"/>
+    <g fill="url(#embGrad)" stroke="#F4ECD8" stroke-width="1.2" stroke-linejoin="round">
+      <path d="M90 60 L89 80 L93 80 L94 60 Z"/><path d="M95 59 L94 80 L98 80 L99 59 Z"/>
+      <path d="M66 60 L64 80 L69 80 L70 61 Z"/><path d="M73 60 L72 80 L76 80 L77 61 Z"/>
+    </g>
+    <path d="M60 62 C59 56 63 52 70 51 C80 50 88 52 92 56 C94 53 97 51 100 52 C103 53 103 58 99 59
+             C97 62 93 63 90 62 C89 65 86 67 81 67 C73 68 65 67 62 65 C60 64 60 62 60 62 Z"
+          fill="url(#embGrad)" stroke="#F4ECD8" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M93 54 C90 51 87 53 89 57 Z" fill="url(#embGrad)" stroke="#F4ECD8" stroke-width="1"/>
+    <circle cx="98" cy="56" r="1.4" fill="#3A2A1A"/>
+    <g fill="#3A2A1A"><ellipse cx="91" cy="80" rx="2.6" ry="1.2"/><ellipse cx="97" cy="80" rx="2.4" ry="1.1"/><ellipse cx="67" cy="80" rx="2.6" ry="1.2"/><ellipse cx="74" cy="80" rx="2.4" ry="1.1"/></g>
+  </symbol>
+</defs></svg>
+
 <!-- ===================== NAV ===================== -->
 <header class="nav">
   <div class="wrap nav__in">
     <a href="#top" class="brand" aria-label="Wholesome Family Organics home">
-      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#3A2A1A"/><path d="M8 16c2.5-4 6.5-5.5 12-5.5S29.5 12 32 16c0 5.2-2.6 11.5-12 11.5S8 21.2 8 16z" fill="#C9A87C"/><circle cx="15" cy="17" r="1.7" fill="#3A2A1A"/><circle cx="25" cy="17" r="1.7" fill="#3A2A1A"/><path d="M16 24c1.3 1.2 6.7 1.2 8 0" stroke="#3A2A1A" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-      <span>Wholesome Family Organics<small>Kimball, MN</small></span>
+      <svg class="brand__mark" viewBox="0 0 132 96" aria-hidden="true"><use href="#wfoEmblem"/></svg>
+      <span>Wholesome Family Organics<small>Organically Raised Beef &amp; Grains</small></span>
     </a>
     <nav class="nav__links" aria-label="Primary">
       <a href="#beef">Our beef</a>
@@ -341,52 +391,11 @@ section{position:relative}
       </div>
     </div>
     <div class="hero__art">
-      <!-- Cow + calf + fence scene, echoing the farm's mark -->
-      <svg viewBox="0 0 520 420" role="img" aria-label="A cow and calf standing by a pasture fence">
-        <defs>
-          <linearGradient id="hideGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#C9A87C"/><stop offset="1" stop-color="#5A3A22"/>
-          </linearGradient>
-          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#EBDFC6"/><stop offset="1" stop-color="#F2EAD9"/>
-          </linearGradient>
-        </defs>
-        <circle cx="260" cy="210" r="200" fill="url(#skyGrad)"/>
-        <circle cx="380" cy="120" r="44" fill="#EAD9B4" opacity=".7"/>
-        <!-- ground -->
-        <path d="M60 340 Q260 300 460 340 V420 H60 Z" fill="#5A6B3B" opacity=".22"/>
-        <line x1="60" y1="338" x2="460" y2="338" stroke="#5A6B3B" stroke-width="2" opacity=".4"/>
-        <!-- fence -->
-        <g stroke="#6E4527" stroke-width="7" stroke-linecap="round">
-          <line x1="95" y1="250" x2="95" y2="345"/><line x1="160" y1="250" x2="160" y2="345"/>
-          <line x1="78" y1="272" x2="178" y2="266"/><line x1="78" y1="300" x2="178" y2="294"/>
-        </g>
-        <!-- cow -->
-        <g>
-          <path d="M150 250
-            C150 210 175 196 210 196 L360 196
-            C400 196 420 214 420 250 C420 262 414 270 405 274
-            L400 330 L378 330 L374 280 C360 286 250 286 236 280
-            L232 330 L210 330 L206 274 C200 286 188 300 172 300
-            C150 300 150 280 150 268 Z" fill="url(#hideGrad)"/>
-          <!-- head -->
-          <path d="M150 250 C120 250 96 238 86 250 C80 258 84 276 96 282 C110 289 138 286 152 272 Z" fill="#6E4527"/>
-          <path d="M150 252 C128 252 110 244 100 252 C112 262 138 266 152 258 Z" fill="#3A2A1A" opacity=".5"/>
-          <path d="M150 214 l-12 -22 l20 8 Z" fill="#6E4527"/>
-          <ellipse cx="112" cy="244" rx="2.6" ry="3.2" fill="#2a1d10"/>
-          <path d="M360 200 l16 -30 l8 30 Z" fill="#6E4527"/>
-        </g>
-        <!-- calf -->
-        <g>
-          <path d="M300 312
-            C300 292 312 285 330 285 L398 285
-            C418 285 428 294 428 312 C428 318 425 322 420 324
-            L417 366 L406 366 L404 330 C396 333 342 333 334 330
-            L331 366 L320 366 L318 326 C314 332 308 338 300 338
-            C290 338 290 328 290 322 Z" fill="#8B5E3C"/>
-          <path d="M300 312 C285 312 274 306 268 312 C262 318 266 330 274 333 C284 336 296 332 302 324 Z" fill="#5A3A22"/>
-          <ellipse cx="280" cy="316" rx="2.2" ry="2.6" fill="#2a1d10"/>
-        </g>
+      <svg viewBox="0 0 132 106" role="img" aria-label="Wholesome Family Organics — a cow and calf by a pasture fence">
+        <ellipse cx="66" cy="47" rx="65" ry="46" fill="#EBDFC6"/>
+        <circle cx="107" cy="20" r="12" fill="#E7D3A6" opacity=".75"/>
+        <line x1="12" y1="85" x2="120" y2="85" stroke="#9C8052" stroke-width="1.3" opacity=".5"/>
+        <use href="#wfoEmblem"/>
       </svg>
     </div>
   </div>
@@ -484,45 +493,91 @@ section{position:relative}
       <div class="tool" id="tool" hidden>
         <div>
           <div class="diagram">
-            <svg id="cowSvg" viewBox="0 0 640 380" role="group" aria-label="Beef cuts diagram — select a section">
-              <!-- silhouette base -->
-              <path d="M40 168 C58 150 70 120 88 104 C98 96 108 100 112 112 C118 100 126 96 134 110 C138 124 132 138 150 150
-                       L470 150 C500 150 520 120 540 130 L548 150 C556 152 560 160 556 172 L544 196
-                       C548 220 540 250 510 256 L505 330 L482 330 L478 270
-                       C460 280 250 280 232 270 L228 330 L206 330 L202 262
-                       C190 270 176 268 168 256 C150 258 60 250 44 230 C30 212 28 184 40 168 Z"
-                       fill="#6E4527" opacity=".25"/>
-              <!-- non-interactive belly / plate / flank (ground & trim) -->
-              <path d="M232 232 L478 232 L476 268 C460 278 250 278 234 268 Z" fill="#C9A87C" opacity=".55"/>
-              <text x="356" y="258" class="region-label" style="fill:#6E4527;font-size:11px">Trim &rarr; ground</text>
-              <!-- interactive regions -->
+            <svg id="cowSvg" viewBox="0 0 860 470" role="group" aria-label="Beef cuts chart — tap a numbered section to choose its cuts">
+              <defs>
+                <linearGradient id="chartHide" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#C58F5B"/><stop offset=".5" stop-color="#9A6334"/><stop offset="1" stop-color="#6E4527"/>
+                </linearGradient>
+                <radialGradient id="parch" cx="50%" cy="40%" r="78%">
+                  <stop offset="0" stop-color="#F3E8CE"/><stop offset="1" stop-color="#E0CB9F"/>
+                </radialGradient>
+                <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/>
+                  <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .05 0"/></filter>
+              </defs>
+              <rect x="0" y="0" width="860" height="470" fill="url(#parch)"/>
+              <rect x="0" y="0" width="860" height="470" filter="url(#grain)"/>
+              <!-- ground -->
+              <g stroke="#8A5A30" stroke-linecap="round" opacity=".45">
+                <line x1="150" y1="438" x2="700" y2="438" stroke-width="1.6"/>
+                <line x1="205" y1="446" x2="245" y2="446" stroke-width="1.2"/>
+                <line x1="300" y1="448" x2="360" y2="448" stroke-width="1.2"/>
+                <line x1="430" y1="446" x2="470" y2="446" stroke-width="1.2"/>
+                <line x1="560" y1="448" x2="612" y2="448" stroke-width="1.2"/>
+              </g>
+              <!-- cow illustration -->
+              <g id="cowArt" stroke="#3A2A1A" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+                <!-- far legs -->
+                <path d="M240 314 C236 352 236 388 239 416 L257 418 C260 388 260 352 264 312 Z" fill="#7A4F2E"/>
+                <path d="M626 312 C630 344 628 376 626 396 L626 416 L644 418 C647 388 648 354 642 326 Z" fill="#7A4F2E"/>
+                <!-- body -->
+                <path d="M96 248 C72 246 60 238 58 224 C56 212 64 204 78 200 C92 194 98 182 106 170
+                         C114 160 130 151 152 150 C180 149 202 149 224 145 C264 136 308 126 356 124
+                         C440 118 520 118 580 124 C612 127 637 135 654 150 C668 178 663 220 650 256
+                         C642 286 627 303 608 314 C588 324 470 338 372 336 C312 335 268 330 250 322
+                         C228 316 205 308 190 294 C176 280 170 266 174 252 C150 250 120 249 96 248 Z" fill="url(#chartHide)"/>
+                <!-- near legs -->
+                <path d="M214 312 C210 350 210 388 213 416 L233 418 C236 388 236 350 240 310 Z" fill="url(#chartHide)"/>
+                <path d="M598 306 C604 340 600 372 600 392 L600 416 L620 418 C623 388 624 352 618 322 C614 312 606 306 600 304 Z" fill="url(#chartHide)"/>
+                <!-- hooves -->
+                <ellipse cx="223" cy="418" rx="11" ry="5" fill="#241810" stroke="none"/>
+                <ellipse cx="610" cy="418" rx="11" ry="5" fill="#241810" stroke="none"/>
+                <ellipse cx="248" cy="418" rx="10" ry="4.5" fill="#1d130a" stroke="none"/>
+                <ellipse cx="635" cy="418" rx="10" ry="4.5" fill="#1d130a" stroke="none"/>
+                <!-- tail -->
+                <path d="M652 154 C674 164 674 206 668 246 C664 276 670 298 663 314" fill="none" stroke="#3A2A1A" stroke-width="5"/>
+                <path d="M663 310 C654 322 661 334 657 344 C669 339 675 324 672 308 Z" fill="#3A2A1A"/>
+                <!-- horns -->
+                <path d="M150 150 C145 137 149 126 158 121 C157 132 160 142 162 150 Z" fill="#E8D9B5"/>
+                <path d="M168 150 C172 136 182 130 192 131 C184 139 178 145 181 151 Z" fill="#E8D9B5"/>
+                <!-- ear -->
+                <path d="M188 150 C208 137 223 145 217 162 C209 173 193 167 187 156 Z" fill="#8B5E3C"/>
+                <!-- white face -->
+                <path d="M96 248 C72 246 60 236 58 224 C56 212 64 204 78 200 C92 194 98 184 106 172 C112 184 110 202 102 218 C96 232 102 242 96 248 Z" fill="#EBDCC0" stroke-width="2"/>
+                <ellipse cx="98" cy="201" rx="4.2" ry="5.4" fill="#241810" stroke="none"/>
+                <ellipse cx="66" cy="216" rx="3.4" ry="4.6" fill="#241810" stroke="none"/>
+                <path d="M58 231 C70 237 84 237 92 232" fill="none" stroke="#3A2A1A" stroke-width="1.6"/>
+              </g>
+              <!-- dashed primal dividers -->
+              <g stroke="#3A2A1A" stroke-width="1.7" stroke-dasharray="4 6" opacity=".75" fill="none" stroke-linecap="round">
+                <path d="M300 130 C302 185 305 225 306 254"/>
+                <path d="M390 125 L394 254"/>
+                <path d="M470 123 L473 251"/>
+                <path d="M548 127 C552 175 553 215 553 250"/>
+                <path d="M180 253 C320 268 430 266 553 251"/>
+                <path d="M210 254 L211 312"/>
+                <path d="M553 250 C600 290 575 300 560 302"/>
+              </g>
+              <!-- clickable region overlays -->
               <g id="regions">
                 <path class="cut-region" data-region="chuck" tabindex="0" role="button" aria-label="Chuck — front shoulder"
-                      d="M152 152 L236 150 L240 232 L206 236 L172 230 L160 210 Z"/>
-                <path class="cut-region" data-region="brisket" tabindex="0" role="button" aria-label="Brisket — chest"
-                      d="M172 232 L232 232 L234 268 C214 270 196 264 188 256 C178 250 172 244 172 232 Z"/>
+                      d="M186 178 C220 150 270 132 302 130 L306 254 L212 260 L184 224 Z"/>
                 <path class="cut-region" data-region="rib" tabindex="0" role="button" aria-label="Rib"
-                      d="M240 150 L336 149 L338 230 L242 232 Z"/>
-                <path class="cut-region" data-region="loin" tabindex="0" role="button" aria-label="Loin — back"
-                      d="M338 149 L438 150 L440 228 L340 230 Z"/>
+                      d="M302 130 L390 125 L394 254 L306 254 Z"/>
+                <path class="cut-region" data-region="shortloin" tabindex="0" role="button" aria-label="Short loin"
+                      d="M390 125 L470 123 L473 251 L394 254 Z"/>
+                <path class="cut-region" data-region="sirloin" tabindex="0" role="button" aria-label="Sirloin"
+                      d="M470 123 L548 127 L553 250 L473 251 Z"/>
                 <path class="cut-region" data-region="round" tabindex="0" role="button" aria-label="Round — hindquarter"
-                      d="M438 150 C476 148 500 124 520 132 L528 152 C536 156 538 166 532 176 L522 200 C526 224 516 250 490 256 L478 250 L442 228 Z"/>
+                      d="M548 127 C600 130 636 138 654 152 C666 182 662 224 648 256 C628 296 590 304 560 302 L553 250 Z"/>
+                <path class="cut-region" data-region="brisket" tabindex="0" role="button" aria-label="Brisket — chest"
+                      d="M184 256 L306 254 L306 300 C270 314 232 312 206 300 C190 292 184 274 184 256 Z"/>
                 <path class="cut-region" data-region="shank" tabindex="0" role="button" aria-label="Shank — legs"
-                      d="M206 256 L230 250 L226 332 L204 332 Z M478 252 L508 252 L503 332 L481 332 Z"/>
+                      d="M206 300 L244 300 L240 420 L206 420 Z M592 300 L626 300 L622 420 L594 420 Z"/>
               </g>
-              <!-- region center labels -->
+              <!-- numbers -->
               <g id="regionLabels"></g>
-              <!-- completion checks -->
-              <g id="regionChecks"></g>
-              <!-- head silhouette (non-interactive, drawn over) -->
-              <path d="M40 168 C58 150 70 120 88 104 C98 96 108 100 112 112 C118 100 126 96 134 110 C138 124 132 138 150 150 C150 150 120 150 96 168 C60 172 44 196 44 196 C30 188 30 180 40 168 Z" fill="#5A3A22"/>
-              <ellipse cx="62" cy="182" rx="3" ry="3.6" fill="#241810"/>
             </svg>
-            <div class="diagram__legend">
-              <span><i class="dot" style="background:var(--leather)"></i> To choose</span>
-              <span><i class="dot" style="background:var(--tan)"></i> Open</span>
-              <span><i class="dot" style="background:var(--pasture)"></i> Done</span>
-            </div>
+            <div class="cowlegend" id="cowLegend"></div>
             <div class="extras" id="extraChips"><!-- ground & specialty chips --></div>
           </div>
         </div>
@@ -530,7 +585,7 @@ section{position:relative}
         <div class="drawer" id="drawer" aria-live="polite">
           <div class="drawer__empty" id="drawerEmpty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Tap a section of the cow<br>to choose its cuts.
+            Tap a numbered section of the cow<br>to choose its cuts.
           </div>
         </div>
       </div>
@@ -616,21 +671,23 @@ section{position:relative}
 
   /* ---------- cut data model (maps to the farm's order form) ---------- */
   var REGIONS = [
-    {id:"chuck", name:"Chuck", sub:"Front shoulder", center:[196,196], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
+    {id:"chuck", num:1, name:"Chuck", sub:"Front shoulder", center:[244,200], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
       cuts:[{id:"chuck_roast",name:"Chuck Roast"},{id:"arm_roast",name:"Arm Roast"},{id:"stew",name:"Stew Meat",lbs:true}]},
-    {id:"rib", name:"Rib", sub:"Upper middle", center:[289,191], blurb:"The tender rib section — where rib-eye steaks come from.",
+    {id:"rib", num:2, name:"Rib", sub:"Upper fore-rib", center:[348,190], blurb:"The tender rib section — where rib-eye steaks come from.",
       cuts:[{id:"ribeye",name:"Rib-eye Steak"},{id:"short_ribs",name:"Short Ribs"}]},
-    {id:"loin", name:"Loin", sub:"Upper back", center:[389,190], blurb:"The most tender part of the animal — the premium steaks.",
-      cuts:[{id:"tbone",name:"T-Bone Steak"},{id:"sirloin",name:"Sirloin Steak"}]},
-    {id:"round", name:"Round", sub:"Hindquarter", center:[485,196], blurb:"Lean rear muscle — great for roasts.",
+    {id:"shortloin", num:3, name:"Short Loin", sub:"Upper back", center:[431,188], blurb:"The most tender part of the animal — home of the T-bone.",
+      cuts:[{id:"tbone",name:"T-Bone Steak"}]},
+    {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[510,188], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
+      cuts:[{id:"sirloin",name:"Sirloin Steak"}]},
+    {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[598,205], blurb:"Lean rear muscle — great for roasts.",
       cuts:[{id:"rump_round_roast",name:"Rump / Round Roast"}]},
-    {id:"brisket", name:"Brisket", sub:"Chest", center:[200,250], blurb:"Lower chest — low-and-slow favorite.",
+    {id:"brisket", num:6, name:"Brisket", sub:"Chest", center:[245,278], blurb:"Lower chest — low-and-slow favorite.",
       cuts:[{id:"brisket",name:"Brisket"}]},
-    {id:"shank", name:"Shank", sub:"Legs", center:[217,283], blurb:"From the legs — rich, marrow-filled soup bones.",
+    {id:"shank", num:7, name:"Shank", sub:"Legs", center:[224,355], blurb:"From the legs — rich, marrow-filled soup bones.",
       cuts:[{id:"soup_bones",name:"Soup Bones"}]},
-    {id:"specialty", name:"Specialty", sub:"Organ meats", center:null, blurb:"Traditional, nutrient-dense organ cuts. Optional.",
+    {id:"specialty", num:null, name:"Specialty", sub:"Organ meats", center:null, blurb:"Traditional, nutrient-dense organ cuts. Optional.",
       cuts:[{id:"liver",name:"Liver"},{id:"tongue",name:"Tongue"}]},
-    {id:"ground", name:"Ground Beef", sub:"From the whole animal", center:null, blurb:"Everything you don't pick as a cut becomes lean ground beef. Choose your package size.",
+    {id:"ground", num:null, name:"Ground Beef", sub:"From the whole animal", center:null, blurb:"Everything you don't pick as a cut becomes lean ground beef. Choose your package size.",
       cuts:[{id:"hamburger",name:"Ground Beef (Hamburger)",pkg:["1 lb","1½ lb","2 lb"],defaultOn:true}]}
   ];
 
@@ -731,24 +788,39 @@ section{position:relative}
   }
 
   /* ===================== cut tool ===================== */
-  function buildLabelsAndChecks(){
-    var lbls="", chks="";
+  function buildNumbers(){
+    var nums="";
     REGIONS.forEach(function(r){
-      if(!r.center) return;
-      lbls += '<text class="region-label" x="'+r.center[0]+'" y="'+(r.center[1]+4)+'" data-lbl="'+r.id+'">'+r.name.toUpperCase()+'</text>';
-      chks += '<g class="region-check" data-check="'+r.id+'" transform="translate('+(r.center[0])+','+(r.center[1]-20)+')">'+
-              '<circle r="11" fill="#3A2A1A"/><path d="M-5 0 l3.5 4 L6 -4" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>';
+      if(!r.num) return;
+      nums += '<text class="region-num" data-num="'+r.id+'" x="'+r.center[0]+'" y="'+r.center[1]+'">'+r.num+'</text>';
     });
-    $("#regionLabels").innerHTML=lbls;
-    $("#regionChecks").innerHTML=chks;
+    $("#regionLabels").innerHTML=nums;
+  }
+
+  var CHECK_SVG='<svg class="leg__check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
+
+  function buildLegend(){
+    var html="";
+    REGIONS.filter(function(r){return r.num;}).forEach(function(r){
+      var cutNames=r.cuts.map(function(c){return c.name.replace(" (Hamburger)","");}).join(", ");
+      html += '<button class="leg" type="button" data-region="'+r.id+'">'+
+        '<span class="leg__n">'+r.num+'</span>'+
+        '<span class="leg__name"><b>'+r.name+'</b></span>'+CHECK_SVG+'</button>';
+    });
+    $("#cowLegend").innerHTML=html;
   }
 
   function buildExtraChips(){
     var html="";
-    REGIONS.filter(function(r){return !r.center;}).forEach(function(r){
+    REGIONS.filter(function(r){return !r.num;}).forEach(function(r){
       html += '<button class="chip" type="button" data-region="'+r.id+'">'+r.name+'</button>';
     });
     $("#extraChips").innerHTML=html;
+  }
+
+  function setRegionState(id, cls, on){
+    $$('[data-region="'+id+'"]').forEach(function(el){ el.classList.toggle(cls,on); });
+    var n=$('[data-num="'+id+'"]'); if(n) n.classList.toggle(cls,on);
   }
 
   function openRegion(id){
@@ -756,8 +828,9 @@ section{position:relative}
     var r=REGIONS.filter(function(x){return x.id===id;})[0];
     var s=state.sections[id];
     // highlight
-    $$(".cut-region").forEach(function(p){ p.classList.toggle("is-active", p.getAttribute("data-region")===id); });
-    $$(".chip").forEach(function(c){ c.classList.toggle("is-active", c.getAttribute("data-region")===id); });
+    $$(".cut-region,.chip,.leg,.region-num").forEach(function(el){ el.classList.remove("is-active"); });
+    setRegionState(id,"is-active",true);
+    $$(".chip,.leg").forEach(function(el){ if(el.getAttribute("data-region")===id) el.classList.add("is-active"); });
 
     var rows = r.cuts.map(function(c){
       var cs=s.cuts[c.id];
@@ -806,25 +879,20 @@ section{position:relative}
 
   function completeRegion(id){
     state.sections[id].complete=true;
-    var p=$('.cut-region[data-region="'+id+'"]'); if(p) p.classList.remove("is-active");
-    $$('.cut-region[data-region="'+id+'"]').forEach(function(el){el.classList.add("is-done");});
-    var chk=$('[data-check="'+id+'"]'); if(chk) chk.classList.add("show");
-    var chip=$('.chip[data-region="'+id+'"]'); if(chip){chip.classList.remove("is-active");chip.classList.add("is-done");}
+    setRegionState(id,"is-active",false);
+    setRegionState(id,"is-done",true);
+    $$(".chip,.leg").forEach(function(el){ if(el.getAttribute("data-region")===id){ el.classList.remove("is-active"); el.classList.add("is-done"); } });
     closeDrawer();
     updateProgress();
-    // gently nudge to next undone region
-    var next=REGIONS.filter(function(r){return !state.sections[r.id].complete;})[0];
-    if(next) { /* leave for user */ }
   }
 
   function closeDrawer(){
     activeRegion=null;
-    $$(".cut-region").forEach(function(p){p.classList.remove("is-active");});
-    $$(".chip").forEach(function(c){c.classList.remove("is-active");});
+    $$(".cut-region,.chip,.leg,.region-num").forEach(function(el){ el.classList.remove("is-active"); });
     $("#drawer").innerHTML=
       '<div class="drawer__empty">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'+
-      'Tap a section of the cow<br>to choose its cuts.</div>';
+      'Tap a numbered section of the cow<br>to choose its cuts.</div>';
   }
 
   function updateProgress(){
@@ -842,7 +910,7 @@ section{position:relative}
       p.addEventListener("click",function(){ openRegion(id); });
       p.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();openRegion(id);} });
     });
-    $$(".chip").forEach(function(c){ c.addEventListener("click",function(){ openRegion(c.getAttribute("data-region")); }); });
+    $$(".chip,.leg").forEach(function(c){ c.addEventListener("click",function(){ openRegion(c.getAttribute("data-region")); }); });
     $("#grindRest").addEventListener("click",function(){
       REGIONS.forEach(function(r){ if(!state.sections[r.id].complete) completeRegion(r.id); });
     });
@@ -1021,7 +1089,7 @@ section{position:relative}
 
   /* ===================== init ===================== */
   renderPricing(); renderAvailability(); renderFooter();
-  setupAmount(); buildLabelsAndChecks(); buildExtraChips(); wireDiagram(); updateProgress();
+  setupAmount(); buildNumbers(); buildLegend(); buildExtraChips(); wireDiagram(); updateProgress();
 
   $("#reviewBtn").addEventListener("click",function(){ if(!$("#reviewBtn").disabled) openModal(); });
   $("#modalClose").addEventListener("click",closeModal);
