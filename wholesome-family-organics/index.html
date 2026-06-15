@@ -68,19 +68,19 @@ section{position:relative}
 .nav{position:sticky;top:0;z-index:50;background:rgba(242,234,217,.86);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--cream-line)}
 .nav__in{display:flex;align-items:center;justify-content:space-between;height:64px}
-.brand{display:flex;align-items:center;gap:.65rem;font-family:var(--display);font-weight:800;font-size:1.06rem;text-decoration:none;letter-spacing:-.02em}
-.brand svg{width:54px;height:39px;flex:none}
-.brand small{display:block;font-family:var(--mono);font-weight:500;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--leather-d);margin-top:1px}
+.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.brand__emblem{height:42px;width:auto;flex:none}
+.brand__word{height:34px;width:auto;flex:none}
 .nav__links{display:flex;align-items:center;gap:1.6rem}
 .nav__links a{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--espresso);opacity:.78}
 .nav__links a:hover{opacity:1}
 .nav__cta{font-size:.74rem;padding:.7em 1.2em}
 @media(max-width:760px){
   .nav__links a:not(.nav__cta){display:none}
-  .brand small{display:none}
-  .brand{font-size:.98rem;line-height:1.05}
-  .brand svg{width:44px;height:32px}
+  .brand__emblem{height:34px}
+  .brand__word{height:25px}
 }
+@media(max-width:430px){ .brand__word{display:none} }
 
 /* ============================ HERO ============================ */
 .hero{padding:clamp(2.5rem,6vw,5rem) 0 clamp(2rem,5vw,4rem);overflow:hidden}
@@ -95,6 +95,8 @@ section{position:relative}
 .hero__fact b{display:block;font-size:1.55rem;font-family:var(--display);color:var(--espresso);font-weight:700}
 .hero__art{position:relative}
 .hero__art svg{width:100%;height:auto;filter:drop-shadow(0 24px 30px rgba(58,42,26,.28))}
+.hero__art img{width:100%;height:auto;display:block;border-radius:18px;border:6px solid #fff;
+  box-shadow:0 26px 46px -20px rgba(58,42,26,.55)}
 @media(max-width:860px){
   .hero__grid{grid-template-columns:1fr;text-align:center}
   .hero__lead{margin-left:auto;margin-right:auto}
@@ -269,6 +271,7 @@ section{position:relative}
 .sheet__close{background:none;border:0;font-size:1.6rem;cursor:pointer;color:var(--leather-d);line-height:1;padding:.2rem}
 .sheet__body{padding:1.5rem}
 .ticket{border:1.5px dashed var(--leather);border-radius:10px;padding:1.2rem;background:var(--paper-2);margin-bottom:1.6rem}
+.ticket__logo{display:block;width:auto;max-width:210px;max-height:120px;margin:0 auto .9rem}
 .ticket__hd{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--cream-line);padding-bottom:.7rem;margin-bottom:.8rem}
 .ticket__hd b{font-family:var(--display);font-size:1.2rem}
 .ticket__hd span{font-family:var(--mono);font-size:.8rem;color:var(--leather-d)}
@@ -360,8 +363,8 @@ section{position:relative}
 <header class="nav">
   <div class="wrap nav__in">
     <a href="#top" class="brand" aria-label="Wholesome Family Organics home">
-      <svg class="brand__mark" viewBox="0 0 132 96" aria-hidden="true"><use href="#wfoEmblem"/></svg>
-      <span>Wholesome Family Organics<small>Organically Raised Beef &amp; Grains</small></span>
+      <img class="brand__emblem" src="assets/logo-emblem.png" alt="" aria-hidden="true">
+      <img class="brand__word" src="assets/logo-text.png" alt="Wholesome Family Organics — Organically Raised Beef and Grains">
     </a>
     <nav class="nav__links" aria-label="Primary">
       <a href="#beef">Our beef</a>
@@ -391,12 +394,7 @@ section{position:relative}
       </div>
     </div>
     <div class="hero__art">
-      <svg viewBox="0 0 132 106" role="img" aria-label="Wholesome Family Organics — a cow and calf by a pasture fence">
-        <ellipse cx="66" cy="47" rx="65" ry="46" fill="#EBDFC6"/>
-        <circle cx="107" cy="20" r="12" fill="#E7D3A6" opacity=".75"/>
-        <line x1="12" y1="85" x2="120" y2="85" stroke="#9C8052" stroke-width="1.3" opacity=".5"/>
-        <use href="#wfoEmblem"/>
-      </svg>
+      <img src="assets/hero-pasture.jpg" alt="A Hereford cow and her calf in a green Minnesota pasture at golden hour" loading="eager">
     </div>
   </div>
 </section>
@@ -493,41 +491,41 @@ section{position:relative}
       <div class="tool" id="tool" hidden>
         <div>
           <div class="diagram">
-            <svg id="cowSvg" viewBox="0 0 600 338" role="group" aria-label="Beef cuts chart — tap a numbered section to choose its cuts">
-              <image href="assets/picker-cow.jpg" x="0" y="0" width="600" height="338" preserveAspectRatio="xMidYMid meet"/>
+            <svg id="cowSvg" viewBox="0 0 600 315" role="group" aria-label="Beef cuts chart — tap a numbered section to choose its cuts">
+              <image href="assets/picker-cow.jpg" x="0" y="0" width="600" height="315" preserveAspectRatio="xMidYMid meet"/>
               <!-- dashed primal dividers -->
               <g stroke="#2A1C10" stroke-width="1.3" stroke-dasharray="3 5" opacity=".5" fill="none" stroke-linecap="round">
-                <path d="M322 84 L304 202"/>
-                <path d="M400 83 L398 200"/>
-                <path d="M452 85 L452 200"/>
-                <path d="M510 88 C520 130 521 170 520 202"/>
-                <path d="M250 206 L510 202"/>
-                <path d="M290 206 L289 248"/>
-                <path d="M430 202 L466 204"/>
-                <path d="M468 204 L465 286"/>
-                <path d="M244 243 L292 242"/>
-                <path d="M468 240 L544 238"/>
+                <path d="M220 15 L218 154"/>
+                <path d="M312 13 L312 152"/>
+                <path d="M382 14 L384 150"/>
+                <path d="M452 16 C462 60 460 110 458 150"/>
+                <path d="M130 156 L500 150"/>
+                <path d="M131 156 L130 205"/>
+                <path d="M322 150 L322 240"/>
+                <path d="M372 150 L370 238"/>
+                <path d="M64 202 L132 200"/>
+                <path d="M370 202 L452 200"/>
               </g>
               <!-- clickable region overlays (aligned to the illustration) -->
               <g id="regions">
                 <path class="cut-region" data-region="chuck" tabindex="0" role="button" aria-label="Chuck — front shoulder"
-                      d="M250 88 L322 84 L304 202 L250 206 Z"/>
+                      d="M132 40 L220 15 L218 154 L132 158 Z"/>
                 <path class="cut-region" data-region="rib" tabindex="0" role="button" aria-label="Rib"
-                      d="M322 84 L400 83 L398 200 L304 202 Z"/>
+                      d="M220 15 L312 13 L312 152 L218 154 Z"/>
                 <path class="cut-region" data-region="loin" tabindex="0" role="button" aria-label="Loin"
-                      d="M400 83 L452 85 L452 200 L398 200 Z"/>
+                      d="M312 13 L382 14 L384 150 L312 152 Z"/>
                 <path class="cut-region" data-region="sirloin" tabindex="0" role="button" aria-label="Sirloin"
-                      d="M452 85 L510 88 L520 202 L452 200 Z"/>
+                      d="M382 14 L452 16 L458 150 L384 150 Z"/>
                 <path class="cut-region" data-region="round" tabindex="0" role="button" aria-label="Round — hindquarter"
-                      d="M510 88 C544 92 568 116 576 150 C580 184 566 208 548 218 L520 202 Z"/>
+                      d="M452 16 C490 16 522 30 538 64 C548 96 546 150 532 196 C520 214 505 216 496 210 L458 150 Z"/>
                 <path class="cut-region" data-region="brisket" tabindex="0" role="button" aria-label="Brisket — chest"
-                      d="M198 206 L290 206 L289 240 L234 248 L200 240 Z"/>
+                      d="M66 150 L130 156 L130 205 L70 205 Z"/>
                 <path class="cut-region" data-region="plate" tabindex="0" role="button" aria-label="Plate"
-                      d="M292 206 L430 202 L430 282 L360 290 L296 282 Z"/>
+                      d="M132 156 L320 150 L318 240 L200 248 L136 240 Z"/>
                 <path class="cut-region" data-region="flank" tabindex="0" role="button" aria-label="Flank"
-                      d="M432 202 L468 204 L464 284 L440 290 Z"/>
+                      d="M322 150 L372 150 L370 238 L326 240 Z"/>
                 <path class="cut-region" data-region="shank" tabindex="0" role="button" aria-label="Shank — legs"
-                      d="M244 242 L292 242 L286 312 L246 312 Z M468 238 L544 238 L538 312 L474 312 Z"/>
+                      d="M64 200 L132 200 L126 312 L70 312 Z M370 200 L452 200 L446 312 L376 312 Z"/>
               </g>
               <!-- numbers -->
               <g id="regionLabels"></g>
@@ -623,26 +621,27 @@ section{position:relative}
   var $ = function(s,c){return (c||document).querySelector(s);};
   var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
   var money = function(n){return "$" + Math.round(n).toLocaleString("en-US");};
+  var LOGO_IMG = new Image(); LOGO_IMG.src = "assets/logo-full.png";  // preloaded for the PDF header
 
   /* ---------- cut data model (maps to the farm's order form) ---------- */
   var REGIONS = [
-    {id:"chuck", num:1, name:"Chuck", sub:"Front shoulder", center:[286,142], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
+    {id:"chuck", num:1, name:"Chuck", sub:"Front shoulder", center:[176,86], blurb:"The hard-working shoulder — rich, beefy roasts and stewing meat.",
       cuts:[{id:"chuck_roast",name:"Chuck Roast"},{id:"arm_roast",name:"Arm Roast"},{id:"seven_bone",name:"7-Bone Roast"},{id:"shoulder_steak",name:"Shoulder Steak"},{id:"stew",name:"Stew Meat",lbs:true}]},
-    {id:"rib", num:2, name:"Rib", sub:"Fore-rib", center:[358,138], blurb:"The tender rib section — home of the rib-eye and prime rib.",
+    {id:"rib", num:2, name:"Rib", sub:"Fore-rib", center:[265,82], blurb:"The tender rib section — home of the rib-eye and prime rib.",
       cuts:[{id:"ribeye",name:"Rib-eye Steak"},{id:"ribeye_roast",name:"Rib-eye Roast (Prime Rib)"},{id:"rib_steak",name:"Rib Steak"},{id:"back_ribs",name:"Back Ribs"}]},
-    {id:"loin", num:3, name:"Loin", sub:"Short loin", center:[425,140], blurb:"The most tender part of the animal — the premium steaks.",
+    {id:"loin", num:3, name:"Loin", sub:"Short loin", center:[348,80], blurb:"The most tender part of the animal — the premium steaks.",
       cuts:[{id:"tbone",name:"T-Bone Steak"},{id:"porterhouse",name:"Porterhouse"},{id:"strip",name:"NY Strip Steak"},{id:"filet",name:"Filet Mignon"}]},
-    {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[485,144], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
+    {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[418,84], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
       cuts:[{id:"top_sirloin",name:"Top Sirloin Steak"},{id:"tritip",name:"Tri-Tip"},{id:"petite_sirloin",name:"Petite Sirloin"}]},
-    {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[548,150], blurb:"Lean rear muscle — great for roasts and lean steaks.",
+    {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[495,98], blurb:"Lean rear muscle — great for roasts and lean steaks.",
       cuts:[{id:"rump_roast",name:"Rump Roast"},{id:"top_round",name:"Top Round"},{id:"bottom_round",name:"Bottom Round"},{id:"eye_round",name:"Eye of Round"},{id:"tip_steak",name:"Sirloin Tip Steak"},{id:"cube_steak",name:"Cube Steak"}]},
-    {id:"brisket", num:6, name:"Brisket", sub:"Chest", center:[244,226], blurb:"Lower chest — the low-and-slow favorite.",
+    {id:"brisket", num:6, name:"Brisket", sub:"Chest", center:[99,180], blurb:"Lower chest — the low-and-slow favorite.",
       cuts:[{id:"brisket",name:"Brisket"}]},
-    {id:"plate", num:7, name:"Plate", sub:"Lower mid-belly", center:[362,244], blurb:"The belly — short ribs and skirt steak.",
+    {id:"plate", num:7, name:"Plate", sub:"Lower mid-belly", center:[224,198], blurb:"The belly — short ribs and skirt steak.",
       cuts:[{id:"short_ribs",name:"Short Ribs"},{id:"skirt",name:"Skirt Steak"}]},
-    {id:"flank", num:8, name:"Flank", sub:"Lower rear belly", center:[470,246], blurb:"Lean, richly flavored — flank steak and stir-fry strips.",
+    {id:"flank", num:8, name:"Flank", sub:"Lower rear belly", center:[347,193], blurb:"Lean, richly flavored — flank steak and stir-fry strips.",
       cuts:[{id:"flank_steak",name:"Flank Steak"},{id:"stir_strips",name:"Stir-Fry Strips"}]},
-    {id:"shank", num:9, name:"Shank", sub:"Legs", center:[262,280], blurb:"From the legs — rich, marrow-filled soup bones and cross-cuts.",
+    {id:"shank", num:9, name:"Shank", sub:"Legs", center:[98,252], blurb:"From the legs — rich, marrow-filled soup bones and cross-cuts.",
       cuts:[{id:"soup_bones",name:"Soup Bones"},{id:"shank_cross",name:"Shank Cross-cut (Osso Buco)"}]},
     {id:"specialty", num:null, name:"Specialty", sub:"Organ meats & extras", center:null, blurb:"Traditional, nutrient-dense extras. All optional.",
       cuts:[{id:"liver",name:"Liver"},{id:"heart",name:"Heart"},{id:"tongue",name:"Tongue"},{id:"oxtail",name:"Ox-tail"},{id:"tallow",name:"Tallow (rendering fat)"}]},
@@ -895,7 +894,8 @@ section{position:relative}
 
   function buildTicket(){
     var lines=orderLines();
-    var html='<div class="ticket__hd"><b>'+(CFG.businessName||"Beef Order")+'</b><span>'+(state.amount||"")+' beef</span></div>';
+    var html='<img class="ticket__logo" src="assets/logo-full.png" alt="'+(CFG.businessName||"Beef Order")+'">'+
+      '<div class="ticket__hd"><b>Beef Purchase Order</b><span>'+(state.amount||"")+' beef</span></div>';
     var rate = state.amount==="Half"?P.halfPricePerLb:P.quarterPricePerLb;
     var dep = state.amount==="Half"?P.halfDeposit:P.quarterDeposit;
     html+='<div class="ticket__row"><span>Amount</span><span>'+state.amount+' &middot; $'+(rate?rate.toFixed(2):"")+'/lb hanging wt</span></div>';
@@ -913,13 +913,25 @@ section{position:relative}
     var jsPDF = window.jspdf && window.jspdf.jsPDF; if(!jsPDF) return null;
     var doc=new jsPDF({unit:"pt",format:"letter"});
     var W=612, x=54, y=64;
-    doc.setFillColor(58,42,26); doc.rect(0,0,W,90,"F");
-    doc.setTextColor(242,234,217); doc.setFont("helvetica","bold"); doc.setFontSize(20);
-    doc.text(CFG.businessName||"Beef Order", x, 46);
-    doc.setFont("courier","normal"); doc.setFontSize(9);
-    doc.text("BEEF PURCHASE ORDER", x, 64);
-    doc.text((CFG.businessAddress||"")+"  ·  "+(CFG.businessPhone||""), x, 78);
-    y=120; doc.setTextColor(40,28,16);
+    var usedLogo=false;
+    try{
+      if(LOGO_IMG && LOGO_IMG.complete && LOGO_IMG.naturalWidth){
+        var lw=160, lh=lw*LOGO_IMG.naturalHeight/LOGO_IMG.naturalWidth;
+        doc.addImage(LOGO_IMG,"PNG",(W-lw)/2,28,lw,lh);
+        y=28+lh+18; usedLogo=true;
+      }
+    }catch(e){ usedLogo=false; }
+    if(!usedLogo){
+      doc.setFillColor(58,42,26); doc.rect(0,0,W,90,"F");
+      doc.setTextColor(242,234,217); doc.setFont("helvetica","bold"); doc.setFontSize(20);
+      doc.text(CFG.businessName||"Beef Order", x, 46);
+      y=120;
+    }
+    doc.setTextColor(90,70,45); doc.setFont("courier","normal"); doc.setFontSize(8.5);
+    doc.text(((CFG.businessAddress||"")+"   ·   "+(CFG.businessPhone||"")).trim(), W/2, y, {align:"center"});
+    y+=10; doc.setDrawColor(200,185,150); doc.line(x,y,W-x,y); y+=22;
+    doc.setTextColor(40,28,16); doc.setFont("helvetica","bold"); doc.setFontSize(14);
+    doc.text("Beef Purchase Order", x, y); y+=22;
     function H(t){ doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59); doc.text(t.toUpperCase(),x,y); y+=16; doc.setTextColor(40,28,16); }
     function L(a,b){ doc.setFont("helvetica","normal"); doc.setFontSize(11);
       doc.text(String(a),x,y); if(b!=null){doc.setFont("helvetica","bold");doc.text(String(b),x+150,y);} y+=17; }
