@@ -77,10 +77,12 @@ section{position:relative}
 .nav__cta{font-size:.74rem;padding:.7em 1.2em}
 @media(max-width:760px){
   .nav__links a:not(.nav__cta){display:none}
-  .brand__emblem{height:34px}
-  .brand__word{height:25px}
+  .brand__emblem{height:30px}
+  .brand__word{height:27px}
+  .nav__cta{font-size:.62rem;padding:.62em .9em}
+  .nav__in{gap:.5rem}
 }
-@media(max-width:430px){ .brand__word{display:none} }
+@media(max-width:380px){ .brand__emblem{display:none} }
 
 /* ============================ HERO ============================ */
 .hero{padding:clamp(2.5rem,6vw,5rem) 0 clamp(2rem,5vw,4rem);overflow:hidden}
@@ -560,7 +562,7 @@ section{position:relative}
       </div>
       <div class="builder__actions">
         <button class="btn btn--go btn--lg" id="reviewBtn" disabled>Review &amp; submit order</button>
-        <button class="btn btn--ghost" id="grindRest" type="button">No strong preferences — grind anything I don't pick</button>
+        <button class="btn btn--ghost" id="grindRest" type="button">Skip Empty Sections — Grind The Rest (Hamburger)</button>
       </div>
     </div>
   </div>
