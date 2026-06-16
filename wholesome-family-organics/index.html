@@ -631,7 +631,8 @@ section{position:relative}
   var $ = function(s,c){return (c||document).querySelector(s);};
   var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
   var money = function(n){return "$" + Math.round(n).toLocaleString("en-US");};
-  var LOGO_IMG = new Image(); LOGO_IMG.src = "assets/logo-full.png";  // preloaded for the PDF header
+  var LOGO_EMBLEM = new Image(); LOGO_EMBLEM.src = "assets/logo-emblem.png";  // PDF header (left)
+  var LOGO_TEXT   = new Image(); LOGO_TEXT.src   = "assets/logo-text.png";    // PDF header (right)
   var INVENTORY = (CFG.inventory||[]).slice();  // live inventory (from config, or replaced by the Sheet API)
 
   /* ---------- cut data model (maps to the farm's order form) ---------- */
@@ -967,30 +968,33 @@ section{position:relative}
     var jsPDF = window.jspdf && window.jspdf.jsPDF; if(!jsPDF) return null;
     var doc=new jsPDF({unit:"pt",format:"letter"});
     var W=612, x=54, y=64;
-    var usedLogo=false;
+    // ---- header: emblem (left) + wordmark (right) ----
+    var headerBottom=44, placed=false;
     try{
-      if(LOGO_IMG && LOGO_IMG.complete && LOGO_IMG.naturalWidth){
-        var lw=160, lh=lw*LOGO_IMG.naturalHeight/LOGO_IMG.naturalWidth;
-        doc.addImage(LOGO_IMG,"PNG",(W-lw)/2,28,lw,lh);
-        y=28+lh+18; usedLogo=true;
+      var hx=x;
+      if(LOGO_EMBLEM && LOGO_EMBLEM.complete && LOGO_EMBLEM.naturalWidth){
+        var eh=46, ew=eh*LOGO_EMBLEM.naturalWidth/LOGO_EMBLEM.naturalHeight;
+        doc.addImage(LOGO_EMBLEM,"PNG",hx,30,ew,eh); hx+=ew+12; headerBottom=Math.max(headerBottom,30+eh); placed=true;
       }
-    }catch(e){ usedLogo=false; }
-    if(!usedLogo){
-      doc.setFillColor(58,42,26); doc.rect(0,0,W,90,"F");
-      doc.setTextColor(242,234,217); doc.setFont("helvetica","bold"); doc.setFontSize(20);
-      doc.text(CFG.businessName||"Beef Order", x, 46);
-      y=120;
-    }
+      if(LOGO_TEXT && LOGO_TEXT.complete && LOGO_TEXT.naturalWidth){
+        var th=34, tw=th*LOGO_TEXT.naturalWidth/LOGO_TEXT.naturalHeight;
+        doc.addImage(LOGO_TEXT,"PNG",hx,36,tw,th); headerBottom=Math.max(headerBottom,36+th); placed=true;
+      }
+    }catch(e){ placed=false; }
+    if(!placed){ doc.setTextColor(40,28,16); doc.setFont("helvetica","bold"); doc.setFontSize(18);
+      doc.text(CFG.businessName||"Beef Order", x, 52); headerBottom=60; }
+    y=headerBottom+14;
     doc.setTextColor(90,70,45); doc.setFont("courier","normal"); doc.setFontSize(8.5);
-    doc.text(((CFG.businessAddress||"")+"   ·   "+(CFG.businessPhone||"")).trim(), W/2, y, {align:"center"});
-    y+=10; doc.setDrawColor(200,185,150); doc.line(x,y,W-x,y); y+=22;
+    doc.text(((CFG.businessAddress||"")+"   ·   "+(CFG.businessPhone||"")).trim(), x, y); y+=9;
+    doc.setDrawColor(200,185,150); doc.line(x,y,W-x,y); y+=20;
     doc.setTextColor(40,28,16); doc.setFont("helvetica","bold"); doc.setFontSize(14);
-    doc.text("Beef Purchase Order", x, y); y+=22;
-    var BOT=744, TOP=58;  // bottom limit / top of a continued page (letter = 792pt tall)
+    doc.text("Beef Purchase Order", x, y); y+=20;
+
+    var BOT=744, TOP=58;  // letter = 792pt tall
     function brk(h){ if(y + (h||14) > BOT){ doc.addPage(); y=TOP; } }
-    function H(t){ brk(30); doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59); doc.text(t.toUpperCase(),x,y); y+=16; doc.setTextColor(40,28,16); }
-    function L(a,b){ brk(17); doc.setFont("helvetica","normal"); doc.setFontSize(11);
-      doc.text(String(a),x,y); if(b!=null){doc.setFont("helvetica","bold");doc.text(String(b),x+150,y);} y+=17; }
+    function H(t){ brk(28); doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59); doc.text(t.toUpperCase(),x,y); y+=16; doc.setTextColor(40,28,16); }
+    function L(a,b){ brk(16); doc.setFont("helvetica","normal"); doc.setFontSize(11);
+      doc.text(String(a),x,y); if(b!=null){doc.setFont("helvetica","bold");doc.text(String(b),x+150,y);} y+=15; }
     H("Customer");
     L("Name:",data.name); L("Address:",data.address); L("City/State/ZIP:",data.city_state_zip);
     L("Phone:",data.phone); L("Email:",data.email);
@@ -1001,15 +1005,33 @@ section{position:relative}
     L("Delivery:",state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch");
     if(dep>0) L("Deposit:",money(dep)+" due with order");
     y+=6; H("Cuts requested");
-    orderLines().forEach(function(l){
-      brk(30);  // keep a section header with at least its first line
-      doc.setFont("courier","bold"); doc.setFontSize(9); doc.text(l.section,x,y); y+=14;
-      doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
-      if(l.items.length){ l.items.forEach(function(it){ brk(15); doc.text("•  "+it, x+12, y); y+=15; }); }
-      else { brk(15); doc.setTextColor(120,90,60); doc.text("Grind into hamburger", x+12, y); doc.setTextColor(40,28,16); y+=15; }
-      y+=4;
-    });
-    if(data.special_requests){ y+=6; H("Special requests"); doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
+
+    // ---- cuts in two balanced columns (keeps even a full order on one page) ----
+    var lines=orderLines();
+    function weight(l){ return 1 + Math.max(1, l.items.length); }
+    var total=0; lines.forEach(function(l){ total+=weight(l); });
+    var run=0, best=1e9, splitIdx=1;            // pick the split that best balances the two columns
+    for(var i=0;i<lines.length-1;i++){ run+=weight(lines[i]); var diff=Math.abs(run-(total-run)); if(diff<=best){ best=diff; splitIdx=i+1; } }
+    var colTop=y, gap=18, colW=(W - x*2 - gap)/2, xR=x+colW+gap;
+    function renderCol(arr, cx){
+      var cy=colTop;
+      arr.forEach(function(l){
+        doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59);
+        doc.text(l.section, cx, cy); cy+=12; doc.setTextColor(40,28,16);
+        doc.setFont("helvetica","normal"); doc.setFontSize(10);
+        if(l.items.length){ l.items.forEach(function(it){
+          doc.splitTextToSize("- "+it, colW).forEach(function(ln){ doc.text(ln, cx+6, cy); cy+=12; });
+        }); }
+        else { doc.setTextColor(120,90,60); doc.text("Grind into hamburger", cx+6, cy); doc.setTextColor(40,28,16); cy+=12; }
+        cy+=4;
+      });
+      return cy;
+    }
+    var yL=renderCol(lines.slice(0,splitIdx), x);
+    var yR=renderCol(lines.slice(splitIdx), xR);
+    y=Math.max(yL,yR)+4;
+
+    if(data.special_requests){ y+=4; H("Special requests"); doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
       doc.splitTextToSize(data.special_requests,W-2*x).forEach(function(ln){ brk(15); doc.text(ln,x,y); y+=15; }); }
     doc.setFont("courier","normal"); doc.setFontSize(8); doc.setTextColor(120,90,60);
     if(y > 758){ doc.addPage(); y=TOP; }
@@ -1104,7 +1126,7 @@ section{position:relative}
   }
 
   /* ===================== modal wiring ===================== */
-  function openModal(){ buildTicket(); $("#modal").classList.add("open"); document.body.style.overflow="hidden"; setTimeout(function(){$("#fName").focus();},60); }
+  function openModal(){ buildTicket(); $("#modal").classList.add("open"); document.body.style.overflow="hidden"; setTimeout(function(){ var el=$("#fName"); if(el) el.focus(); },60); }
   function closeModal(){ $("#modal").classList.remove("open"); document.body.style.overflow=""; }
 
   /* ===================== footer ===================== */
