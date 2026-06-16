@@ -1159,19 +1159,25 @@ section{position:relative}
     y+=6; H("Cuts requested");
 
     // ---- cuts in two balanced columns (keeps even a full order on one page) ----
+    var gap=18, colW=(W - x*2 - gap)/2, xR=x+colW+gap;
     var lines=orderLines();
+    // Special requests flows as the FINAL entry in the column list, so it lands
+    // at the bottom of the 2nd column right after the last cut (part of the same
+    // list) rather than as a separate full-width block below the columns.
+    if(data.special_requests){ lines.push({section:"Special requests", raw:true, items:doc.splitTextToSize(data.special_requests, colW-6)}); }
     function weight(l){ return 1 + Math.max(1, l.items.length); }
     var total=0; lines.forEach(function(l){ total+=weight(l); });
     var run=0, best=1e9, splitIdx=1;            // pick the split that best balances the two columns
     for(var i=0;i<lines.length-1;i++){ run+=weight(lines[i]); var diff=Math.abs(run-(total-run)); if(diff<=best){ best=diff; splitIdx=i+1; } }
-    var colTop=y, gap=18, colW=(W - x*2 - gap)/2, xR=x+colW+gap;
+    var colTop=y;
     function renderCol(arr, cx){
       var cy=colTop;
       arr.forEach(function(l){
         doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59);
         doc.text(l.section, cx, cy); cy+=12; doc.setTextColor(40,28,16);
         doc.setFont("helvetica","normal"); doc.setFontSize(10);
-        if(l.items.length){ l.items.forEach(function(it){
+        if(l.raw){ l.items.forEach(function(ln){ doc.text(ln, cx+6, cy); cy+=12; }); }
+        else if(l.items.length){ l.items.forEach(function(it){
           doc.splitTextToSize("- "+it, colW).forEach(function(ln){ doc.text(ln, cx+6, cy); cy+=12; });
         }); }
         else { doc.setTextColor(120,90,60); doc.text("Grind into hamburger", cx+6, cy); doc.setTextColor(40,28,16); cy+=12; }
@@ -1182,9 +1188,6 @@ section{position:relative}
     var yL=renderCol(lines.slice(0,splitIdx), x);
     var yR=renderCol(lines.slice(splitIdx), xR);
     y=Math.max(yL,yR)+4;
-
-    if(data.special_requests){ y+=4; H("Special requests"); doc.setFont("helvetica","normal"); doc.setFontSize(10.5);
-      doc.splitTextToSize(data.special_requests,W-2*x).forEach(function(ln){ brk(15); doc.text(ln,x,y); y+=15; }); }
     doc.setFont("courier","normal"); doc.setFontSize(8); doc.setTextColor(120,90,60);
     if(y > 758){ doc.addPage(); y=TOP; }
     doc.text("Anything not selected is ground into hamburger. The butcher will call to confirm before cutting.", x, 772);
