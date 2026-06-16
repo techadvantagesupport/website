@@ -797,17 +797,6 @@ section{position:relative}
       if(d && d.pricing){ for(var k in d.pricing){ if(d.pricing[k] || d.pricing[k]===0) P[k]=d.pricing[k]; } } // Sheet prices override config.js
     }).catch(function(){ /* keep config.js fallback */ }).then(function(){ done&&done(); });
   }
-  function postOrderToApi(data){
-    if(!CFG.inventoryApiUrl || !state.deliveryDate) return;
-    try{
-      fetch(CFG.inventoryApiUrl,{method:"POST",body:JSON.stringify({
-        action:"order", amount:state.amount, readyDate:state.deliveryDate,
-        name:data.name, email:data.email, phone:data.phone, cuts:orderText(data)
-      })}).then(function(r){return r.json();}).then(function(res){
-        if(res && res.inventory){ INVENTORY=res.inventory; renderAvailability(); refreshAmountMeta(); }
-      }).catch(function(){});
-    }catch(e){}
-  }
 
   /* ===================== cut tool ===================== */
   function buildNumbers(){
@@ -1058,17 +1047,14 @@ section{position:relative}
     var err=validate(data);
     var msg=$("#formMsg");
     if(err){ msg.className="form-msg err"; msg.textContent=err; return; }
+    if(form.botcheck && form.botcheck.checked) return;  // honeypot: silently ignore bots
 
-    postOrderToApi(data);  // auto-decrement the Google Sheet (best-effort; no-op if not configured)
-
-    var key=CFG.web3formsAccessKey||"";
     var doc=buildPDF(data);
-    var pdfBlob = doc ? doc.output("blob") : null;
+    var pdfB64 = doc ? doc.output("datauristring").replace(/^data:application\/pdf;base64,/,"") : "";
 
-    if(!key || key.indexOf("PASTE")===0){
-      // No key yet — let the customer download their order so nothing is lost.
+    if(!CFG.inventoryApiUrl){
       msg.className="form-msg err";
-      msg.innerHTML="Online sending isn't set up yet. Your order PDF will download — please email it to "+(CFG.businessEmail||"the farm")+".";
+      msg.innerHTML="Online ordering isn't connected yet. Your order PDF will download — please email it to "+(CFG.businessEmail||"the farm")+".";
       if(doc) doc.save("beef-order.pdf");
       return;
     }
@@ -1076,30 +1062,25 @@ section{position:relative}
     msg.className="form-msg"; msg.textContent="Sending your order…";
     $("#submitBtn").disabled=true;
 
-    var fd=new FormData();
-    fd.append("access_key",key);
-    fd.append("subject","New Beef Order — "+data.name+" ("+state.amount+")");
-    fd.append("from_name",(CFG.businessName||"Farm")+" website");
-    fd.append("Customer",data.name);
-    fd.append("Phone",data.phone);
-    fd.append("Email",data.email);
-    fd.append("Address",data.address+", "+data.city_state_zip);
-    fd.append("Amount",state.amount+" beef");
-    fd.append("Delivery",state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch");
-    fd.append("Order",orderText(data));
-    if(data.special_requests) fd.append("Special requests",data.special_requests);
-    fd.append("botcheck", form.botcheck.checked ? "1":"");
-    // Attachments are a Web3Forms Pro feature — only attach if explicitly enabled.
-    if(CFG.attachPdf && pdfBlob) fd.append("attachment", pdfBlob, "beef-order-"+data.name.replace(/\W+/g,"_")+".pdf");
-
-    fetch("https://api.web3forms.com/submit",{method:"POST",body:fd})
+    fetch(CFG.inventoryApiUrl,{method:"POST",body:JSON.stringify({
+      action:"order", amount:state.amount, readyDate:state.deliveryDate,
+      name:data.name, email:data.email, phone:data.phone,
+      cuts:orderText(data),
+      pdf:pdfB64, pdfname:"beef-order-"+data.name.replace(/\W+/g,"_")+".pdf"
+    })})
       .then(function(r){return r.json();})
       .then(function(res){
-        if(res.success){ showSuccess(doc); }
-        else { throw new Error(res.message||"send failed"); }
+        if(res && res.inventory){ INVENTORY=res.inventory; renderAvailability(); refreshAmountMeta(); }
+        if(res && res.error==="rate-limited"){
+          msg.className="form-msg err";
+          msg.innerHTML="You've reached the limit of 3 orders per day. Please call us at "+(CFG.businessPhone||"the farm")+" to place another.";
+          $("#submitBtn").disabled=false;
+          return;
+        }
+        showSuccess(doc);
       })
       .catch(function(e){
-        if(window.console&&console.error) console.error("Web3Forms submit failed:", e && e.message ? e.message : e);
+        if(window.console&&console.error) console.error("Order submit failed:", e && e.message ? e.message : e);
         msg.className="form-msg err";
         msg.innerHTML="Couldn't send automatically. Your order PDF will download — please email it to "+(CFG.businessEmail||"the farm")+".";
         if(doc) doc.save("beef-order.pdf");

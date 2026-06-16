@@ -17,6 +17,14 @@ var INV_SHEET = "Inventory";   // tab the business edits (falls back to the firs
 var LOG_SHEET = "Orders";      // created automatically; the order log
 var PRICE_SHEET = "Pricing";   // created automatically with the defaults below
 
+// Where order emails are sent. Change this to the business address when ready
+// to go live, then re-deploy (Manage deployments > Edit > New version).
+var ORDER_EMAIL = "pksteichen@gmail.com";
+
+// Spam protection: max orders allowed per email or phone in a rolling 24 hours.
+// (Apps Script can't see the visitor's IP, so we limit by email/phone instead.)
+var MAX_PER_DAY = 3;
+
 // Default prices/settings - used to create the Pricing tab the first time.
 // After that, the business edits the values in the Pricing tab, not here.
 var PRICE_DEFAULTS = [
@@ -70,11 +78,55 @@ function doPost(e) {
   try {
     var body = {};
     try { body = JSON.parse(e.postData.contents); } catch (err) {}
-    if (body.action === "order") return json_(placeOrder_(body));
+    if (body.action === "order") {
+      if (body.botcheck) return json_({ ok: true, inventory: readInventory_() });   // honeypot: silently drop bots
+      if (isRateLimited_(body)) return json_({ ok: false, error: "rate-limited", inventory: readInventory_() });
+      var res = placeOrder_(body);
+      sendOrderEmail_(body, res);
+      return json_(res);
+    }
     return json_({ ok: false, error: "unknown action", inventory: readInventory_() });
   } finally {
     lock.releaseLock();
   }
+}
+
+// True if this email or phone already placed MAX_PER_DAY orders in the last 24h.
+function isRateLimited_(body) {
+  var sh = SpreadsheetApp.getActive().getSheetByName(LOG_SHEET);
+  if (!sh) return false;
+  var rows = sh.getDataRange().getValues();
+  var cutoff = Date.now() - 24 * 60 * 60 * 1000;
+  var email = String(body.email || "").toLowerCase().trim();
+  var phone = String(body.phone || "").replace(/\D/g, "");
+  var count = 0;
+  for (var i = 1; i < rows.length; i++) {
+    var when = rows[i][0];
+    var t = (when instanceof Date) ? when.getTime() : new Date(when).getTime();
+    if (!t || t < cutoff) continue;
+    var rEmail = String(rows[i][2] || "").toLowerCase().trim();
+    var rPhone = String(rows[i][3] || "").replace(/\D/g, "");
+    if ((email && rEmail === email) || (phone && rPhone === phone)) count++;
+  }
+  return count >= MAX_PER_DAY;
+}
+
+// Email the order to the business (with the PDF attached if provided).
+function sendOrderEmail_(body, res) {
+  try {
+    var subject = "New Beef Order - " + (body.name || "") + " (" + (body.amount || "") + ")";
+    var text = (body.cuts || "Beef order") + "\n";
+    if (res && !res.ok) text += "\nNOTE: could not auto-reserve this delivery (sold out or date mismatch) - please confirm availability with the customer.\n";
+    var opts = { name: "Wholesome Family Organics Website" };
+    if (body.email) opts.replyTo = body.email;
+    if (body.pdf) {
+      try {
+        var bytes = Utilities.base64Decode(body.pdf);
+        opts.attachments = [Utilities.newBlob(bytes, "application/pdf", body.pdfname || "beef-order.pdf")];
+      } catch (err) {}
+    }
+    MailApp.sendEmail(ORDER_EMAIL, subject, text, opts);
+  } catch (err) {}
 }
 
 function readInventory_() {

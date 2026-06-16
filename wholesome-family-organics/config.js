@@ -17,26 +17,16 @@
 const WFO_CONFIG = {
 
   /* --------------------------------------------------------------------------
-     1) WHERE ORDERS ARE EMAILED
+     1) WHERE ORDERS GO
      --------------------------------------------------------------------------
-     Orders are delivered using Web3Forms (free). Paste your Access Key below.
-     Get one at https://web3forms.com  — enter the email address that should
-     RECEIVE the orders, and they will email you a key that looks like:
-         "a1b2c3d4-1234-5678-9abc-def012345678"
-
-     During testing this is set to send to pksteichen@gmail.com.
-     To send orders to a different inbox later: create a new key with that
-     email at web3forms.com and paste it here.
+     Orders are emailed AND logged by the Google Apps Script (set up in
+     backend/SETUP.md). The script sends the email (with the order PDF attached)
+     and records every order on the Sheet's "Orders" tab.
+       • To change which inbox receives orders: edit ORDER_EMAIL in Code.gs and
+         re-deploy (Manage deployments > Edit > New version).
+       • Spam guard (max 3 orders per email/phone per day) lives in Code.gs too.
+     The connection itself is the inventoryApiUrl below.
   -------------------------------------------------------------------------- */
-  web3formsAccessKey: "bce0ef79-b457-4132-b591-87ddae58d2a0",
-
-  // Attach the order as a PDF file to the email?
-  //   false = order is written into the email body (works on the FREE plan).
-  //   true  = order PDF is attached to the email — but this ONLY works if your
-  //           Web3Forms account is on a PAID (Pro) plan; on the free plan it
-  //           causes sending to fail. Customers can always download the PDF
-  //           themselves either way.
-  attachPdf: false,
 
   // Shown to the customer after they submit, and used in the email subject.
   businessName: "Wholesome Family Organics",
