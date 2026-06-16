@@ -52,7 +52,7 @@ const WFO_CONFIG = {
      Apps Script Web-App URL (ending in /exec) here. When set, the site reads
      live quantities from your Sheet and subtracts from them on every order.
   -------------------------------------------------------------------------- */
-  inventoryApiUrl: "",
+  inventoryApiUrl: "https://script.google.com/macros/s/AKfycbxF1B8nI8k_oSAoN3O5hn1K_MqnpG8eOZGwfsxkqoQch_BnysdBTYZORlCbboDr50IS/exec",
 
 
   /* --------------------------------------------------------------------------
