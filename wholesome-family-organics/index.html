@@ -1050,7 +1050,8 @@ section{position:relative}
     if(form.botcheck && form.botcheck.checked) return;  // honeypot: silently ignore bots
 
     var doc=buildPDF(data);
-    var pdfB64 = doc ? doc.output("datauristring").replace(/^data:application\/pdf;base64,/,"") : "";
+    var pdfB64 = "";
+    if(doc){ var du=doc.output("datauristring"); pdfB64 = du.slice(du.indexOf(",")+1); }  // strip any data:...;base64, prefix
 
     if(!CFG.inventoryApiUrl){
       msg.className="form-msg err";
