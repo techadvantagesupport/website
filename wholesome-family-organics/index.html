@@ -1158,18 +1158,28 @@ section{position:relative}
     if(dep>0) L("Deposit:",money(dep)+" due with order");
     y+=6; H("Cuts requested");
 
-    // ---- cuts in two balanced columns (keeps even a full order on one page) ----
+    // ---- cuts in two columns: fill column 1 top-to-bottom, keep each section
+    //      whole, and overflow into column 2 only when the next section would
+    //      cross the bottom margin (short orders stay in one clean column). ----
     var gap=18, colW=(W - x*2 - gap)/2, xR=x+colW+gap;
     var lines=orderLines();
-    // Special requests flows as the FINAL entry in the column list, so it lands
-    // at the bottom of the 2nd column right after the last cut (part of the same
-    // list) rather than as a separate full-width block below the columns.
+    // Special requests rides along as the final entry, so it ends up right after
+    // the last cut (bottom of column 2 on a full order, or column 1 if it fits).
     if(data.special_requests){ lines.push({section:"Special requests", raw:true, items:doc.splitTextToSize(data.special_requests, colW-6)}); }
-    function weight(l){ return 1 + Math.max(1, l.items.length); }
-    var total=0; lines.forEach(function(l){ total+=weight(l); });
-    var run=0, best=1e9, splitIdx=1;            // pick the split that best balances the two columns
-    for(var i=0;i<lines.length-1;i++){ run+=weight(lines[i]); var diff=Math.abs(run-(total-run)); if(diff<=best){ best=diff; splitIdx=i+1; } }
-    var colTop=y;
+    var colTop=y, COLBOT=744;                    // keep sections clear of the footer
+    function sectionHeight(l){
+      var h=12;                                   // section header
+      if(l.raw){ h += l.items.length*12; }
+      else if(l.items.length){ l.items.forEach(function(it){ h += doc.splitTextToSize("- "+it, colW).length*12; }); }
+      else { h += 12; }                           // "Grind into hamburger"
+      return h + 4;                               // trailing gap
+    }
+    var avail=COLBOT-colTop, col1=[], col2=[], cy=0, inCol2=false;
+    lines.forEach(function(l){
+      var h=sectionHeight(l);
+      if(!inCol2 && col1.length && cy+h>avail){ inCol2=true; cy=0; }   // whole section moves to column 2
+      (inCol2?col2:col1).push(l); cy+=h;
+    });
     function renderCol(arr, cx){
       var cy=colTop;
       arr.forEach(function(l){
@@ -1185,8 +1195,8 @@ section{position:relative}
       });
       return cy;
     }
-    var yL=renderCol(lines.slice(0,splitIdx), x);
-    var yR=renderCol(lines.slice(splitIdx), xR);
+    var yL=renderCol(col1, x);
+    var yR=renderCol(col2, xR);
     y=Math.max(yL,yR)+4;
     doc.setFont("courier","normal"); doc.setFontSize(8); doc.setTextColor(120,90,60);
     if(y > 758){ doc.addPage(); y=TOP; }
