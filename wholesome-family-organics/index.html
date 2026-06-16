@@ -254,6 +254,39 @@ section{position:relative}
 .panel__actions{display:flex;gap:.7rem;margin-top:1.2rem;flex-wrap:wrap}
 .panel__actions .btn{flex:1;min-width:130px}
 
+/* per-cut thumbnail (right-justified) */
+.cut__thumb{position:relative;flex:none;width:50px;height:50px;border-radius:9px;overflow:hidden;cursor:pointer;padding:0;
+  border:1.5px solid var(--cream-line);background:var(--paper-2);display:grid;place-items:center;transition:border-color .2s,transform .15s}
+.cut__thumb:hover{border-color:var(--leather);transform:scale(1.05)}
+.cut__thumb img{width:100%;height:100%;object-fit:cover}
+.cut__thumb-ic{position:absolute;width:15px;height:15px;right:3px;bottom:3px;color:var(--paper);opacity:.95;filter:drop-shadow(0 1px 2px rgba(0,0,0,.65))}
+.cut__thumb.noimg{border-style:dashed;border-color:var(--leather)}
+.cut__thumb.noimg .cut__thumb-ic{position:static;width:22px;height:22px;color:var(--leather-d);opacity:.7;filter:none}
+
+/* cut detail popup */
+.cutpop{position:fixed;inset:0;z-index:130;display:none;align-items:center;justify-content:center;
+  padding:1.4rem 1rem;background:rgba(40,28,16,.62);backdrop-filter:blur(3px);overflow:auto}
+.cutpop.open{display:flex}
+.cutpop__card{background:var(--paper);width:100%;max-width:440px;border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;
+  max-height:92vh;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);animation:sheetIn .32s cubic-bezier(.2,.85,.25,1)}
+.cutpop__hero{position:relative;aspect-ratio:16/10;background:var(--paper-2);flex:none}
+.cutpop__hero img{width:100%;height:100%;object-fit:cover}
+.cutpop__ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:var(--leather-d);
+  background:repeating-linear-gradient(45deg,var(--paper-2),var(--paper-2) 11px,#e4d6bb 11px,#e4d6bb 22px)}
+.cutpop__ph svg{width:38px;height:38px;opacity:.7}
+.cutpop__ph span{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+.cutpop__close{position:absolute;top:.6rem;right:.6rem;width:34px;height:34px;border-radius:999px;border:0;cursor:pointer;z-index:2;
+  background:rgba(40,28,16,.6);color:var(--paper);font-size:1.35rem;line-height:1;display:grid;place-items:center}
+.cutpop__close:hover{background:rgba(40,28,16,.85)}
+.cutpop__body{padding:1.3rem 1.4rem 1.5rem;overflow:auto}
+.cutpop__type{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--pasture-d)}
+.cutpop__name{font-size:1.5rem;margin:.15rem 0 .2rem}
+.cutpop__h{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--leather-d);
+  margin:1.1rem 0 .35rem;display:flex;align-items:center;gap:.5rem}
+.cutpop__h svg{width:15px;height:15px;flex:none}
+.cutpop__p{font-size:.92rem;color:#4a3826;margin:0}
+.cutpop__add{margin-top:1.4rem;width:100%}
+
 /* progress + builder actions */
 .progress{margin:1.8rem 0 1.4rem}
 .progress__top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tan);margin-bottom:.5rem}
@@ -598,6 +631,9 @@ section{position:relative}
   </div>
 </div>
 
+<!-- cut detail popup (photo + how to cook + sales pitch); filled by JS -->
+<div class="cutpop" id="cutpop" role="dialog" aria-modal="true" aria-labelledby="cutpopName"></div>
+
 <!-- ===================== FOOTER ===================== -->
 <footer class="foot">
   <div class="wrap foot__grid">
@@ -660,6 +696,53 @@ section{position:relative}
     {id:"ground", num:null, name:"Ground Beef", sub:"From the whole animal", center:null, blurb:"Everything you don't pick as a cut becomes lean ground beef. Choose your package size.",
       cuts:[{id:"hamburger",name:"Ground Beef (Hamburger)",pkg:["1 lb","1½ lb","2 lb"],defaultOn:true}]}
   ];
+
+  /* ---------- cut detail copy (how to cook it / why you'll love it) ----------
+     Photo for each cut is loaded from assets/cuts/<id>.jpg; until that file
+     exists a "Photo coming soon" placeholder shows automatically. ---------- */
+  var CUT_INFO = {
+    chuck_roast:{cook:"Built for low and slow. Sear it hard, then braise in a Dutch oven or slow-cooker for 3–4 hours until it pulls apart with a fork.", pitch:"The ultimate Sunday pot roast — the more time you give it, the more it rewards you."},
+    arm_roast:{cook:"A lean shoulder roast that loves moisture — braise with broth and root vegetables until fork-tender.", pitch:"Old-fashioned, budget-friendly comfort food that feeds a crowd."},
+    seven_bone:{cook:"Named for the bone shaped like a '7.' Braise low and slow; the bone melts deep, beefy richness into the gravy.", pitch:"A classic braising roast with built-in flavor from that signature bone."},
+    shoulder_steak:{cook:"Marinate a few hours, then grill or pan-sear hot and fast to medium-rare and slice thin across the grain.", pitch:"A lean, flavorful everyday steak that's easy on the budget."},
+    stew:{cook:"Brown the cubes well, then simmer slowly in stew or soup until meltingly tender.", pitch:"The heart of every great pot of beef stew, chili, and hearty soup."},
+    ribeye:{cook:"Salt ahead, sear screaming-hot in cast iron or over the grill, baste with butter, and rest. Aim for medium-rare.", pitch:"The richest, most marbled steak on the animal — pure indulgence."},
+    ribeye_roast:{cook:"The showstopper: season generously and roast low to a rosy center, then a high-heat blast for the crust.", pitch:"The centerpiece of the holiday table — restaurant prime rib, made at home."},
+    rib_steak:{cook:"A bone-in ribeye — grill or pan-sear hot; the bone keeps it extra juicy.", pitch:"All the ribeye richness, with a bone to gnaw on."},
+    back_ribs:{cook:"Rub them up, then smoke or slow-roast low and wrap until the meat tugs off the bone.", pitch:"Finger-licking, fall-off-the-bone backyard barbecue."},
+    tbone:{cook:"Two steaks in one — strip and tenderloin. Grill hot, keeping the smaller filet side away from the hottest spot so it doesn't overcook.", pitch:"Two premium steaks divided by one famous bone."},
+    porterhouse:{cook:"The big brother of the T-bone with a generous filet. Grill hot and fast, rest, then carve both muscles off the bone.", pitch:"The steakhouse king — the best of the strip and the tenderloin on one plate."},
+    strip:{cook:"Pat dry, season simply, and sear hard for a deep crust and a tender, even medium-rare center.", pitch:"The steakhouse favorite — tender, beefy, and foolproof on the grill."},
+    filet:{cook:"The most tender cut — cook gently to medium-rare so it stays buttery; a quick sear and a butter baste is all it needs.", pitch:"Melt-in-your-mouth tenderness — the most luxurious bite on the cow."},
+    top_sirloin:{cook:"Lean and versatile — grill or pan-sear to medium-rare and slice across the grain.", pitch:"Big steak flavor with a leaner profile and a friendlier price."},
+    tritip:{cook:"Santa-Maria style: rub it, grill or roast the whole piece, then slice thin across the grain.", pitch:"A West-Coast favorite that's full of flavor and feeds the table from one roast."},
+    petite_sirloin:{cook:"A quick-cooking lean steak — sear hot and fast, don't overcook, and slice thin.", pitch:"A lean, weeknight-friendly steak that's gentle on the budget."},
+    rump_roast:{cook:"A lean hindquarter roast — roast it low for slicing, or braise for fork-tender results.", pitch:"Lean, honest beef that carves into a satisfying Sunday dinner."},
+    top_round:{cook:"Best roasted rare and sliced paper-thin, or marinated for the grill — perfect for homemade roast beef.", pitch:"Your go-to for lean deli-style roast beef and London broil."},
+    bottom_round:{cook:"A lean roast that shines braised, or roasted low and sliced thin for sandwiches.", pitch:"Affordable, lean, and made for big-batch roast beef."},
+    eye_round:{cook:"Very lean — roast hot, then rest and slice thin; don't push it past medium-rare.", pitch:"An economical lean roast that slices beautifully for sandwiches."},
+    tip_steak:{cook:"Lean and quick — marinate, then sear hot or thread onto kabobs and stir-fry.", pitch:"A lean, flavorful all-rounder for grilling and skillet dinners."},
+    cube_steak:{cook:"Already tenderized — dredge and pan-fry quick for chicken-fried steak, or smother it in gravy.", pitch:"The classic for chicken-fried steak and Salisbury-steak comfort food."},
+    brisket:{cook:"The pitmaster's prize — rub and smoke low and slow for 10+ hours, or braise into tender corned beef and pot roast.", pitch:"Hours of patience turn this into the most rewarding barbecue you'll ever make."},
+    short_ribs:{cook:"Braise low and slow in wine or broth until the meat falls off the bone and the sauce turns silky.", pitch:"Rich, luxurious, fall-apart comfort food — restaurant-worthy at home."},
+    skirt:{cook:"Marinate, sear screaming-hot for a minute or two a side, then slice thin against the grain.", pitch:"The juiciest, beefiest cut for fajitas, tacos, and stir-fry."},
+    flank_steak:{cook:"Marinate, grill hot and fast to medium-rare, then slice thin across the grain.", pitch:"Lean, bold, and versatile — perfect for fajitas, salads, and steak sandwiches."},
+    stir_strips:{cook:"Sear in a screaming-hot wok or skillet for just a minute — high heat, quick toss.", pitch:"Dinner on the table fast — ready for any stir-fry or skillet meal."},
+    soup_bones:{cook:"Roast until deep brown, then simmer for hours into rich stock and bone broth.", pitch:"The secret to nourishing, golden homemade broth and stock."},
+    shank_cross:{cook:"Braise low and slow until the meat is tender and the marrow turns to silk — classic osso buco.", pitch:"Marrow-rich and deeply flavored — elegant enough for a special dinner."},
+    liver:{cook:"Slice thin and cook quick over high heat — classic liver and onions, still just pink in the middle.", pitch:"Nutrient-dense and traditional — packed with iron and old-fashioned flavor."},
+    heart:{cook:"Lean and surprisingly mild — slice and grill or sear quick to medium-rare, or grind it into burgers.", pitch:"Lean, rich, and prized by chefs — a true nose-to-tail favorite."},
+    tongue:{cook:"Simmer low until tender, peel, then slice or sear — wonderful in tacos de lengua.", pitch:"Incredibly tender and rich once braised — a time-honored delicacy."},
+    oxtail:{cook:"Braise long and slow until gelatin-rich and falling off the bone — perfect for stews and soups.", pitch:"Turns into the silkiest, most soul-warming stew you'll ever ladle."},
+    tallow:{cook:"Render it slowly into clean, creamy fat — the best for fries, searing, and pastry (and great for soap and candles, too).", pitch:"Old-world cooking fat that's having a comeback — pure, stable, and flavorful."},
+    hamburger:{cook:"Endlessly versatile — burgers, meatballs, tacos, chili, meatloaf, and quick weeknight skillets.", pitch:"The hardest-working beef in your freezer — lean, fresh, and family-friendly."}
+  };
+
+  // Inline icons for the thumbnails + detail popup.
+  var CAM_ICON='<svg class="cut__thumb-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+  var CAM_ICON_LG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+  var COOK_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
+  var STAR_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
 
   /* ---------- state ---------- */
   var state = { amount:null, deliveryDate:null, sections:{} };
@@ -853,9 +936,13 @@ section{position:relative}
       } else if(c.lbs){
         opt='<div class="cut__opt" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>About how many pounds?</label><input type="number" min="0" step="1" inputmode="numeric" placeholder="e.g. 10" data-lbs="'+c.id+'" value="'+(cs.lbs||"")+'"></div>';
       }
+      var thumb = CUT_INFO[c.id] ?
+        '<button class="cut__thumb noimg" type="button" data-info="'+c.id+'" aria-label="Photo &amp; cooking tips for '+c.name+'">'+
+          '<img src="assets/cuts/'+c.id+'.jpg" alt="" loading="lazy" onerror="this.remove()" onload="this.parentNode.classList.remove(\'noimg\')">'+
+          CAM_ICON+'</button>' : '';
       return '<div><div class="cut'+(cs.on?' on':'')+'" data-cut="'+c.id+'" role="checkbox" tabindex="0" aria-checked="'+cs.on+'">'+
         '<span class="cut__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>'+
-        '<span class="cut__name">'+c.name+'</span></div>'+opt+'</div>';
+        '<span class="cut__name">'+c.name+'</span>'+thumb+'</div>'+opt+'</div>';
     }).join("");
 
     $("#drawer").innerHTML =
@@ -881,6 +968,11 @@ section{position:relative}
       el.addEventListener("click",toggle);
       el.addEventListener("keydown",function(e){ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} });
     });
+    // thumbnails open the cut detail popup (don't let the click toggle the row)
+    $$(".cut__thumb",$("#drawer")).forEach(function(b){
+      b.addEventListener("click",function(e){ e.stopPropagation(); openCutInfo(b.getAttribute("data-info"), b); });
+      b.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" ") e.stopPropagation(); });
+    });
     $$("[data-pkg]",$("#drawer")).forEach(function(sel){ sel.addEventListener("change",function(){ s.cuts[sel.getAttribute("data-pkg")].pkg=sel.value; }); });
     $$("[data-lbs]",$("#drawer")).forEach(function(inp){ inp.addEventListener("input",function(){ s.cuts[inp.getAttribute("data-lbs")].lbs=inp.value; }); });
     $("[data-save]",$("#drawer")).addEventListener("click",function(){ completeRegion(id); });
@@ -905,6 +997,66 @@ section{position:relative}
       '<div class="drawer__empty">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'+
       'Tap a numbered section of the cow<br>to choose its cuts.</div>';
+  }
+
+  /* ===================== cut detail popup ===================== */
+  var lastThumb=null;
+  function findCut(id){
+    for(var i=0;i<REGIONS.length;i++){
+      var cs=REGIONS[i].cuts;
+      for(var j=0;j<cs.length;j++){ if(cs[j].id===id) return {region:REGIONS[i], cut:cs[j]}; }
+    }
+    return null;
+  }
+  function cleanCutName(n){ return n.replace(" (Hamburger)",""); }
+
+  function openCutInfo(id, thumb){
+    var f=findCut(id); if(!f) return;
+    lastThumb=thumb||null;
+    var info=CUT_INFO[id]||{};
+    var s=state.sections[f.region.id];
+    var on=s && s.cuts[id] ? s.cuts[id].on : false;
+    var name=cleanCutName(f.cut.name);
+    var type=f.region.name + (f.region.num ? " · "+(f.region.sub||"") : "");
+    $("#cutpop").innerHTML =
+      '<div class="cutpop__card">'+
+        '<div class="cutpop__hero">'+
+          '<img src="assets/cuts/'+id+'.jpg" alt="'+name+', cooked and plated" onerror="this.remove()" onload="var p=this.parentNode.querySelector(\'.cutpop__ph\'); if(p) p.remove();">'+
+          '<div class="cutpop__ph">'+CAM_ICON_LG+'<span>Photo coming soon</span></div>'+
+          '<button class="cutpop__close" id="cutpopClose" aria-label="Close">&times;</button>'+
+        '</div>'+
+        '<div class="cutpop__body">'+
+          '<div class="cutpop__type">'+type+'</div>'+
+          '<h3 class="cutpop__name" id="cutpopName">'+name+'</h3>'+
+          (info.cook?('<div class="cutpop__h">'+COOK_ICON+'How to cook it</div><p class="cutpop__p">'+info.cook+'</p>'):'')+
+          (info.pitch?('<div class="cutpop__h">'+STAR_ICON+'Why you\'ll love it</div><p class="cutpop__p">'+info.pitch+'</p>'):'')+
+          '<button class="btn cutpop__add '+(on?"btn--ghost":"btn--go")+'" type="button" id="cutpopAdd" data-cut="'+id+'" data-region="'+f.region.id+'">'+
+            (on?"✓ Added — tap to remove":"Add to my order")+'</button>'+
+        '</div>'+
+      '</div>';
+    $("#cutpop").classList.add("open");
+    document.body.style.overflow="hidden";
+    $("#cutpopClose").addEventListener("click",closeCutInfo);
+    $("#cutpopAdd").addEventListener("click",function(){ toggleCutFromPopup(id, f.region.id); });
+    setTimeout(function(){ var c=$("#cutpopClose"); if(c) c.focus(); },50);
+  }
+
+  function closeCutInfo(){
+    var pop=$("#cutpop");
+    pop.classList.remove("open"); pop.innerHTML="";
+    if(!$("#modal").classList.contains("open")) document.body.style.overflow="";
+    if(lastThumb){ try{ lastThumb.focus(); }catch(e){} lastThumb=null; }
+  }
+
+  function toggleCutFromPopup(id, regionId){
+    var s=state.sections[regionId]; if(!s||!s.cuts[id]) return;
+    var cs=s.cuts[id]; cs.on=!cs.on;
+    // keep the drawer row in sync if its section is open
+    var row=$('.cut[data-cut="'+id+'"]',$("#drawer"));
+    if(row){ row.classList.toggle("on",cs.on); row.setAttribute("aria-checked",cs.on);
+      var o=$('[data-opt="'+id+'"]',$("#drawer")); if(o) o.hidden=!cs.on; }
+    var btn=$("#cutpopAdd");
+    if(btn){ btn.className="btn cutpop__add "+(cs.on?"btn--ghost":"btn--go"); btn.textContent=cs.on?"✓ Added — tap to remove":"Add to my order"; }
   }
 
   function updateProgress(){
@@ -1147,7 +1299,12 @@ section{position:relative}
   $("#backBtn").addEventListener("click",closeModal);
   $("#submitBtn").addEventListener("click",submit);
   $("#modal").addEventListener("click",function(e){ if(e.target===$("#modal")) closeModal(); });
-  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && $("#modal").classList.contains("open")) closeModal(); });
+  $("#cutpop").addEventListener("click",function(e){ if(e.target===$("#cutpop")) closeCutInfo(); });
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Escape") return;
+    if($("#cutpop").classList.contains("open")) { closeCutInfo(); return; }   // popup is on top — close it first
+    if($("#modal").classList.contains("open")) closeModal();
+  });
 })();
 </script>
 </body>
