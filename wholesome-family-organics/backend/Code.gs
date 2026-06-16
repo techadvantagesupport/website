@@ -82,7 +82,7 @@ function doPost(e) {
       if (body.botcheck) return json_({ ok: true, inventory: readInventory_() });   // honeypot: silently drop bots
       if (isRateLimited_(body)) return json_({ ok: false, error: "rate-limited", inventory: readInventory_() });
       var res = placeOrder_(body);
-      sendOrderEmail_(body, res);
+      res.emailError = sendOrderEmail_(body, res);   // null if the email sent OK
       return json_(res);
     }
     return json_({ ok: false, error: "unknown action", inventory: readInventory_() });
@@ -126,7 +126,8 @@ function sendOrderEmail_(body, res) {
       } catch (err) {}
     }
     MailApp.sendEmail(ORDER_EMAIL, subject, text, opts);
-  } catch (err) {}
+    return null;
+  } catch (err) { return String(err); }
 }
 
 function readInventory_() {
@@ -184,4 +185,11 @@ function formatDate_(v) {
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Run this ONCE from the editor to grant the "send email" permission and verify
+// delivery: pick sendTestEmail in the function dropdown -> Run -> approve the
+// prompt -> check your inbox for "WFO email test".
+function sendTestEmail() {
+  MailApp.sendEmail(ORDER_EMAIL, "WFO email test", "If you got this, order emails will work.");
 }
