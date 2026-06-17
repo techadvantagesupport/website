@@ -481,7 +481,7 @@ section{position:relative}
 <section class="pad" id="pricing">
   <div class="wrap">
     <div class="head center"><div class="eyebrow">Pricing</div><h2>Simple, by the pound.</h2>
-      <p>Priced on <b>hanging weight</b> (the weight after butchering). Every price includes the processing fee, delivery to the butcher, and free delivery to your home. The final balance is set once the animal is processed, and is due at delivery.</p></div>
+      <p>Priced on <b>hanging weight</b> (the weight after butchering). Every price includes the processing fee, delivery to the butcher, and free delivery to your home. The final balance is set once the animal is processed, and is paid in cash on delivery (COD).</p></div>
     <div class="price__grid" id="priceGrid"><!-- rendered from config --></div>
     <p class="price__example" id="priceExample"></p>
   </div>
@@ -491,7 +491,7 @@ section{position:relative}
 <section class="pad story" id="availability">
   <div class="wrap">
     <div class="head"><div class="eyebrow">Availability</div><h2>What's available now.</h2>
-      <p>Reserve your share by sending an order below — we'll call to confirm everything before the butcher makes a single cut.</p></div>
+      <p>Reserve your share by sending an order below. Ryan or Amanda will only call if there's a question about your order form — and you're always welcome to call or email us first if you have any questions.</p></div>
     <div class="avail__grid" id="availGrid"><!-- rendered from config --></div>
   </div>
 </section>
@@ -500,7 +500,7 @@ section{position:relative}
 <section class="pad builder" id="order">
   <div class="wrap">
     <div class="head"><div class="eyebrow">Build your order</div><h2>Choose your cuts on the cow.</h2>
-      <p>Pick how much beef you'd like, then tap each part of the animal to choose your cuts. Anything you don't pick is ground into hamburger. The butcher will call to confirm before cutting.</p></div>
+      <p>Pick how much beef you'd like, then tap each part of the animal to choose your cuts. Anything you don't pick is ground into hamburger. Ryan or Amanda will only call if there's a question about your order — call or email us anytime if you'd like a hand.</p></div>
 
     <!-- STEP 1 — amount -->
     <div class="step">
@@ -654,7 +654,7 @@ section{position:relative}
   </div>
   <div class="wrap foot__bottom">
     <span>Ryan &amp; Amanda Steichen &middot; Kimball, Minnesota</span>
-    <span>Payment &amp; deposit handled directly with the farm.</span>
+    <span>Payment is cash on delivery &middot; deposit on halves handled directly with the farm.</span>
   </div>
 </footer>
 
@@ -1161,6 +1161,7 @@ section{position:relative}
     html+='<div class="ticket__row"><span>Amount</span><span>'+state.amount+' &middot; $'+(rate?rate.toFixed(2):"")+'/lb hanging wt</span></div>';
     html+='<div class="ticket__row"><span>Delivery</span><span>'+(state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch")+'</span></div>';
     if(dep>0) html+='<div class="ticket__row"><span>Deposit with order</span><span>'+money(dep)+'</span></div>';
+    html+='<div class="ticket__row"><span>Balance</span><span>Cash on delivery (COD)</span></div>';
     lines.forEach(function(l){
       html+='<div class="ticket__sec">'+l.section+'</div>';
       if(l.items.length){ l.items.forEach(function(it){ html+='<div class="ticket__row"><span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>'+it+'</span><span></span></div>'; }); }
@@ -1210,6 +1211,7 @@ section{position:relative}
     L("Amount:",state.amount+" beef  ($"+(rate?rate.toFixed(2):"")+"/lb hanging weight)");
     L("Delivery:",state.deliveryDate?fmtDate(state.deliveryDate):"Next available batch");
     if(dep>0) L("Deposit:",money(dep)+" due with order");
+    L("Balance:","Cash on delivery (COD)");
     y+=6; H("Cuts requested");
 
     // ---- cuts in two columns: fill column 1 top-to-bottom, keep each section
@@ -1254,7 +1256,7 @@ section{position:relative}
     y=Math.max(yL,yR)+4;
     doc.setFont("courier","normal"); doc.setFontSize(8); doc.setTextColor(120,90,60);
     if(y > 758){ doc.addPage(); y=TOP; }
-    doc.text("Anything not selected is ground into hamburger. The butcher will call to confirm before cutting.", x, 772);
+    doc.text("Anything not selected is ground into hamburger. Ryan or Amanda will call only if there's a question about this order.", x, 772);
     return doc;
   }
 
@@ -1266,7 +1268,7 @@ section{position:relative}
     orderLines().forEach(function(l){ t+="\n"+l.section+":\n";
       if(l.items.length) l.items.forEach(function(it){t+="  - "+it+"\n";}); else t+="  - Grind into hamburger\n"; });
     if(data.special_requests) t+="\nSpecial requests: "+data.special_requests+"\n";
-    t+="\n(Anything not selected is ground into hamburger. Butcher will call to confirm before cutting.)";
+    t+="\n(Anything not selected is ground into hamburger. Ryan or Amanda will call only if there's a question about this order.)";
     return t;
   }
 
@@ -1335,8 +1337,8 @@ section{position:relative}
       '<div class="done-state">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>'+
       '<h3>Order sent — thank you!</h3>'+
-      '<p>Your order is on its way to '+(CFG.businessName||"the farm")+'. We’ll call to confirm everything before the butcher makes a cut. '+
-      'Payment and any deposit are handled directly with the farm.</p>'+
+      '<p>Your order is on its way to '+(CFG.businessName||"the farm")+'. Ryan or Amanda will reach out only if there’s a question about your order — feel free to call or email anytime in the meantime. '+
+      'Payment is cash on delivery (COD); for a half, the deposit is arranged directly with the farm.</p>'+
       '<button class="btn btn--ghost" id="dlBtn" type="button" style="margin-top:.5rem">Download a copy (PDF)</button>'+
       '</div>';
     $("#modalTitle").textContent="All set";
