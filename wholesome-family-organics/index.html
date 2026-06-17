@@ -239,6 +239,7 @@ section{position:relative}
 .panel__type{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--pasture-d)}
 .panel h3{font-size:1.7rem;margin:.2rem 0 .5rem}
 .panel__blurb{font-size:.92rem;color:#4a3826;margin-bottom:1.2rem}
+.panel__note{font-size:.85rem;line-height:1.4;color:#5a4632;background:var(--tan-l,#f3ead6);border-left:3px solid var(--pasture-d);border-radius:.4rem;padding:.65rem .8rem;margin:-.5rem 0 1.1rem}
 .cut{display:flex;align-items:center;gap:.85rem;padding:.7rem;border:1.5px solid var(--cream-line);border-radius:10px;margin-bottom:.6rem;
   cursor:pointer;transition:border-color .2s,background .2s}
 .cut:hover{border-color:var(--leather)}
@@ -918,6 +919,25 @@ section{position:relative}
     var n=$('[data-num="'+id+'"]'); if(n) n.classList.toggle(cls,on);
   }
 
+  // The short loin can only be butchered one way: either boneless (NY Strip +
+  // Filet Mignon, which come as a pair) OR a single bone-in cut (T-Bone or
+  // Porterhouse). These three options are mutually exclusive.
+  var LOIN_GROUPS={strip:"boneless", filet:"boneless", tbone:"tbone", porterhouse:"porterhouse"};
+  function applyLoinRule(s, cid, nowOn){
+    var grp=LOIN_GROUPS[cid]; if(!grp) return;
+    Object.keys(LOIN_GROUPS).forEach(function(other){
+      if(other===cid) return;
+      if(nowOn) s.cuts[other].on = (LOIN_GROUPS[other]===grp);   // same group on, others off
+      else if(LOIN_GROUPS[other]===grp) s.cuts[other].on=false;  // deselecting one deselects its pair
+    });
+  }
+  function syncDrawerRow(s, cid){
+    var on=s.cuts[cid].on;
+    var row=$('.cut[data-cut="'+cid+'"]',$("#drawer"));
+    if(row){ row.classList.toggle("on",on); row.setAttribute("aria-checked",on); }
+    var optEl=$('[data-opt="'+cid+'"]',$("#drawer")); if(optEl) optEl.hidden=!on;
+  }
+
   function openRegion(id){
     activeRegion=id;
     var r=REGIONS.filter(function(x){return x.id===id;})[0];
@@ -950,10 +970,10 @@ section{position:relative}
         '<div class="panel__type">'+(r.sub||"")+'</div>'+
         '<h3>'+r.name+'</h3>'+
         '<p class="panel__blurb">'+r.blurb+'</p>'+
+        (id==="loin"?'<p class="panel__note">These all come from the same short loin, so the butcher can only cut it one way. Pick <b>NY Strip + Filet Mignon</b> together, <b>or</b> one bone-in option (<b>T-Bone</b> or <b>Porterhouse</b>) — choosing one clears the others.</p>':"")+
         rows+
         '<div class="panel__actions">'+
           '<button class="btn btn--go" type="button" data-save>Save section</button>'+
-          (id==="ground"?"":'<button class="btn btn--ghost" type="button" data-skip>Skip — grind it</button>')+
         '</div>'+
       '</div>';
 
@@ -962,8 +982,12 @@ section{position:relative}
       function toggle(){
         var cid=el.getAttribute("data-cut");
         var cs=s.cuts[cid]; cs.on=!cs.on;
-        el.classList.toggle("on",cs.on); el.setAttribute("aria-checked",cs.on);
-        var optEl=$('[data-opt="'+cid+'"]',$("#drawer")); if(optEl) optEl.hidden=!cs.on;
+        if(id==="loin"){
+          applyLoinRule(s, cid, cs.on);
+          Object.keys(LOIN_GROUPS).forEach(function(lc){ syncDrawerRow(s,lc); });
+        } else {
+          syncDrawerRow(s,cid);
+        }
       }
       el.addEventListener("click",toggle);
       el.addEventListener("keydown",function(e){ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} });
@@ -976,9 +1000,6 @@ section{position:relative}
     $$("[data-pkg]",$("#drawer")).forEach(function(sel){ sel.addEventListener("change",function(){ s.cuts[sel.getAttribute("data-pkg")].pkg=sel.value; }); });
     $$("[data-lbs]",$("#drawer")).forEach(function(inp){ inp.addEventListener("input",function(){ s.cuts[inp.getAttribute("data-lbs")].lbs=inp.value; }); });
     $("[data-save]",$("#drawer")).addEventListener("click",function(){ completeRegion(id); });
-    var skip=$("[data-skip]",$("#drawer")); if(skip) skip.addEventListener("click",function(){
-      r.cuts.forEach(function(c){ s.cuts[c.id].on=false; }); completeRegion(id);
-    });
   }
 
   function completeRegion(id){
@@ -1051,10 +1072,13 @@ section{position:relative}
   function toggleCutFromPopup(id, regionId){
     var s=state.sections[regionId]; if(!s||!s.cuts[id]) return;
     var cs=s.cuts[id]; cs.on=!cs.on;
-    // keep the drawer row in sync if its section is open
-    var row=$('.cut[data-cut="'+id+'"]',$("#drawer"));
-    if(row){ row.classList.toggle("on",cs.on); row.setAttribute("aria-checked",cs.on);
-      var o=$('[data-opt="'+id+'"]',$("#drawer")); if(o) o.hidden=!cs.on; }
+    // keep the drawer rows in sync if its section is open
+    if(regionId==="loin"){
+      applyLoinRule(s, id, cs.on);
+      Object.keys(LOIN_GROUPS).forEach(function(lc){ syncDrawerRow(s,lc); });
+    } else {
+      syncDrawerRow(s, id);
+    }
     var btn=$("#cutpopAdd");
     if(btn){ btn.className="btn cutpop__add "+(cs.on?"btn--ghost":"btn--go"); btn.textContent=cs.on?"✓ Added — tap to remove":"Add to my order"; }
   }
