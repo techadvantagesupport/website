@@ -919,17 +919,44 @@ section{position:relative}
     var n=$('[data-num="'+id+'"]'); if(n) n.classList.toggle(cls,on);
   }
 
-  // The short loin can only be butchered one way: either boneless (NY Strip +
-  // Filet Mignon, which come as a pair) OR a single bone-in cut (T-Bone or
-  // Porterhouse). These three options are mutually exclusive.
+  /* Some sections offer cuts that all come from ONE piece of meat, so the
+     butcher physically can't make every combination. These rules enforce the
+     real butchery choice; see SECTION_NOTES for the customer-facing wording.
+       - Loin: NY Strip + Filet come as a pair, OR one bone-in cut (T-Bone /
+         Porterhouse). Three mutually exclusive options.
+       - Flank: one flank per side — whole Flank Steak OR sliced Stir-Fry Strips.
+       - Rib: the rib-eye is cut ONE way (boneless steaks / bone-in steaks /
+         whole roast); Back Ribs only come off with the boneless option. */
   var LOIN_GROUPS={strip:"boneless", filet:"boneless", tbone:"tbone", porterhouse:"porterhouse"};
-  function applyLoinRule(s, cid, nowOn){
-    var grp=LOIN_GROUPS[cid]; if(!grp) return;
-    Object.keys(LOIN_GROUPS).forEach(function(other){
+  var FLANK_GROUPS={flank_steak:"whole", stir_strips:"strips"};
+  var RIB_EXCLUSIVE=["ribeye","rib_steak","ribeye_roast"];
+  // Mutually exclusive groups: turning a cut on turns its group-mates on and all
+  // other groups off; turning it off clears its group-mates (the "pair" case).
+  function applyExclusiveGroups(s, groups, cid, nowOn){
+    var grp=groups[cid]; if(!grp) return;
+    Object.keys(groups).forEach(function(other){
       if(other===cid) return;
-      if(nowOn) s.cuts[other].on = (LOIN_GROUPS[other]===grp);   // same group on, others off
-      else if(LOIN_GROUPS[other]===grp) s.cuts[other].on=false;  // deselecting one deselects its pair
+      if(nowOn) s.cuts[other].on=(groups[other]===grp);
+      else if(groups[other]===grp) s.cuts[other].on=false;
     });
+  }
+  function applyRibRule(s, cid, nowOn){
+    if(!nowOn) return;                       // turning a rib cut off needs no cascade
+    if(RIB_EXCLUSIVE.indexOf(cid)>=0){
+      RIB_EXCLUSIVE.forEach(function(o){ if(o!==cid) s.cuts[o].on=false; });
+      if(cid!=="ribeye") s.cuts.back_ribs.on=false;            // bone-in steaks / roast keep the bones
+    } else if(cid==="back_ribs"){
+      s.cuts.rib_steak.on=false; s.cuts.ribeye_roast.on=false; // back ribs need the meat boned out
+    }
+  }
+  // Apply a section's conflict rule, if it has one. Returns true when a rule ran
+  // (so the caller knows to re-sync every row, not just the toggled one).
+  function applySectionRule(regionId, s, cid, nowOn){
+    if(regionId==="loin") applyExclusiveGroups(s, LOIN_GROUPS, cid, nowOn);
+    else if(regionId==="flank") applyExclusiveGroups(s, FLANK_GROUPS, cid, nowOn);
+    else if(regionId==="rib") applyRibRule(s, cid, nowOn);
+    else return false;
+    return true;
   }
   function syncDrawerRow(s, cid){
     var on=s.cuts[cid].on;
@@ -937,6 +964,13 @@ section{position:relative}
     if(row){ row.classList.toggle("on",on); row.setAttribute("aria-checked",on); }
     var optEl=$('[data-opt="'+cid+'"]',$("#drawer")); if(optEl) optEl.hidden=!on;
   }
+
+  // Customer-facing explanation shown in sections that have a conflict rule.
+  var SECTION_NOTES={
+    loin:'These all come from the same short loin, so the butcher can only cut it one way. Pick <b>NY Strip + Filet Mignon</b> together, <b>or</b> one bone-in option (<b>T-Bone</b> or <b>Porterhouse</b>) — choosing one clears the others.',
+    rib:'The rib-eye can only be cut one way: <b>boneless Rib-eye Steaks</b>, <b>bone-in Rib Steaks</b>, <b>or</b> a whole <b>Rib-eye Roast (Prime Rib)</b> — choosing one clears the others. <b>Back Ribs</b> are only available boned-out, so they can\'t go with the bone-in steaks or the roast.',
+    flank:'There\'s one flank per side, so it\'s either a whole <b>Flank Steak</b> <b>or</b> sliced into <b>Stir-Fry Strips</b> — choosing one clears the other.'
+  };
 
   function openRegion(id){
     activeRegion=id;
@@ -970,7 +1004,7 @@ section{position:relative}
         '<div class="panel__type">'+(r.sub||"")+'</div>'+
         '<h3>'+r.name+'</h3>'+
         '<p class="panel__blurb">'+r.blurb+'</p>'+
-        (id==="loin"?'<p class="panel__note">These all come from the same short loin, so the butcher can only cut it one way. Pick <b>NY Strip + Filet Mignon</b> together, <b>or</b> one bone-in option (<b>T-Bone</b> or <b>Porterhouse</b>) — choosing one clears the others.</p>':"")+
+        (SECTION_NOTES[id]?'<p class="panel__note">'+SECTION_NOTES[id]+'</p>':"")+
         rows+
         '<div class="panel__actions">'+
           '<button class="btn btn--go" type="button" data-save>Save section</button>'+
@@ -982,12 +1016,8 @@ section{position:relative}
       function toggle(){
         var cid=el.getAttribute("data-cut");
         var cs=s.cuts[cid]; cs.on=!cs.on;
-        if(id==="loin"){
-          applyLoinRule(s, cid, cs.on);
-          Object.keys(LOIN_GROUPS).forEach(function(lc){ syncDrawerRow(s,lc); });
-        } else {
-          syncDrawerRow(s,cid);
-        }
+        if(applySectionRule(id, s, cid, cs.on)) r.cuts.forEach(function(c){ syncDrawerRow(s,c.id); });
+        else syncDrawerRow(s,cid);
       }
       el.addEventListener("click",toggle);
       el.addEventListener("keydown",function(e){ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} });
@@ -1073,9 +1103,9 @@ section{position:relative}
     var s=state.sections[regionId]; if(!s||!s.cuts[id]) return;
     var cs=s.cuts[id]; cs.on=!cs.on;
     // keep the drawer rows in sync if its section is open
-    if(regionId==="loin"){
-      applyLoinRule(s, id, cs.on);
-      Object.keys(LOIN_GROUPS).forEach(function(lc){ syncDrawerRow(s,lc); });
+    if(applySectionRule(regionId, s, id, cs.on)){
+      var reg=REGIONS.filter(function(x){return x.id===regionId;})[0];
+      if(reg) reg.cuts.forEach(function(c){ syncDrawerRow(s,c.id); });
     } else {
       syncDrawerRow(s, id);
     }
