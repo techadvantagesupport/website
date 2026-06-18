@@ -1347,15 +1347,34 @@ section{position:relative}
         else { doc.addPage(); col=0; COLTOP=TOP; cy=COLTOP; COLBOT=744; }
       }
     }
-    function cutRow(label){ doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(40,28,16);
-      var wrapped=doc.splitTextToSize(label, colW-16); var h=wrapped.length*12+2;
-      colAdvance(h); box(colX[col], cy);
-      wrapped.forEach(function(ln,i){ doc.text(ln, colX[col]+15, cy+i*12); }); cy+=h; }
+    function cutH(label){ doc.setFont("helvetica","normal"); doc.setFontSize(10); return doc.splitTextToSize(label, colW-16).length*12+2; }
+    function drawCheck(label){ doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(40,28,16);
+      var wrapped=doc.splitTextToSize(label, colW-16); box(colX[col], cy);
+      wrapped.forEach(function(ln,i){ doc.text(ln, colX[col]+15, cy+i*12); }); cy+=wrapped.length*12+2; }
+    function cutRow(label){ colAdvance(cutH(label)); drawCheck(label); }
     function pkgRow(label, opts){ doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(40,28,16);
       colAdvance(28); doc.text(label, colX[col], cy); cy+=13;
       var ox=colX[col]+4; opts.forEach(function(o){ box(ox,cy); doc.text(o, ox+13, cy); ox += 13 + doc.getTextWidth(o) + 16; }); cy+=15; }
+    // a "pick one" group (loin / rib / flank) — kept together in one column
+    function ruleGroup(note, options, extra){
+      doc.setFont("helvetica","italic"); doc.setFontSize(9);
+      var noteLines=doc.splitTextToSize(note, colW), noteH=noteLines.length*11+3;
+      var total=noteH+4; options.concat(extra||[]).forEach(function(o){ total+=cutH(o); });
+      colAdvance(total);
+      doc.setFont("helvetica","italic"); doc.setFontSize(9); doc.setTextColor(110,80,55);
+      noteLines.forEach(function(ln,i){ doc.text(ln, colX[col], cy+i*11); }); cy+=noteH; doc.setTextColor(40,28,16);
+      options.forEach(function(o){ drawCheck(o); }); (extra||[]).forEach(function(o){ drawCheck(o); });
+      cy+=4;
+    }
 
+    // The mutual-exclusivity rules from the picker, expressed on paper.
+    var FORM_RULES={
+      rib:  ["Rib — pick ONE cutting style:", ["Rib-eye Steaks (boneless)","Rib Steaks (bone-in)","Rib-eye Roast (Prime Rib)"], ["Back Ribs (only with boneless Rib-eye Steaks)"]],
+      loin: ["Loin — pick ONE of the three:", ["T-Bone Steaks","Porterhouse","NY Strip Steaks + Filet Mignon"], null],
+      flank:["Flank — pick ONE:", ["Flank Steak","Stir-Fry Strips"], null]
+    };
     REGIONS.forEach(function(r){
+      if(FORM_RULES[r.id]){ ruleGroup(FORM_RULES[r.id][0], FORM_RULES[r.id][1], FORM_RULES[r.id][2]); return; }
       r.cuts.forEach(function(c){
         if(c.id==="hamburger"){ pkgRow(c.name+" — package size:", c.pkg); }
         else if(c.lbs){ cutRow(c.name+":  ______ lbs (up to 20#)"); }
