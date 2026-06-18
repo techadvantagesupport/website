@@ -304,9 +304,6 @@ section{position:relative}
 .progress__top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tan);margin-bottom:.5rem}
 .progress .bar{background:rgba(242,234,217,.18);border-color:rgba(242,234,217,.25)}
 .builder__actions{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
-.blankform{margin-top:1.8rem;text-align:center;font-size:.9rem;color:rgba(242,234,217,.72)}
-.blankform a{color:var(--tan);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.blankform a:hover{color:var(--paper)}
 .builder__actions .btn--ghost{color:var(--paper);border-color:rgba(242,234,217,.5)}
 .builder__actions .btn--ghost:hover{background:var(--paper);color:var(--espresso)}
 @media(max-width:840px){
@@ -619,8 +616,6 @@ section{position:relative}
         <button class="btn btn--ghost" id="grindRest" type="button">Skip Empty Sections — Grind The Rest (Hamburger)</button>
       </div>
     </div>
-
-    <p class="blankform">Prefer paper? <a href="#" id="blankFormLink">Download blank order form (PDF)</a> — print it, check your cuts, and mail or bring it to us.</p>
   </div>
 </section>
 </main>
@@ -672,6 +667,7 @@ section{position:relative}
       <div class="foot__lbl">Get in touch</div>
       <p><a id="footPhone" href="#"></a><br><a id="footEmail" href="#"></a></p>
       <p style="margin-top:.6rem"><a href="#order" style="color:var(--tan)">Build your order &rarr;</a></p>
+      <p style="margin-top:.4rem"><a href="#" id="blankFormLink" style="color:var(--tan)">Download blank order form (PDF)</a></p>
     </div>
   </div>
   <div class="wrap foot__bottom">
@@ -1351,8 +1347,6 @@ section{position:relative}
         else { doc.addPage(); col=0; COLTOP=TOP; cy=COLTOP; COLBOT=744; }
       }
     }
-    function cutHead(t){ colAdvance(28); doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59);
-      doc.text(t, colX[col], cy); cy+=14; doc.setTextColor(40,28,16); }
     function cutRow(label){ doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(40,28,16);
       var wrapped=doc.splitTextToSize(label, colW-16); var h=wrapped.length*12+2;
       colAdvance(h); box(colX[col], cy);
@@ -1362,9 +1356,8 @@ section{position:relative}
       var ox=colX[col]+4; opts.forEach(function(o){ box(ox,cy); doc.text(o, ox+13, cy); ox += 13 + doc.getTextWidth(o) + 16; }); cy+=15; }
 
     REGIONS.forEach(function(r){
-      cutHead(r.num ? (r.num+". "+r.name) : r.name);
       r.cuts.forEach(function(c){
-        if(c.id==="hamburger"){ pkgRow("Package size:", c.pkg); }
+        if(c.id==="hamburger"){ pkgRow(c.name+" — package size:", c.pkg); }
         else if(c.lbs){ cutRow(c.name+":  ______ lbs (up to 20#)"); }
         else { cutRow(c.name); }
       });
