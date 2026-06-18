@@ -93,7 +93,7 @@ section{position:relative}
 .hero__lead{font-size:clamp(1.05rem,1.6vw,1.22rem);max-width:40ch;margin:1.4rem 0 2rem;color:#4a3826}
 .hero__cta{display:flex;gap:.8rem;flex-wrap:wrap}
 .hero__facts{display:flex;gap:1.6rem;margin-top:2.4rem;flex-wrap:wrap}
-.hero__fact{font-family:var(--mono);font-size:.78rem;line-height:1.4;color:var(--leather-d)}
+.hero__fact{font-family:var(--mono);font-size:.78rem;line-height:1.4;color:var(--leather-d);white-space:nowrap}
 .hero__fact b{display:block;font-size:1.55rem;font-family:var(--display);color:var(--espresso);font-weight:700}
 .hero__art{position:relative}
 .hero__art svg{width:100%;height:auto;filter:drop-shadow(0 24px 30px rgba(58,42,26,.28))}
@@ -174,10 +174,12 @@ section{position:relative}
 .builder .head h2{color:var(--paper)}
 .builder .head p{color:rgba(242,234,217,.8)}
 .step{margin-bottom:2.4rem}
+.step[hidden]{display:none}
 .step__label{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tan);
   display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
 .step__label i{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--tan);display:inline-grid;place-items:center;font-style:normal;font-size:.78rem}
 .step__help{background:rgba(242,234,217,.06);border:1px solid rgba(201,168,124,.28);border-left:3px solid var(--tan);border-radius:.55rem;padding:.95rem 1.1rem;margin:-.3rem 0 1.4rem}
+.step__help[hidden]{display:none}
 .step__help p{font-size:.93rem;line-height:1.55;color:var(--paper);margin:0 0 .55rem}
 .step__help p:last-child{margin-bottom:0}
 .step__help b{color:var(--tan)}
@@ -185,9 +187,9 @@ section{position:relative}
 
 /* amount toggle */
 .amount{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:620px}
-.amount__opt{position:relative}
+.amount__opt{position:relative;display:flex}
 .amount__opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
-.amount__opt label{display:block;cursor:pointer;border:2px solid rgba(242,234,217,.28);border-radius:var(--radius);
+.amount__opt label{display:block;flex:1;cursor:pointer;border:2px solid rgba(242,234,217,.28);border-radius:var(--radius);
   padding:1.2rem 1.3rem;transition:border-color .2s, background .2s}
 .amount__opt input:checked+label{border-color:var(--tan);background:rgba(201,168,124,.14)}
 .amount__opt input:focus-visible+label{outline:3px solid var(--pasture);outline-offset:3px}
@@ -536,12 +538,13 @@ section{position:relative}
     </div>
 
     <!-- STEP 2 — the cut tool -->
-    <div class="step">
+    <div class="step" id="step2" hidden>
       <div class="step__label"><i>2</i> Pick your cuts</div>
       <div class="step__help" id="stepHelp" hidden>
         <p>Select each of the 9 sections on the cow, choose the cuts you want, and tap <b>Save section</b> — the section will turn green. Also make selections in <b>Specialty</b>, and select your package size in <b>Ground Beef</b>. Once all <b>11 sections are green</b> (saved), the <b>Review &amp; submit order</b> button will be available.</p>
         <p>In a hurry and already selected what you need? Tap the <b>Skip Empty Sections — Grind The Rest (Hamburger)</b> button to select the rest as hamburger and unlock the <b>Review &amp; submit order</b> button.</p>
         <p class="step__help-note">There is no time limit — take your time to browse.</p>
+        <p class="step__help-note">Next to each cut of meat tap the small photo for more information.</p>
       </div>
       <div class="tool" id="tool" hidden>
         <div>
@@ -877,6 +880,7 @@ section{position:relative}
           money(rate*lo)+"–"+money(rate*hi)+"</b>"+(dep>0?" · "+money(dep)+" deposit with order":"")+
           ". Final price is set by actual hanging weight.";
         populateDeliveries(r.value);
+        $("#step2").hidden=false;
         $("#stepHelp").hidden=false;
         $("#tool").hidden=false;
         $("#finishBlock").hidden=false;
