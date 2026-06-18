@@ -304,6 +304,9 @@ section{position:relative}
 .progress__top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tan);margin-bottom:.5rem}
 .progress .bar{background:rgba(242,234,217,.18);border-color:rgba(242,234,217,.25)}
 .builder__actions{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
+.blankform{margin-top:1.8rem;text-align:center;font-size:.9rem;color:rgba(242,234,217,.72)}
+.blankform a{color:var(--tan);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.blankform a:hover{color:var(--paper)}
 .builder__actions .btn--ghost{color:var(--paper);border-color:rgba(242,234,217,.5)}
 .builder__actions .btn--ghost:hover{background:var(--paper);color:var(--espresso)}
 @media(max-width:840px){
@@ -511,7 +514,7 @@ section{position:relative}
 <section class="pad builder" id="order">
   <div class="wrap">
     <div class="head"><div class="eyebrow">Build your order</div><h2>Choose your cuts on the steer.</h2>
-      <p>Pick how much beef you'd like, then tap each part of the steer to choose your cuts. Anything you don't pick is ground into hamburger. Ryan or Amanda will call if there's a question about your order — call or email us anytime if you have questions.</p></div>
+      <p>Pick how much beef you'd like, then tap each part of the steer to choose your cuts. Anything you don't pick is ground into hamburger. Ryan or Amanda will call if there's a question about your order — call or email us anytime if you have questions. If you'd rather mail us a paper order form, select <b>Download blank order form</b> at the bottom of the page.</p></div>
 
     <!-- STEP 1 — amount -->
     <div class="step">
@@ -616,6 +619,8 @@ section{position:relative}
         <button class="btn btn--ghost" id="grindRest" type="button">Skip Empty Sections — Grind The Rest (Hamburger)</button>
       </div>
     </div>
+
+    <p class="blankform">Prefer paper? <a href="#" id="blankFormLink">Download blank order form (PDF)</a> — print it, check your cuts, and mail or bring it to us.</p>
   </div>
 </section>
 </main>
@@ -1288,6 +1293,88 @@ section{position:relative}
     return doc;
   }
 
+  /* ---- blank, printable order form (checkboxes) — the "mail it in" option ---- */
+  function buildBlankPDF(){
+    var jsPDF = window.jspdf && window.jspdf.jsPDF; if(!jsPDF) return null;
+    var doc=new jsPDF({unit:"pt",format:"letter"});
+    var W=612, x=54, y=64, TOP=58, BOT=744;
+    // ---- header: emblem (left) + wordmark (right) — same as the order PDF ----
+    var headerBottom=44, placed=false;
+    try{
+      var hx=x;
+      if(LOGO_EMBLEM && LOGO_EMBLEM.complete && LOGO_EMBLEM.naturalWidth){
+        var eh=46, ew=eh*LOGO_EMBLEM.naturalWidth/LOGO_EMBLEM.naturalHeight;
+        doc.addImage(LOGO_EMBLEM,"PNG",hx,30,ew,eh); hx+=ew+12; headerBottom=Math.max(headerBottom,30+eh); placed=true;
+      }
+      if(LOGO_TEXT && LOGO_TEXT.complete && LOGO_TEXT.naturalWidth){
+        var th=34, tw=th*LOGO_TEXT.naturalWidth/LOGO_TEXT.naturalHeight;
+        doc.addImage(LOGO_TEXT,"PNG",hx,36,tw,th); headerBottom=Math.max(headerBottom,36+th); placed=true;
+      }
+    }catch(e){ placed=false; }
+    if(!placed){ doc.setTextColor(40,28,16); doc.setFont("helvetica","bold"); doc.setFontSize(18);
+      doc.text(CFG.businessName||"Beef Order", x, 52); headerBottom=60; }
+    y=headerBottom+14;
+    doc.setTextColor(90,70,45); doc.setFont("courier","normal"); doc.setFontSize(8.5);
+    doc.text(((CFG.businessAddress||"")+"   ·   "+(CFG.businessPhone||"")).trim(), x, y); y+=9;
+    doc.setDrawColor(200,185,150); doc.line(x,y,W-x,y); y+=20;
+    doc.setTextColor(40,28,16); doc.setFont("helvetica","bold"); doc.setFontSize(14);
+    doc.text("Beef Order Form", x, y); y+=15;
+    doc.setFont("helvetica","normal"); doc.setFontSize(9.5); doc.setTextColor(90,70,45);
+    doc.text("Check the cuts you'd like. Anything you don't check becomes ground beef.", x, y); y+=20;
+    doc.setTextColor(40,28,16);
+
+    function brk(h){ if(y + (h||14) > BOT){ doc.addPage(); y=TOP; } }
+    function sectionTitle(t){ brk(26); doc.setFont("courier","bold"); doc.setFontSize(10); doc.setTextColor(90,107,59); doc.text(t.toUpperCase(),x,y); y+=15; doc.setTextColor(40,28,16); }
+    function fieldLine(label){ brk(24); doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(40,28,16);
+      doc.text(label,x,y); var lx=x+doc.getTextWidth(label)+8; doc.setDrawColor(170,150,120); doc.line(lx,y+2,W-x,y+2); y+=24; }
+    function box(cx,baseY){ var sz=9; doc.setDrawColor(110,85,55); doc.setLineWidth(0.7); doc.rect(cx,baseY-sz+1,sz,sz); }
+
+    // ---- your details ----
+    sectionTitle("Your details");
+    fieldLine("Name:"); fieldLine("Address:"); fieldLine("City, State, ZIP:"); fieldLine("Phone:"); fieldLine("Email:");
+
+    // ---- amount ----
+    sectionTitle("Amount  (check one)");
+    brk(22); doc.setFont("helvetica","normal"); doc.setFontSize(11); doc.setTextColor(40,28,16);
+    var ax=x;
+    box(ax,y); doc.text("Half beef", ax+15, y); ax += 15 + doc.getTextWidth("Half beef") + 36;
+    box(ax,y); doc.text("Quarter beef", ax+15, y);
+    y+=26;
+
+    // ---- cuts: two-column checklist of every section ----
+    sectionTitle("Choose your cuts  (check what you'd like)");
+    var gap=24, colW=(W - x*2 - gap)/2, colX=[x, x+colW+gap];
+    var COLTOP=y, COLBOT=720, col=0, cy=COLTOP;
+    function colAdvance(h){
+      if(cy + h > COLBOT){
+        if(col===0){ col=1; cy=COLTOP; }
+        else { doc.addPage(); col=0; COLTOP=TOP; cy=COLTOP; COLBOT=744; }
+      }
+    }
+    function cutHead(t){ colAdvance(28); doc.setFont("courier","bold"); doc.setFontSize(9); doc.setTextColor(90,107,59);
+      doc.text(t, colX[col], cy); cy+=14; doc.setTextColor(40,28,16); }
+    function cutRow(label){ doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(40,28,16);
+      var wrapped=doc.splitTextToSize(label, colW-16); var h=wrapped.length*12+2;
+      colAdvance(h); box(colX[col], cy);
+      wrapped.forEach(function(ln,i){ doc.text(ln, colX[col]+15, cy+i*12); }); cy+=h; }
+    function pkgRow(label, opts){ doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(40,28,16);
+      colAdvance(28); doc.text(label, colX[col], cy); cy+=13;
+      var ox=colX[col]+4; opts.forEach(function(o){ box(ox,cy); doc.text(o, ox+13, cy); ox += 13 + doc.getTextWidth(o) + 16; }); cy+=15; }
+
+    REGIONS.forEach(function(r){
+      cutHead(r.num ? (r.num+". "+r.name) : r.name);
+      r.cuts.forEach(function(c){
+        if(c.id==="hamburger"){ pkgRow("Package size:", c.pkg); }
+        else if(c.lbs){ cutRow(c.name+":  ______ lbs (up to 20#)"); }
+        else { cutRow(c.name); }
+      });
+    });
+
+    doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(120,90,60);
+    doc.text("Ground beef is always included · A deposit is due with a half · Payment is cash on delivery (COD).", x, 770);
+    return doc;
+  }
+
   function orderText(data){
     var t=(CFG.businessName||"")+" — Beef Order\n\n";
     t+="Amount: "+state.amount+" beef\n";
@@ -1392,6 +1479,11 @@ section{position:relative}
   loadInventory(function(){ renderPricing(); renderAvailability(); refreshAmountMeta(); });
 
   $("#reviewBtn").addEventListener("click",function(){ if(!$("#reviewBtn").disabled) openModal(); });
+  $("#blankFormLink").addEventListener("click",function(e){ e.preventDefault();
+    var d=buildBlankPDF();
+    if(d) d.save("wholesome-family-organics-order-form.pdf");
+    else alert("Sorry — the form couldn't be generated. Please call or email us and we'll send one over.");
+  });
   $("#modalClose").addEventListener("click",closeModal);
   $("#backBtn").addEventListener("click",closeModal);
   $("#submitBtn").addEventListener("click",submit);
