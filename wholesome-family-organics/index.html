@@ -256,7 +256,10 @@ section{position:relative}
 .cut__box svg{width:14px;height:14px;color:#fff;opacity:0;transition:opacity .2s}
 .cut.on .cut__box svg{opacity:1}
 .cut__name{font-weight:600;flex:1}
+.cut--fixed{cursor:default}
+.cut--fixed:hover{border-color:var(--cream-line)}
 .cut__opt{margin:.1rem 0 .7rem 3.3rem}
+.cut__opt--flush{margin-left:.7rem}
 .cut__opt label{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--leather-d);display:block;margin-bottom:.3rem}
 .cut__opt select,.cut__opt input{font-family:var(--mono);font-size:.9rem;padding:.5em .7em;border:1.5px solid var(--leather);border-radius:8px;background:var(--paper);color:var(--espresso);width:100%;max-width:200px}
 .panel__actions{display:flex;gap:.7rem;margin-top:1.2rem;flex-wrap:wrap}
@@ -294,6 +297,7 @@ section{position:relative}
 .cutpop__h svg{width:15px;height:15px;flex:none}
 .cutpop__p{font-size:.92rem;color:#4a3826;margin:0}
 .cutpop__add{margin-top:1.4rem;width:100%}
+.cutpop__included{margin-top:1.4rem;font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--pasture);text-align:center;padding:.75rem;border:1.5px dashed var(--pasture);border-radius:10px;background:rgba(90,107,59,.08)}
 
 /* progress + builder actions */
 .progress{margin:1.8rem 0 1.4rem}
@@ -998,9 +1002,11 @@ section{position:relative}
 
     var rows = r.cuts.map(function(c){
       var cs=s.cuts[c.id];
+      var fixed = (id==="ground");      // Ground Beef is mandatory — no checkbox, just pick a package size
+      if(fixed) cs.on=true;
       var opt="";
       if(c.pkg){
-        opt='<div class="cut__opt" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>Package size</label><select data-pkg="'+c.id+'">'+
+        opt='<div class="cut__opt'+(fixed?' cut__opt--flush':'')+'" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>Package size</label><select data-pkg="'+c.id+'">'+
             c.pkg.map(function(p){return '<option'+(p===cs.pkg?' selected':'')+'>'+p+'</option>';}).join("")+'</select></div>';
       } else if(c.lbs){
         opt='<div class="cut__opt" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>About how many pounds?</label><input type="number" min="0" step="1" inputmode="numeric" placeholder="e.g. 10" data-lbs="'+c.id+'" value="'+(cs.lbs||"")+'"></div>';
@@ -1009,6 +1015,10 @@ section{position:relative}
         '<button class="cut__thumb noimg" type="button" data-info="'+c.id+'" aria-label="Photo &amp; cooking tips for '+c.name+'">'+
           '<img src="assets/cuts/'+c.id+'.jpg" alt="" loading="lazy" onerror="this.remove()" onload="this.parentNode.classList.remove(\'noimg\')">'+
           CAM_ICON+'</button>' : '';
+      if(fixed){
+        return '<div><div class="cut cut--fixed" data-cut="'+c.id+'">'+
+          '<span class="cut__name">'+c.name+'</span>'+thumb+'</div>'+opt+'</div>';
+      }
       return '<div><div class="cut'+(cs.on?' on':'')+'" data-cut="'+c.id+'" role="checkbox" tabindex="0" aria-checked="'+cs.on+'">'+
         '<span class="cut__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>'+
         '<span class="cut__name">'+c.name+'</span>'+thumb+'</div>'+opt+'</div>';
@@ -1026,8 +1036,8 @@ section{position:relative}
         '</div>'+
       '</div>';
 
-    // wire cut toggles
-    $$(".cut",$("#drawer")).forEach(function(el){
+    // wire cut toggles (skip the fixed, no-checkbox Ground Beef row)
+    $$(".cut[role='checkbox']",$("#drawer")).forEach(function(el){
       function toggle(){
         var cid=el.getAttribute("data-cut");
         var cs=s.cuts[cid]; cs.on=!cs.on;
@@ -1096,14 +1106,16 @@ section{position:relative}
           '<h3 class="cutpop__name" id="cutpopName">'+name+'</h3>'+
           (info.cook?('<div class="cutpop__h">'+COOK_ICON+'How to cook it</div><p class="cutpop__p">'+info.cook+'</p>'):'')+
           (info.pitch?('<div class="cutpop__h">'+STAR_ICON+'Why you\'ll love it</div><p class="cutpop__p">'+info.pitch+'</p>'):'')+
-          '<button class="btn cutpop__add '+(on?"btn--ghost":"btn--go")+'" type="button" id="cutpopAdd" data-cut="'+id+'" data-region="'+f.region.id+'">'+
-            (on?"✓ Added — tap to remove":"Add to my order")+'</button>'+
+          (f.region.id==="ground"
+            ? '<div class="cutpop__included">✓ Always included in your order</div>'
+            : '<button class="btn cutpop__add '+(on?"btn--ghost":"btn--go")+'" type="button" id="cutpopAdd" data-cut="'+id+'" data-region="'+f.region.id+'">'+
+              (on?"✓ Added — tap to remove":"Add to my order")+'</button>')+
         '</div>'+
       '</div>';
     $("#cutpop").classList.add("open");
     document.body.style.overflow="hidden";
     $("#cutpopClose").addEventListener("click",closeCutInfo);
-    $("#cutpopAdd").addEventListener("click",function(){ toggleCutFromPopup(id, f.region.id); });
+    var addBtn=$("#cutpopAdd"); if(addBtn) addBtn.addEventListener("click",function(){ toggleCutFromPopup(id, f.region.id); });
     setTimeout(function(){ var c=$("#cutpopClose"); if(c) c.focus(); },50);
   }
 
@@ -1115,6 +1127,7 @@ section{position:relative}
   }
 
   function toggleCutFromPopup(id, regionId){
+    if(regionId==="ground") return;   // Ground Beef is mandatory — can't be toggled off
     var s=state.sections[regionId]; if(!s||!s.cuts[id]) return;
     var cs=s.cuts[id]; cs.on=!cs.on;
     // keep the drawer rows in sync if its section is open
