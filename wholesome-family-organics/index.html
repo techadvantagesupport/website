@@ -697,7 +697,7 @@ section{position:relative}
     {id:"rib", num:2, name:"Rib", sub:"Fore-rib", center:[272,78], blurb:"The tender rib section — home of the rib-eye and prime rib.",
       cuts:[{id:"ribeye",name:"Rib-eye Steak"},{id:"ribeye_roast",name:"Rib-eye Roast (Prime Rib)"},{id:"rib_steak",name:"Rib Steak"},{id:"back_ribs",name:"Back Ribs"}]},
     {id:"loin", num:3, name:"Loin", sub:"Short loin", center:[342,78], blurb:"The most tender part of the steer — the premium steaks.",
-      cuts:[{id:"tbone",name:"T-Bone Steak"},{id:"porterhouse",name:"Porterhouse"},{id:"strip",name:"NY Strip Steak"},{id:"filet",name:"Filet Mignon"}]},
+      cuts:[{id:"tbone",name:"T-Bone Steak"},{id:"porterhouse",name:"Porterhouse"},{id:"strip",name:"NY Strip Steak"},{id:"filet",name:"Filet Mignon"},{id:"tenderloin",name:"Whole Tenderloin"}]},
     {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[412,82], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
       cuts:[{id:"top_sirloin",name:"Top Sirloin Steak"},{id:"tritip",name:"Tri-Tip"},{id:"petite_sirloin",name:"Petite Sirloin"}]},
     {id:"round", num:5, name:"Round", sub:"Hindquarter", center:[515,100], blurb:"Lean rear muscle — great for roasts and lean steaks.",
@@ -733,6 +733,7 @@ section{position:relative}
     porterhouse:{cook:"The big brother of the T-bone with a generous filet. Grill hot and fast, rest, then carve both muscles off the bone.", pitch:"The steakhouse king — the best of the strip and the tenderloin on one plate."},
     strip:{cook:"Pat dry, season simply, and sear hard for a deep crust and a tender, even medium-rare center.", pitch:"The steakhouse favorite — tender, beefy, and foolproof on the grill."},
     filet:{cook:"The most tender cut — cook gently to medium-rare so it stays buttery; a quick sear and a butter baste is all it needs.", pitch:"Melt-in-your-mouth tenderness — the most luxurious bite on the steer."},
+    tenderloin:{cook:"The same prized muscle as filet mignon, left whole — sear the outside, then roast to a rosy medium-rare and slice thick at the table.", pitch:"A showstopping roast: carve it into thick, butter-tender medallions for a special occasion."},
     top_sirloin:{cook:"Lean and versatile — grill or pan-sear to medium-rare and slice across the grain.", pitch:"Big steak flavor with a leaner profile and a friendlier price."},
     tritip:{cook:"Santa-Maria style: rub it, grill or roast the whole piece, then slice thin across the grain.", pitch:"A West-Coast favorite that's full of flavor and feeds the table from one roast."},
     petite_sirloin:{cook:"A quick-cooking lean steak — sear hot and fast, don't overcook, and slice thin.", pitch:"A lean, weeknight-friendly steak that's gentle on the budget."},
@@ -941,13 +942,12 @@ section{position:relative}
 
   /* Some sections offer cuts that all come from ONE piece of meat, so the
      butcher physically can't make every combination. These rules enforce the
-     real butchery choice; see SECTION_NOTES for the customer-facing wording.
-       - Loin: NY Strip + Filet come as a pair, OR one bone-in cut (T-Bone /
-         Porterhouse). Three mutually exclusive options.
-       - Flank: one flank per side — whole Flank Steak OR sliced Stir-Fry Strips.
-       - Rib: the rib-eye is cut ONE way (boneless steaks / bone-in steaks /
-         whole roast); Back Ribs only come off with the boneless option. */
-  var LOIN_GROUPS={strip:"boneless", filet:"boneless", tbone:"tbone", porterhouse:"porterhouse"};
+     real butchery choice ("pick from one row only"); see SECTION_NOTES.
+       - Loin: T-Bone, OR Porterhouse, OR boneless NY Strip + (Filet Mignon OR
+         whole Tenderloin). Filet & Tenderloin are the same muscle (exclusive).
+       - Rib: boneless Rib-eye Steaks, OR bone-in Rib Steaks, OR Rib-eye Roast;
+         Back Ribs ride along with the boneless steaks OR the roast (not bone-in).
+       - Flank: one flank per side — whole Flank Steak OR sliced Stir-Fry Strips. */
   var FLANK_GROUPS={flank_steak:"whole", stir_strips:"strips"};
   var RIB_EXCLUSIVE=["ribeye","rib_steak","ribeye_roast"];
   // Mutually exclusive groups: turning a cut on turns its group-mates on and all
@@ -960,19 +960,31 @@ section{position:relative}
       else if(groups[other]===grp) s.cuts[other].on=false;
     });
   }
+  function applyLoinRule(s, cid, nowOn){
+    if(!nowOn) return;                          // turning a loin cut off needs no cascade
+    if(cid==="tbone"||cid==="porterhouse"){     // bone-in: this steak style only
+      ["tbone","porterhouse","strip","filet","tenderloin"].forEach(function(o){ if(o!==cid) s.cuts[o].on=false; });
+    } else if(cid==="strip"){                   // boneless; pairs with filet OR tenderloin
+      s.cuts.tbone.on=false; s.cuts.porterhouse.on=false;
+    } else if(cid==="filet"){                   // filet & tenderloin are the same muscle
+      s.cuts.tbone.on=false; s.cuts.porterhouse.on=false; s.cuts.tenderloin.on=false;
+    } else if(cid==="tenderloin"){
+      s.cuts.tbone.on=false; s.cuts.porterhouse.on=false; s.cuts.filet.on=false;
+    }
+  }
   function applyRibRule(s, cid, nowOn){
     if(!nowOn) return;                       // turning a rib cut off needs no cascade
     if(RIB_EXCLUSIVE.indexOf(cid)>=0){
       RIB_EXCLUSIVE.forEach(function(o){ if(o!==cid) s.cuts[o].on=false; });
-      if(cid!=="ribeye") s.cuts.back_ribs.on=false;            // bone-in steaks / roast keep the bones
+      if(cid==="rib_steak") s.cuts.back_ribs.on=false;        // bone-in steaks keep the bones (no separate ribs)
     } else if(cid==="back_ribs"){
-      s.cuts.rib_steak.on=false; s.cuts.ribeye_roast.on=false; // back ribs need the meat boned out
+      s.cuts.rib_steak.on=false;                              // back ribs need the meat boned out (ok w/ steaks or roast)
     }
   }
   // Apply a section's conflict rule, if it has one. Returns true when a rule ran
   // (so the caller knows to re-sync every row, not just the toggled one).
   function applySectionRule(regionId, s, cid, nowOn){
-    if(regionId==="loin") applyExclusiveGroups(s, LOIN_GROUPS, cid, nowOn);
+    if(regionId==="loin") applyLoinRule(s, cid, nowOn);
     else if(regionId==="flank") applyExclusiveGroups(s, FLANK_GROUPS, cid, nowOn);
     else if(regionId==="rib") applyRibRule(s, cid, nowOn);
     else return false;
@@ -987,8 +999,8 @@ section{position:relative}
 
   // Customer-facing explanation shown in sections that have a conflict rule.
   var SECTION_NOTES={
-    loin:'These all come from the same short loin, so the butcher can only cut it one way. Pick <b>NY Strip + Filet Mignon</b> together, <b>or</b> one bone-in option (<b>T-Bone</b> or <b>Porterhouse</b>) — choosing one clears the others.',
-    rib:'The rib-eye can only be cut one way: <b>boneless Rib-eye Steaks</b>, <b>bone-in Rib Steaks</b>, <b>or</b> a whole <b>Rib-eye Roast (Prime Rib)</b> — choosing one clears the others. <b>Back Ribs</b> are only available boned-out, so they can\'t go with the bone-in steaks or the roast.',
+    loin:'All these come from the same short loin, so pick ONE way to cut it: <b>T-Bone</b> steaks, <b>Porterhouse</b> steaks, or boneless <b>NY Strip</b> with either <b>Filet Mignon</b> or a whole <b>Tenderloin</b> (Filet and Tenderloin are the same muscle). Choosing one clears the others.',
+    rib:'The rib-eye is cut ONE way: <b>boneless Rib-eye Steaks</b>, <b>bone-in Rib Steaks</b>, <b>or</b> a whole <b>Rib-eye Roast (Prime Rib)</b>. <b>Back Ribs</b> can come with the boneless steaks or the roast (not with the bone-in steaks).',
     flank:'There\'s one flank per side, so it\'s either a whole <b>Flank Steak</b> <b>or</b> sliced into <b>Stir-Fry Strips</b> — choosing one clears the other.'
   };
 
@@ -1010,7 +1022,8 @@ section{position:relative}
         opt='<div class="cut__opt'+(fixed?' cut__opt--flush':'')+'" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>Package size</label><select data-pkg="'+c.id+'">'+
             c.pkg.map(function(p){return '<option'+(p===cs.pkg?' selected':'')+'>'+p+'</option>';}).join("")+'</select></div>';
       } else if(c.lbs){
-        opt='<div class="cut__opt" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>About how many pounds?</label><input type="number" min="0" step="1" inputmode="numeric" placeholder="e.g. 10" data-lbs="'+c.id+'" value="'+(cs.lbs||"")+'"></div>';
+        var lbsCap=(state.amount==="Half")?40:20;   // half gets up to 40 lb, quarter up to 20 lb
+        opt='<div class="cut__opt" data-opt="'+c.id+'"'+(cs.on?'':' hidden')+'><label>About how many pounds? (up to '+lbsCap+' lb)</label><input type="number" min="0" max="'+lbsCap+'" step="1" inputmode="numeric" placeholder="e.g. 10" data-lbs="'+c.id+'" value="'+(cs.lbs||"")+'"></div>';
       }
       var thumb = CUT_INFO[c.id] ?
         '<button class="cut__thumb noimg" type="button" data-info="'+c.id+'" aria-label="Photo &amp; cooking tips for '+c.name+'">'+
@@ -1054,7 +1067,11 @@ section{position:relative}
       b.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" ") e.stopPropagation(); });
     });
     $$("[data-pkg]",$("#drawer")).forEach(function(sel){ sel.addEventListener("change",function(){ s.cuts[sel.getAttribute("data-pkg")].pkg=sel.value; }); });
-    $$("[data-lbs]",$("#drawer")).forEach(function(inp){ inp.addEventListener("input",function(){ s.cuts[inp.getAttribute("data-lbs")].lbs=inp.value; }); });
+    $$("[data-lbs]",$("#drawer")).forEach(function(inp){ inp.addEventListener("input",function(){
+      var mx=parseInt(inp.getAttribute("max"),10), v=parseInt(inp.value,10);
+      if(!isNaN(v)&&!isNaN(mx)&&v>mx){ inp.value=mx; }
+      s.cuts[inp.getAttribute("data-lbs")].lbs=inp.value;
+    }); });
     $("[data-save]",$("#drawer")).addEventListener("click",function(){ completeRegion(id); });
   }
 
@@ -1356,28 +1373,53 @@ section{position:relative}
       colAdvance(28); doc.text(label, colX[col], cy); cy+=13;
       var ox=colX[col]+4; opts.forEach(function(o){ box(ox,cy); doc.text(o, ox+13, cy); ox += 13 + doc.getTextWidth(o) + 16; }); cy+=15; }
     // a "pick one" group (loin / rib / flank) — kept together in one column
-    function ruleGroup(note, options, extra){
+    // a "make selections from ONE row only" group; each row is an array of cut
+    // labels — multiple labels in a row render as "[] A  +  [] B".
+    function ruleGroup(note, rows){
       doc.setFont("helvetica","italic"); doc.setFontSize(9);
-      var noteLines=doc.splitTextToSize(note, colW), noteH=noteLines.length*11+3;
-      var total=noteH+4; options.concat(extra||[]).forEach(function(o){ total+=cutH(o); });
+      var noteLines=doc.splitTextToSize(note, colW), noteH=noteLines.length*11+3, lineH=13;
+      var total=noteH+4 + rows.reduce(function(a,row){ return a + (row.length>1?2:1)*lineH; },0);
       colAdvance(total);
       doc.setFont("helvetica","italic"); doc.setFontSize(9); doc.setTextColor(110,80,55);
       noteLines.forEach(function(ln,i){ doc.text(ln, colX[col], cy+i*11); }); cy+=noteH; doc.setTextColor(40,28,16);
-      options.forEach(function(o){ drawCheck(o); }); (extra||[]).forEach(function(o){ drawCheck(o); });
+      var maxX=colX[col]+colW;
+      rows.forEach(function(items){
+        var startX=colX[col], cxp=startX;
+        items.forEach(function(it,idx){
+          doc.setFont("helvetica","normal"); doc.setFontSize(9.5); doc.setTextColor(40,28,16);
+          var labW=doc.getTextWidth(it), plusW=idx>0?doc.getTextWidth("+")+10:0, boxW=13, gap=5;
+          if(idx>0 && cxp+plusW+boxW+gap+labW>maxX){ cy+=lineH; cxp=startX+13; }   // wrap 2nd item
+          if(idx>0){ doc.text("+", cxp+3, cy); cxp+=plusW; }
+          box(cxp,cy); cxp+=boxW+gap; doc.text(it, cxp, cy); cxp+=labW+9;
+        });
+        cy+=lineH+1;
+      });
       cy+=4;
     }
 
-    // The mutual-exclusivity rules from the picker, expressed on paper.
+    // The "pick from one row only" rules from the picker, on paper (per Ryan's sketch).
     var FORM_RULES={
-      rib:  ["Rib — pick ONE cutting style:", ["Rib-eye Steaks (boneless)","Rib Steaks (bone-in)","Rib-eye Roast (Prime Rib)"], ["Back Ribs (only with boneless Rib-eye Steaks)"]],
-      loin: ["Loin — pick ONE of the three:", ["T-Bone Steaks","Porterhouse","NY Strip Steaks + Filet Mignon"], null],
-      flank:["Flank — pick ONE:", ["Flank Steak","Stir-Fry Strips"], null]
+      rib:  ["Rib — make selections from ONE row only:", [
+        ["Rib-eye Steaks (boneless)","Back Ribs"],
+        ["Rib Steaks (bone-in)"],
+        ["Rib-eye Roast (Prime Rib)","Back Ribs"]
+      ]],
+      loin: ["Loin — make selections from ONE row only:", [
+        ["T-Bone Steaks"],
+        ["Porterhouse Steaks"],
+        ["Filet Mignon","NY Strip Steaks"],
+        ["Tenderloin","NY Strip Steaks"]
+      ]],
+      flank:["Flank — pick ONE:", [
+        ["Flank Steak"],
+        ["Stir-Fry Strips"]
+      ]]
     };
     REGIONS.forEach(function(r){
-      if(FORM_RULES[r.id]){ ruleGroup(FORM_RULES[r.id][0], FORM_RULES[r.id][1], FORM_RULES[r.id][2]); return; }
+      if(FORM_RULES[r.id]){ ruleGroup(FORM_RULES[r.id][0], FORM_RULES[r.id][1]); return; }
       r.cuts.forEach(function(c){
         if(c.id==="hamburger"){ pkgRow(c.name+" — package size:", c.pkg); }
-        else if(c.lbs){ cutRow(c.name+":  ______ lbs (up to 20#)"); }
+        else if(c.lbs){ cutRow(c.name+":  ______ lbs (up to 20# quarter / 40# half)"); }
         else { cutRow(c.name); }
       });
     });
