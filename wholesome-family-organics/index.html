@@ -506,8 +506,8 @@ section{position:relative}
 <!-- ===================== ORDER BUILDER ===================== -->
 <section class="pad builder" id="order">
   <div class="wrap">
-    <div class="head"><div class="eyebrow">Build your order</div><h2>Choose your cuts on the cow.</h2>
-      <p>Pick how much beef you'd like, then tap each part of the animal to choose your cuts. Anything you don't pick is ground into hamburger. Ryan or Amanda will call if there's a question about your order — call or email us anytime if you have questions.</p></div>
+    <div class="head"><div class="eyebrow">Build your order</div><h2>Choose your cuts on the steer.</h2>
+      <p>Pick how much beef you'd like, then tap each part of the steer to choose your cuts. Anything you don't pick is ground into hamburger. Ryan or Amanda will call if there's a question about your order — call or email us anytime if you have questions.</p></div>
 
     <!-- STEP 1 — amount -->
     <div class="step">
@@ -541,7 +541,7 @@ section{position:relative}
     <div class="step" id="step2" hidden>
       <div class="step__label"><i>2</i> Pick your cuts</div>
       <div class="step__help" id="stepHelp" hidden>
-        <p>Select each of the 9 sections on the cow, choose the cuts you want, and tap <b>Save section</b> — the section will turn green. Also make selections in <b>Specialty</b>, and select your package size in <b>Ground Beef</b>. Once all <b>11 sections are green</b> (saved), the <b>Review &amp; submit order</b> button will be available.</p>
+        <p>Select each of the 9 sections on the steer, choose the cuts you want, and tap <b>Save section</b> — the section will turn green. Also save the <b>Specialty</b> and <b>Ground Beef</b> sections (you don't have to change or select anything, just save them to complete your order). Once all <b>11 sections are green</b> (saved), the <b>Review &amp; submit order</b> button will be available.</p>
         <p>In a hurry and already selected what you need? Tap the <b>Skip Empty Sections — Grind The Rest (Hamburger)</b> button to select the rest as hamburger and unlock the <b>Review &amp; submit order</b> button.</p>
         <p class="step__help-note">There is no time limit — take your time to browse.</p>
         <p class="step__help-note">Next to each cut of meat tap the small photo for more information.</p>
@@ -595,7 +595,7 @@ section{position:relative}
         <div class="drawer" id="drawer" aria-live="polite">
           <div class="drawer__empty" id="drawerEmpty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Tap a numbered section of the cow<br>to choose its cuts.
+            Tap a numbered section of the steer<br>to choose its cuts.
           </div>
         </div>
       </div>
@@ -691,7 +691,7 @@ section{position:relative}
       cuts:[{id:"chuck_roast",name:"Chuck Roast"},{id:"arm_roast",name:"Arm Roast"},{id:"seven_bone",name:"7-Bone Roast"},{id:"shoulder_steak",name:"Shoulder Steak"},{id:"stew",name:"Stew Meat",lbs:true}]},
     {id:"rib", num:2, name:"Rib", sub:"Fore-rib", center:[272,78], blurb:"The tender rib section — home of the rib-eye and prime rib.",
       cuts:[{id:"ribeye",name:"Rib-eye Steak"},{id:"ribeye_roast",name:"Rib-eye Roast (Prime Rib)"},{id:"rib_steak",name:"Rib Steak"},{id:"back_ribs",name:"Back Ribs"}]},
-    {id:"loin", num:3, name:"Loin", sub:"Short loin", center:[342,78], blurb:"The most tender part of the animal — the premium steaks.",
+    {id:"loin", num:3, name:"Loin", sub:"Short loin", center:[342,78], blurb:"The most tender part of the steer — the premium steaks.",
       cuts:[{id:"tbone",name:"T-Bone Steak"},{id:"porterhouse",name:"Porterhouse"},{id:"strip",name:"NY Strip Steak"},{id:"filet",name:"Filet Mignon"}]},
     {id:"sirloin", num:4, name:"Sirloin", sub:"Upper hip", center:[412,82], blurb:"Lean, flavorful steaks just ahead of the hindquarter.",
       cuts:[{id:"top_sirloin",name:"Top Sirloin Steak"},{id:"tritip",name:"Tri-Tip"},{id:"petite_sirloin",name:"Petite Sirloin"}]},
@@ -707,7 +707,7 @@ section{position:relative}
       cuts:[{id:"soup_bones",name:"Soup Bones"},{id:"shank_cross",name:"Shank Cross-cut (Osso Buco)"}]},
     {id:"specialty", num:null, name:"Specialty", sub:"Organ meats & extras", center:null, blurb:"Traditional, nutrient-dense extras. All optional.",
       cuts:[{id:"liver",name:"Liver"},{id:"heart",name:"Heart"},{id:"tongue",name:"Tongue"},{id:"oxtail",name:"Ox-tail"},{id:"tallow",name:"Tallow (rendering fat)"}]},
-    {id:"ground", num:null, name:"Ground Beef", sub:"From the whole animal", center:null, blurb:"Everything you don't pick as a cut becomes lean ground beef. Choose your package size.",
+    {id:"ground", num:null, name:"Ground Beef", sub:"From the whole steer", center:null, blurb:"Everything you don't pick as a cut becomes lean ground beef. Choose your package size.",
       cuts:[{id:"hamburger",name:"Ground Beef (Hamburger)",pkg:["1 lb","1½ lb","2 lb"],defaultOn:true}]}
   ];
 
@@ -720,14 +720,14 @@ section{position:relative}
     seven_bone:{cook:"Named for the bone shaped like a '7.' Braise low and slow; the bone melts deep, beefy richness into the gravy.", pitch:"A classic braising roast with built-in flavor from that signature bone."},
     shoulder_steak:{cook:"Marinate a few hours, then grill or pan-sear hot and fast to medium-rare and slice thin across the grain.", pitch:"A lean, flavorful everyday steak that's easy on the budget."},
     stew:{cook:"Brown the cubes well, then simmer slowly in stew or soup until meltingly tender.", pitch:"The heart of every great pot of beef stew, chili, and hearty soup."},
-    ribeye:{cook:"Salt ahead, sear screaming-hot in cast iron or over the grill, baste with butter, and rest. Aim for medium-rare.", pitch:"The richest, most marbled steak on the animal — pure indulgence."},
+    ribeye:{cook:"Salt ahead, sear screaming-hot in cast iron or over the grill, baste with butter, and rest. Aim for medium-rare.", pitch:"The richest, most marbled steak on the steer — pure indulgence."},
     ribeye_roast:{cook:"The showstopper: season generously and roast low to a rosy center, then a high-heat blast for the crust.", pitch:"The centerpiece of the holiday table — restaurant prime rib, made at home."},
     rib_steak:{cook:"A bone-in ribeye — grill or pan-sear hot; the bone keeps it extra juicy.", pitch:"All the ribeye richness, with a bone to gnaw on."},
     back_ribs:{cook:"Rub them up, then smoke or slow-roast low and wrap until the meat tugs off the bone.", pitch:"Finger-licking, fall-off-the-bone backyard barbecue."},
     tbone:{cook:"Two steaks in one — strip and tenderloin. Grill hot, keeping the smaller filet side away from the hottest spot so it doesn't overcook.", pitch:"Two premium steaks divided by one famous bone."},
     porterhouse:{cook:"The big brother of the T-bone with a generous filet. Grill hot and fast, rest, then carve both muscles off the bone.", pitch:"The steakhouse king — the best of the strip and the tenderloin on one plate."},
     strip:{cook:"Pat dry, season simply, and sear hard for a deep crust and a tender, even medium-rare center.", pitch:"The steakhouse favorite — tender, beefy, and foolproof on the grill."},
-    filet:{cook:"The most tender cut — cook gently to medium-rare so it stays buttery; a quick sear and a butter baste is all it needs.", pitch:"Melt-in-your-mouth tenderness — the most luxurious bite on the cow."},
+    filet:{cook:"The most tender cut — cook gently to medium-rare so it stays buttery; a quick sear and a butter baste is all it needs.", pitch:"Melt-in-your-mouth tenderness — the most luxurious bite on the steer."},
     top_sirloin:{cook:"Lean and versatile — grill or pan-sear to medium-rare and slice across the grain.", pitch:"Big steak flavor with a leaner profile and a friendlier price."},
     tritip:{cook:"Santa-Maria style: rub it, grill or roast the whole piece, then slice thin across the grain.", pitch:"A West-Coast favorite that's full of flavor and feeds the table from one roast."},
     petite_sirloin:{cook:"A quick-cooking lean steak — sear hot and fast, don't overcook, and slice thin.", pitch:"A lean, weeknight-friendly steak that's gentle on the budget."},
@@ -1062,7 +1062,7 @@ section{position:relative}
     $("#drawer").innerHTML=
       '<div class="drawer__empty">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'+
-      'Tap a numbered section of the cow<br>to choose its cuts.</div>';
+      'Tap a numbered section of the steer<br>to choose its cuts.</div>';
   }
 
   /* ===================== cut detail popup ===================== */
