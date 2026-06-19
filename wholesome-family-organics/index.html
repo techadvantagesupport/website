@@ -1376,24 +1376,27 @@ section{position:relative}
     // a "make selections from ONE row only" group; each row is an array of cut
     // labels — multiple labels in a row render as "[] A  +  [] B".
     function ruleGroup(note, rows){
+      var IND=11;                                  // indent so rule groups stand out
       doc.setFont("helvetica","italic"); doc.setFontSize(9);
-      var noteLines=doc.splitTextToSize(note, colW), noteH=noteLines.length*11+3, lineH=13;
+      var noteLines=doc.splitTextToSize(note, colW-IND), noteH=noteLines.length*11+3, lineH=13;
       var total=noteH+4 + rows.reduce(function(a,row){ return a + (row.length>1?2:1)*lineH; },0);
       colAdvance(total);
+      var gyTop=cy-8;                              // group top, for the left accent bar
       doc.setFont("helvetica","italic"); doc.setFontSize(9); doc.setTextColor(110,80,55);
-      noteLines.forEach(function(ln,i){ doc.text(ln, colX[col], cy+i*11); }); cy+=noteH; doc.setTextColor(40,28,16);
+      noteLines.forEach(function(ln,i){ doc.text(ln, colX[col]+IND, cy+i*11); }); cy+=noteH; doc.setTextColor(40,28,16);
       var maxX=colX[col]+colW;
       rows.forEach(function(items){
-        var startX=colX[col], cxp=startX;
+        var startX=colX[col]+IND, cxp=startX;
         items.forEach(function(it,idx){
           doc.setFont("helvetica","normal"); doc.setFontSize(9.5); doc.setTextColor(40,28,16);
-          var labW=doc.getTextWidth(it), plusW=idx>0?doc.getTextWidth("+")+10:0, boxW=13, gap=5;
+          var labW=doc.getTextWidth(it), plusW=idx>0?doc.getTextWidth("+")+9:0, boxW=13, gap=5;
           if(idx>0 && cxp+plusW+boxW+gap+labW>maxX){ cy+=lineH; cxp=startX+13; }   // wrap 2nd item
           if(idx>0){ doc.text("+", cxp+3, cy); cxp+=plusW; }
           box(cxp,cy); cxp+=boxW+gap; doc.text(it, cxp, cy); cxp+=labW+9;
         });
         cy+=lineH+1;
       });
+      doc.setDrawColor(150,120,70); doc.setLineWidth(1.5); doc.line(colX[col]+3, gyTop, colX[col]+3, cy-9); doc.setLineWidth(0.7);
       cy+=4;
     }
 
@@ -1419,7 +1422,7 @@ section{position:relative}
       if(FORM_RULES[r.id]){ ruleGroup(FORM_RULES[r.id][0], FORM_RULES[r.id][1]); return; }
       r.cuts.forEach(function(c){
         if(c.id==="hamburger"){ pkgRow(c.name+" — package size:", c.pkg); }
-        else if(c.lbs){ cutRow(c.name+":  ______ lbs (up to 20# quarter / 40# half)"); }
+        else if(c.lbs){ cutRow(c.name+" ____ lbs (20# qtr / 40# half)"); }
         else { cutRow(c.name); }
       });
     });
